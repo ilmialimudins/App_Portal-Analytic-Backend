@@ -34,12 +34,6 @@ function toCamel(o) {
 @Injectable()
 export class RequestTransformPipe implements PipeTransform {
   transform(body: any, metadata: ArgumentMetadata): any {
-    // const result = new TestMeRequestDto();
-    // can of course contain more sophisticated mapping logic
-    // result.propertyOne = body.propertyone;
-    // result.propertyTwo = body.PROPERTYTWO;
-    // result.propertyThree = body.PropertyThree;
-    // return result;
     if (
       metadata.type === 'body' &&
       (typeof body === 'object' || Array.isArray(body))
