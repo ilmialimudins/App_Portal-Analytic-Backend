@@ -77,7 +77,7 @@ export class ApiConfigService {
     const value = this.configService.get<string>(key);
 
     if (isNil(value)) {
-      throw new Error(key + 'environment variable does not set');
+      throw new Error(key + 'environment variable maybe does not set');
     }
 
     return value;
