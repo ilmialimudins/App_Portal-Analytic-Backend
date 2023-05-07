@@ -50,7 +50,7 @@ export class ApiConfigService {
       __dirname + '/../../modules/**/*.entity{.ts,.js}',
       __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
     ];
-    let migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
+    const migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
 
     return {
       entities,
@@ -77,7 +77,7 @@ export class ApiConfigService {
     const value = this.configService.get<string>(key);
 
     if (isNil(value)) {
-      throw new Error(key + 'environment variable maybe does not set');
+      throw new Error(key + 'environment variable does not set');
     }
 
     return value;
