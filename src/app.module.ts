@@ -14,7 +14,9 @@ const ApiModules = [LeadsModule, UsersModule, SharedModule];
 @Module({
   imports: [
     ...ApiModules,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
       useFactory: (configService: ApiConfigService) => {
