@@ -23,12 +23,14 @@ export class ResponseTransformInterceptor<T>
     handler: CallHandler,
   ): Observable<Response<T>> {
     return handler.handle().pipe(
-      map((data) => ({
-        acknowledge: 0,
-        message: data.message,
-        errorCode: context.switchToHttp().getResponse().statusCode,
-        data: data.result,
-      })),
+      map((data) => {
+        return {
+          acknowledge: 0,
+          message: data.message || '',
+          errorCode: context.switchToHttp().getResponse().statusCode,
+          data: data.result || data,
+        };
+      }),
     );
   }
 }

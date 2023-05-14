@@ -1,5 +1,4 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
-import { camelCase } from 'lodash';
 
 function toCamel(o) {
   let newO, origKey, newKey, value;
@@ -33,6 +32,7 @@ function toCamel(o) {
 
 @Injectable()
 export class RequestTransformPipe implements PipeTransform {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transform(body: any, metadata: ArgumentMetadata): any {
     if (
       metadata.type === 'body' &&

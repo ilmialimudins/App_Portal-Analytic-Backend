@@ -38,4 +38,12 @@ module.exports = {
     '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
     "@typescript-eslint/no-unused-vars": "error"
   },
+  "overrides" : [
+    {
+      "files": ["*.interceptor.ts"],
+      "rules": {
+        '@typescript-eslint/no-explicit-any': 'off'
+      }
+    }
+  ]
 };

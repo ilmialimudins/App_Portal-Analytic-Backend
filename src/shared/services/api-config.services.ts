@@ -66,6 +66,8 @@ export class ApiConfigService {
       database: this.getString('DB_DATABASE'),
       migrationsRun: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
+      options: { encrypt: false },
+      synchronize: this.isProduction === false,
     };
   }
 
