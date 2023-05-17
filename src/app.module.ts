@@ -13,6 +13,7 @@ import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.services';
 import { ResponseTransformInterceptor } from 'src/interceptors/response-transform.interceptor';
 import { SentryModule } from './sentry/sentry.module';
+import { MasterCompanyModule } from './modules/master-company/master-company.module';
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
@@ -37,6 +38,7 @@ const ApiModules = [LeadsModule, UsersModule, SharedModule];
       tracesSampleRate: 1.0,
       debug: true,
     }),
+    MasterCompanyModule,
   ],
   controllers: [AppController, UsersController],
   providers: [
