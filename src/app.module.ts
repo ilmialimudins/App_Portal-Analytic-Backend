@@ -1,3 +1,5 @@
+import './boilerplate.polyfill';
+
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -18,7 +20,12 @@ import { MasterCompanyModule } from './modules/master-company/master-company.mod
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
 
-const ApiModules = [LeadsModule, UsersModule, SharedModule];
+const ApiModules = [
+  LeadsModule,
+  UsersModule,
+  SharedModule,
+  MasterCompanyModule,
+];
 
 @Module({
   imports: [
@@ -38,7 +45,6 @@ const ApiModules = [LeadsModule, UsersModule, SharedModule];
       tracesSampleRate: 1.0,
       debug: true,
     }),
-    MasterCompanyModule,
   ],
   controllers: [AppController, UsersController],
   providers: [

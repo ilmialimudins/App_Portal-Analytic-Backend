@@ -19,6 +19,10 @@ export class ApiConfigService {
     return this.nodeEnv === 'test';
   }
 
+  get documentationEnabled(): boolean {
+    return this.getBoolean('ENABLE_DOCUMENTATION');
+  }
+
   private getNumber(key: string): number {
     const value = this.get(key);
 

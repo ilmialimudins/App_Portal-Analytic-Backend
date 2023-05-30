@@ -8,6 +8,9 @@ import 'winston-daily-rotate-file';
 
 import { AppModule } from './app.module';
 import { RequestTransformPipe } from './pipes/request-transform.pipe';
+import { SharedModule } from './shared/shared.module';
+import { ApiConfigService } from './shared/services/api-config.services';
+import { setupSwagger } from './setup-swagger';
 
 async function bootstrap() {
   const logsDirectory = join(__dirname, `/../${process.env.LOGDIR || 'logs'}`);
@@ -54,6 +57,12 @@ async function bootstrap() {
     new RequestTransformPipe(),
     new ValidationPipe({ whitelist: true, transform: true }),
   );
+
+  const configService = app.select(SharedModule).get(ApiConfigService);
+
+  if (configService.documentationEnabled) {
+    setupSwagger(app);
+  }
 
   await app.listen(
     `${process.env.PORT ? parseInt(process.env.PORT) : 3000}`,
