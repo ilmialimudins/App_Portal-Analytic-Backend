@@ -17,6 +17,6 @@ export class MasterCompanyDto extends AbstractDto {
 
     this.companyname = masterCompanyEntity.companyname;
     this.companycode = masterCompanyEntity.companycode;
-    // this.description = masterCompanyEntity.description || undefined;
+    this.description = masterCompanyEntity.description || undefined;
   }
 }
