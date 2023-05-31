@@ -5,6 +5,8 @@ import { MasterEESCompany } from './master-company.entity';
 import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { MasterCompanyDto } from './dto/master-company.dto';
+import { GetByIdDto } from 'src/common/dto/getById.dto';
+import { AddCompanyDto } from 'src/modules/master-company/dto/addCompany.dto';
 
 @Injectable()
 export class MasterCompanyService {
@@ -24,6 +26,36 @@ export class MasterCompanyService {
       const [items, pageMetaDto] = await query.paginate(pageOptions);
 
       return items.toPageDto(pageMetaDto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getCompanyById(id: GetByIdDto): Promise<MasterCompanyDto | undefined> {
+    try {
+      const query = await this.masterCompanyRepository
+        .createQueryBuilder('mastercompany')
+        .where('mastercompany.id = :id', { id: id.id })
+        .getOne();
+      return query?.toDto();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addCompany(company: AddCompanyDto) {
+    try {
+      const query = await this.masterCompanyRepository
+        .createQueryBuilder('mastercompany')
+        .insert()
+        .into(MasterEESCompany)
+        .values({
+          companycode: company.companycode,
+          companyname: company.companyname,
+          description: company.description,
+        })
+        .execute();
+      return query;
     } catch (error) {
       throw error;
     }
