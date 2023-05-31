@@ -7,8 +7,8 @@ import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
 import { AddPredEngagamentValueDto } from './dto/add-pred-engagement-value.dto';
 
-@ApiTags('pred-engagement-value')
-@Controller('pred-engagement-value')
+@ApiTags('Average Driver')
+@Controller('average-driver')
 export class PredEngagementValueController {
   constructor(private predEngagementValueService: PredEngagamentValueService) {}
   @Get('/')
