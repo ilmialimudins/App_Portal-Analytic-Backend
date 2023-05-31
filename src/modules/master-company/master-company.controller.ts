@@ -4,8 +4,8 @@ import { PageDto } from 'src/common/dto/page.dto';
 import { MasterCompanyDto } from './dto/master-company.dto';
 import { MasterCompanyService } from './master-company.service';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { GetByIdDto } from 'src/common/dto/getById.dto';
-import { AddCompanyDto } from 'src/modules/master-company/dto/addCompany.dto';
+import { GetByIdDto } from 'src/common/dto/get-by-id';
+import { AddCompanyDto } from 'src/modules/master-company/dto/add-company.dto';
 
 @ApiTags('master-company')
 @Controller('master-company')
