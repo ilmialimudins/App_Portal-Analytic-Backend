@@ -16,6 +16,8 @@ import { ApiConfigService } from './shared/services/api-config.services';
 import { ResponseTransformInterceptor } from 'src/interceptors/response-transform.interceptor';
 import { SentryModule } from './sentry/sentry.module';
 import { MasterCompanyModule } from './modules/master-company/master-company.module';
+import { FactorModule } from './modules/factor/factor.module';
+import { PredEngagamentValueModule } from './modules/pred-engagement-value/pred-engagement-value.module';
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
@@ -25,6 +27,8 @@ const ApiModules = [
   UsersModule,
   SharedModule,
   MasterCompanyModule,
+  FactorModule,
+  PredEngagamentValueModule,
 ];
 
 @Module({
