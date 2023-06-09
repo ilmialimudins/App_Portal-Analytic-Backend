@@ -32,7 +32,7 @@ export class undefinedearrangeMasterCompanyColumn1685432024763
     await queryRunner.query('DROP TABLE IRPortal.dbo.ms_ees_company');
 
     await queryRunner.query(
-      "EXEC IRPortal.sys.sp_rename N'IRPortal.dbo.[dbo.ms_ees_company]', N'ms_ees_company', 'OBJECT';",
+      "EXEC IRPortal.sys.sp_rename N'IRPortal.dbo.[ms_ees_company_temp]', N'ms_ees_company', 'OBJECT';",
     );
   }
 
