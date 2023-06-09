@@ -13,20 +13,26 @@ export class undefinedearrangeMasterCompanyColumn1685432024763
                 createdtime datetime2 NOT NULL default GETDATE(),
                 createddate INT,
                 sourcecreatedmodifiedtime datetime2 NOT NULL default GETDATE(),
-                syncdate datetime,
+                sync_date datetime,
                 createdby VARCHAR(255),
                 updatedby VARCHAR(255)
             )
         `);
 
-    await queryRunner.query(
-      `INSERT INTO IRPortal.dbo.ms_ees_company_temp SELECT * FROM IRPortal.dbo.ms_ees_company;`,
-    );
+    await queryRunner.query(`
+      SET IDENTITY_INSERT dbo.ms_ees_company_temp ON;
+
+      INSERT INTO dbo.ms_ees_company_temp (id, companycode, companyname, description, createdtime, createddate, sourcecreatedmodifiedtime, sync_date, createdby, updatedby)
+        SELECT id, companycode, companyname, description, createdtime, createddate, sourcecreatedmodifiedtime, sync_date, createdby, updatedby
+        FROM dbo.ms_ees_company;
+      
+      SET IDENTITY_INSERT dbo.ms_ees_company_temp OFF;
+      `);
 
     await queryRunner.query('DROP TABLE IRPortal.dbo.ms_ees_company');
 
     await queryRunner.query(
-      'EXEC sp_rename IRPortal.dbo.ms_ees_company_temp, IRPortal.dbo.ms_ees_company',
+      "EXEC IRPortal.sys.sp_rename N'IRPortal.dbo.[dbo.ms_ees_company]', N'ms_ees_company', 'OBJECT';",
     );
   }
 
