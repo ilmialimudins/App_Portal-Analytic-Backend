@@ -56,7 +56,7 @@ export class PredEngagamentValueService {
         .where('pred-engagement-value.demography = :demography', {
           demography: demography.demography,
         })
-        .orderBy('pred-engagement-value.id', 'ASC');
+        .orderBy('pred-engagement-value.id', pageOptions.order);
 
       const [items, pageMetaDto] = await query.paginate(pageOptions);
 
