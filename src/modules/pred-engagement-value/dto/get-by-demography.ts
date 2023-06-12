@@ -1,14 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
-export class AddPredEngagamentValueDto {
+export class GetByDemography {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   readonly demography: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly d_companyid: string;
 }

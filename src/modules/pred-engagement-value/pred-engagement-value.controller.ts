@@ -6,6 +6,7 @@ import { PredEngagamentValueService } from './pred-engagement-value.service';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
 import { AddPredEngagamentValueDto } from './dto/add-pred-engagement-value.dto';
+import { GetByDemography } from './dto/get-by-demography';
 
 @ApiTags('Average Driver')
 @Controller('average-driver')
@@ -27,6 +28,18 @@ export class PredEngagementValueController {
     @Query() id: GetByIdDto,
   ): Promise<PredEngagementValueDto | undefined> {
     return this.predEngagementValueService.getPredEngagementValueById(id);
+  }
+
+  @Get('/getByDemography')
+  @ApiCreatedResponse({ type: PredEngagementValueDto })
+  async getPredEngagementValueByDemography(
+    @Query() pageOptions: PageOptionsDTO,
+    @Query() demography: GetByDemography,
+  ): Promise<PageDto<PredEngagementValueDto>> {
+    return this.predEngagementValueService.getPredEngagementValueByDemography(
+      pageOptions,
+      demography,
+    );
   }
 
   @Post('/createOne')

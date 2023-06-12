@@ -24,20 +24,12 @@ export class PredEngagementValueDto extends AbstractDto {
   @ApiProperty()
   tahunsurvey: string;
 
-  @ApiProperty()
-  avg_respondentanswer_before: number;
-
-  @ApiProperty()
-  count_respondent: string;
-
   constructor(predEngagementValue: PredEngagementValue) {
     super(predEngagementValue, { exludeFields: true });
 
+    this.id = predEngagementValue.id;
     this.demography = predEngagementValue.demography;
-    this.demographyvalue = predEngagementValue.demographyvalue;
     this.tahunsurvey = predEngagementValue.tahunsurvey;
-    this.avg_respondentanswer_before =
-      predEngagementValue.avg_respondentanswer_before;
-    this.count_respondent = predEngagementValue.count_respondent;
+    this.d_companyid = predEngagementValue.d_companyid;
   }
 }
