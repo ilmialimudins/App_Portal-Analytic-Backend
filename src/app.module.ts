@@ -7,9 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LeadsModule } from './modules/leads/leads.module';
-import { UsersModule } from './modules/users/users.module';
-import { UsersController } from './modules/users/users.controller';
 import { SharedModule } from './shared/shared.module';
 
 import { ApiConfigService } from './shared/services/api-config.services';
@@ -23,8 +20,6 @@ import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
 
 const ApiModules = [
-  LeadsModule,
-  UsersModule,
   SharedModule,
   MasterCompanyModule,
   FactorModule,
@@ -50,7 +45,7 @@ const ApiModules = [
       debug: true,
     }),
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController],
   providers: [
     AppService,
     {

@@ -71,7 +71,7 @@ export class ApiConfigService {
       migrationsRun: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
       options: { encrypt: false },
-      synchronize: this.isProduction === false,
+      synchronize: false,
     };
   }
 
