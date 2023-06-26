@@ -1,4 +1,4 @@
-import '../../src/boilerplate.polyfill';
+import '../boilerplate.polyfill';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dotenv = require('dotenv');
