@@ -1,13 +1,12 @@
-import { Controller, Get, Post, Query, Body } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { MasterCompanyDto } from './dto/master-company.dto';
 import { MasterCompanyService } from './master-company.service';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
-import { AddCompanyDto } from 'src/modules/master-company/dto/add-company.dto';
 
-@ApiTags('master-company')
+@ApiTags('Master Company')
 @Controller('master-company')
 export class MasterCompanyController {
   constructor(private masterCompanyService: MasterCompanyService) {}
@@ -25,11 +24,5 @@ export class MasterCompanyController {
     @Query() id: GetByIdDto,
   ): Promise<MasterCompanyDto | undefined> {
     return this.masterCompanyService.getCompanyById(id);
-  }
-
-  @Post('/createOne')
-  @ApiCreatedResponse({ type: MasterCompanyDto })
-  async createMasterCompany(@Body() company: AddCompanyDto) {
-    return this.masterCompanyService.addCompany(company);
   }
 }

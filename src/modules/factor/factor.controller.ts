@@ -7,7 +7,7 @@ import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
 import { AddFactorDto } from './dto/add-factor.dto';
 
-@ApiTags('factor')
+@ApiTags('Factor')
 @Controller('factor')
 export class FactorController {
   constructor(private factorService: FactorService) {}

@@ -6,7 +6,6 @@ import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { MasterCompanyDto } from './dto/master-company.dto';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
-import { AddCompanyDto } from 'src/modules/master-company/dto/add-company.dto';
 
 @Injectable()
 export class MasterCompanyService {
@@ -38,24 +37,6 @@ export class MasterCompanyService {
         .where('mastercompany.id = :id', { id: id.id })
         .getOne();
       return query?.toDto();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addCompany(company: AddCompanyDto) {
-    try {
-      const query = await this.masterCompanyRepository
-        .createQueryBuilder('mastercompany')
-        .insert()
-        .into(MasterEESCompany)
-        .values({
-          companycode: company.companycode,
-          companyname: company.companyname,
-          description: company.description,
-        })
-        .execute();
-      return query;
     } catch (error) {
       throw error;
     }

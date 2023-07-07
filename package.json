@@ -22,6 +22,7 @@
     "migration:generate": "yarn run typeorm migration:generate -d src/config/ormconfig.ts",
     "migration:create": "yarn run typeorm migration:create -d src/config/ormconfig.ts",
     "migration:revert": "yarn run typeorm migration:revert",
+    "migration:run": "yarn build && yarn run typeorm migration:run -d src/config/ormconfig.ts",
     "prepare": "husky install && chmod ug+x .husky/*"
   },
   "dependencies": {

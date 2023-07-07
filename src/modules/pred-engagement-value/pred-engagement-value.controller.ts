@@ -8,8 +8,8 @@ import { GetByIdDto } from 'src/common/dto/get-by-id';
 import { AddPredEngagamentValueDto } from './dto/add-pred-engagement-value.dto';
 import { GetByDemography } from './dto/get-by-demography';
 
-@ApiTags('Average Driver')
-@Controller('average-driver')
+@ApiTags('Engagement Value')
+@Controller('engagement-value')
 export class PredEngagementValueController {
   constructor(private predEngagementValueService: PredEngagamentValueService) {}
   @Get('/')

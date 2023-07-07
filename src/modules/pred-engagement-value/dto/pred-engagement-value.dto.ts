@@ -10,10 +10,10 @@ export class PredEngagementValueDto extends AbstractDto {
   avg_respondentanswer_after: string;
 
   @ApiProperty()
-  d_surveygizmoid: string;
+  d_surveygizmoid: number;
 
   @ApiProperty()
-  d_companyid: string;
+  d_companyid: number;
 
   @ApiProperty()
   demographyvalue: string;
@@ -27,7 +27,6 @@ export class PredEngagementValueDto extends AbstractDto {
   constructor(predEngagementValue: PredEngagementValue) {
     super(predEngagementValue, { exludeFields: true });
 
-    this.id = predEngagementValue.id;
     this.demography = predEngagementValue.demography;
     this.tahunsurvey = predEngagementValue.tahunsurvey;
     this.d_companyid = predEngagementValue.d_companyid;

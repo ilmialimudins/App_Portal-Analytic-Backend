@@ -10,5 +10,5 @@ export class AddPredEngagamentValueDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly d_companyid: string;
+  readonly d_companyid: number;
 }

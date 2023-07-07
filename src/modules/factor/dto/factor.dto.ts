@@ -31,6 +31,5 @@ export class FactorDto extends AbstractDto {
     this.factorcode = eesFactor.factorcode;
     this.h_factorhashkey = eesFactor.h_factorhashkey;
     this.factorname = eesFactor.factorname;
-    this.id = eesFactor.id;
   }
 }
