@@ -12,7 +12,7 @@ import { MasterSurveygizmo } from '../master-surveygizmo/master-surveygizmo.enti
 import { MasterEESCompany } from '../master-company/master-company.entity';
 import { EESFactor } from '../factor/factor.entity';
 
-@Entity('tbl_pred_predictionengagement')
+@Entity('tbl_pred_engagementvalue')
 @UseDto(PredEngagementValueDto)
 export class PredEngagementValue extends AbstractEntity<PredEngagementValueDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })

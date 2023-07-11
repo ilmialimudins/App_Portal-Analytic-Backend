@@ -1,58 +1,46 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Query } from '@nestjs/common';
 import { PredPredictionEngagementService } from './pred-prediction-engagement.service';
-import { CreatePredPredictionEngagementDto } from './dto/create-pred-prediction-engagement.dto';
-import { UpdatePredPredictionEngagementDto } from './dto/update-pred-prediction-engagement.dto';
-import { ApiTags } from '@nestjs/swagger';
+
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  DriversDTO,
+  GetAgregrationPerFactorDTO,
+} from '../pred-engagement-value/dto/get-aggregation-factor.dto';
+import { PredEngagamentValueService } from '../pred-engagement-value/pred-engagement-value.service';
+import { GetPredictionEngagementDTO } from './dto/get-prediction-engagement.dto';
+import { SavePredictionEngagementDTO } from './dto/save-prediction-engagement.dto';
 
 @ApiTags('Prediction Engagement')
-@Controller('pred-prediction-engagement')
+@Controller('prediction-engagement')
 export class PredPredictionEngagementController {
   constructor(
     private readonly predPredictionEngagementService: PredPredictionEngagementService,
+    private readonly predEngagementValueService: PredEngagamentValueService,
   ) {}
 
-  @Post()
-  create(
-    @Body()
-    createPredPredictionEngagementDto: CreatePredPredictionEngagementDto,
-  ) {
-    return this.predPredictionEngagementService.create(
-      createPredPredictionEngagementDto,
-    );
+  @Post('/preview')
+  @ApiOkResponse({ type: [GetPredictionEngagementDTO] })
+  async getAggregation(
+    @Query() query: GetAgregrationPerFactorDTO,
+    @Body() body: DriversDTO,
+  ): Promise<GetPredictionEngagementDTO> {
+    const aggregationBeforeAndAfter =
+      await this.predEngagementValueService.calculateAverageDriver(
+        query,
+        body.drivers,
+      );
+
+    const prediction =
+      await this.predPredictionEngagementService.previewPrediction(
+        query,
+        aggregationBeforeAndAfter,
+      );
+
+    return prediction;
   }
 
-  @Get()
-  findAll() {
-    return this.predPredictionEngagementService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.predPredictionEngagementService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body()
-    updatePredPredictionEngagementDto: UpdatePredPredictionEngagementDto,
-  ) {
-    return this.predPredictionEngagementService.update(
-      +id,
-      updatePredPredictionEngagementDto,
-    );
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.predPredictionEngagementService.remove(+id);
+  @Post('/apply-changes')
+  savePredictionAndDriver(@Body() body: SavePredictionEngagementDTO) {
+    return body;
   }
 }

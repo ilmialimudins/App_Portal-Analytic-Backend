@@ -3,7 +3,7 @@ import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { MasterCompanyDto } from './dto/master-company.dto';
 import { MasterCompanyService } from './master-company.service';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
 
 @ApiTags('Master Company')
@@ -11,7 +11,7 @@ import { GetByIdDto } from 'src/common/dto/get-by-id';
 export class MasterCompanyController {
   constructor(private masterCompanyService: MasterCompanyService) {}
   @Get('/')
-  @ApiCreatedResponse({ type: MasterCompanyDto })
+  @ApiOkResponse({ type: MasterCompanyDto })
   async getCompanies(
     @Query() pageOptions: PageOptionsDTO,
   ): Promise<PageDto<MasterCompanyDto>> {
