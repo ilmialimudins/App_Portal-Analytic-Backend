@@ -40,7 +40,7 @@ export class PredPredictionEngagementController {
   }
 
   @Post('/apply-changes')
-  savePredictionAndDriver(@Body() body: SavePredictionEngagementDTO) {
-    return body;
+  async savePredictionAndDriver(@Body() body: SavePredictionEngagementDTO) {
+    return await this.predPredictionEngagementService.savePrediction(body);
   }
 }

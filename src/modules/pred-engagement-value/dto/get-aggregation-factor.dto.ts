@@ -5,7 +5,7 @@ import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
 export class GetAgregrationPerFactorDTO {
   @ApiProperty()
   @IsString()
-  readonly d_companyid: string;
+  readonly d_companyid: number;
 
   @ApiProperty()
   @IsString()

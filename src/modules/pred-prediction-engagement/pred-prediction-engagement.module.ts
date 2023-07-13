@@ -4,6 +4,7 @@ import { PredPredictionEngagementController } from './pred-prediction-engagement
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PredPredictionEngagement } from './pred-prediction-engagement.entity';
 import { PredEngagamentValueModule } from '../pred-engagement-value/pred-engagement-value.module';
+import { SavePredictionEngagementTransaction } from './save-prediction-engagement.transaction';
 
 @Module({
   imports: [
@@ -11,6 +12,9 @@ import { PredEngagamentValueModule } from '../pred-engagement-value/pred-engagem
     PredEngagamentValueModule,
   ],
   controllers: [PredPredictionEngagementController],
-  providers: [PredPredictionEngagementService],
+  providers: [
+    PredPredictionEngagementService,
+    SavePredictionEngagementTransaction,
+  ],
 })
 export class PredPredictionEngagementModule {}

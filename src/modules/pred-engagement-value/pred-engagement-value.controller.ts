@@ -48,7 +48,11 @@ export class PredEngagementValueController {
 
   @Get('/average-driver')
   async getAverageDriver(@Query() query: GetAverageDriverDTO) {
-    return await this.predEngagementValueService.getAverageDriver(query);
+    console.log(query);
+    const data = await this.predEngagementValueService.getAverageDriver(query);
+
+    console.log(data);
+    return data;
   }
 
   @Post('/get-aggregation')

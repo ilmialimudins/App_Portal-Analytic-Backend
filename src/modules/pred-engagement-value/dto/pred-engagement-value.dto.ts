@@ -22,7 +22,7 @@ export class PredEngagementValueDto extends AbstractDto {
   d_factorid: string;
 
   @ApiProperty()
-  tahunsurvey: string;
+  tahunsurvey: number;
 
   constructor(predEngagementValue: PredEngagementValue) {
     super(predEngagementValue, { exludeFields: true });

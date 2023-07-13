@@ -55,7 +55,7 @@ export class PredEngagementValue extends AbstractEntity<PredEngagementValueDto> 
   demographyvalue: string;
 
   @Column({ type: 'int', name: 'tahunsurvey', nullable: true })
-  tahunsurvey: string;
+  tahunsurvey: number;
 
   @Column({
     type: 'float',
@@ -63,7 +63,7 @@ export class PredEngagementValue extends AbstractEntity<PredEngagementValueDto> 
     nullable: true,
     precision: 53,
   })
-  avg_respondentanswer_before: string;
+  avg_respondentanswer_before: number;
 
   @Column({
     type: 'float',
@@ -71,8 +71,8 @@ export class PredEngagementValue extends AbstractEntity<PredEngagementValueDto> 
     nullable: true,
     precision: 53,
   })
-  avg_respondentanswer_after: string;
+  avg_respondentanswer_after: number;
 
   @Column({ type: 'bigint', name: 'count_respondent', nullable: true })
-  count_respondent: string;
+  count_respondent: number;
 }

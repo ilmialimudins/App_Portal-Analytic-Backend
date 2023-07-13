@@ -88,28 +88,29 @@ export class PredEngagamentValueService {
     demographyvalue,
   }: GetAverageDriverDTO) {
     try {
-      const result = this.engagementValue
-        .createQueryBuilder('predengagementvalue')
-        .select([
-          'predengagementvalue.id AS id',
-          'factor.d_factorid as d_factorid',
-          'factor.factorname as factorname',
-          'factor.factor_shortname as factor_shortname',
-          'predengagementvalue.avg_respondentanswer_before as avg_respondentanswer_before',
-          'predengagementvalue.avg_respondentanswer_after as avg_respondentanswer_after',
-        ])
-        .leftJoin('predengagementvalue.factor', 'factor')
-        .where('predengagementvalue.d_companyid = :d_companyid', {
-          d_companyid: d_companyid,
-        })
-        .andWhere('predengagementvalue.demography = :demography', {
-          demography,
-        })
-        .andWhere('predengagementvalue.demographyvalue = :demographyvalue', {
-          demographyvalue,
-        })
-        .orderBy('factor.d_factorid')
-        .getRawMany();
+      const result = await this.engagementValue.find({
+        select: {
+          id: true,
+          d_factorid: true,
+          factor: {
+            factor_shortname: true,
+            factorname: true,
+          },
+          avg_respondentanswer_after: true,
+          avg_respondentanswer_before: true,
+        },
+        relations: {
+          factor: true,
+        },
+        where: {
+          d_companyid: parseInt(d_companyid),
+          demography: demography,
+          demographyvalue: demographyvalue,
+        },
+        order: {
+          d_factorid: 'ASC',
+        },
+      });
 
       return result;
     } catch (error) {
@@ -123,33 +124,11 @@ export class PredEngagamentValueService {
   ): Promise<AggregationPerFactorDTO[]> {
     try {
       // Do this for initial fetch, not changes for preview data;
-      const getAggregationAfterAndBefore = await this.engagementValue
-        .createQueryBuilder('engagementvalue')
-        .select('engagementvalue.d_factorid as d_factorid')
-        .addSelect('factor.factor_shortname as factor_shortname')
-        .addSelect(
-          `SUM(engagementvalue.count_respondent * 15 * engagementvalue.avg_respondentanswer_after) / (SUM(engagementvalue.count_respondent * 1) * 15)`,
-          'aggregation_after',
-        )
-        .addSelect(
-          `SUM(engagementvalue.count_respondent * 15 * engagementvalue.avg_respondentanswer_before) / (SUM(engagementvalue.count_respondent * 1) * 15)`,
-          'aggregation_before',
-        )
-        .addSelect(
-          `(SUM(engagementvalue.count_respondent * 1) * 15)`,
-          'count_respondent',
-        )
-        .leftJoin('engagementvalue.factor', 'factor')
-        .where('engagementvalue.d_companyid = :d_companyid', {
-          d_companyid,
-        })
-        .andWhere('engagementvalue.demography = :demography', {
-          demography,
-        })
-        .groupBy('engagementvalue.d_factorid, factor.factor_shortname')
-        .orderBy('engagementvalue.d_factorid', 'ASC')
-        .getRawMany();
-
+      const getAggregationAfterAndBefore =
+        await this.getAggregationBeforeAndAfter(
+          { d_companyid, demography },
+          this.engagementValue,
+        );
       if (drivers.length) {
         const getListAverageRespondentByDemography = await this.engagementValue
           .createQueryBuilder('a')
@@ -226,6 +205,44 @@ export class PredEngagamentValueService {
       }
 
       return getAggregationAfterAndBefore;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAggregationBeforeAndAfter(
+    { d_companyid, demography }: Partial<GetAgregrationPerFactorDTO>,
+    repo: Repository<PredEngagementValue>,
+  ) {
+    try {
+      const data = await repo
+        .createQueryBuilder('engagementvalue')
+        .select('engagementvalue.d_factorid as d_factorid')
+        .addSelect('factor.factor_shortname as factor_shortname')
+        .addSelect(
+          `SUM(engagementvalue.count_respondent * 15 * engagementvalue.avg_respondentanswer_after) / (SUM(engagementvalue.count_respondent * 1) * 15)`,
+          'aggregation_after',
+        )
+        .addSelect(
+          `SUM(engagementvalue.count_respondent * 15 * engagementvalue.avg_respondentanswer_before) / (SUM(engagementvalue.count_respondent * 1) * 15)`,
+          'aggregation_before',
+        )
+        .addSelect(
+          `(SUM(engagementvalue.count_respondent * 1) * 15)`,
+          'count_respondent',
+        )
+        .leftJoin('engagementvalue.factor', 'factor')
+        .where('engagementvalue.d_companyid = :d_companyid', {
+          d_companyid,
+        })
+        .andWhere('engagementvalue.demography = :demography', {
+          demography,
+        })
+        .groupBy('engagementvalue.d_factorid, factor.factor_shortname')
+        .orderBy('engagementvalue.d_factorid', 'ASC')
+        .getRawMany();
+
+      return data;
     } catch (error) {
       throw error;
     }
