@@ -13,7 +13,7 @@ import { MasterEESCompany } from '../master-company/master-company.entity';
 import { EESFactor } from '../factor/factor.entity';
 import { MasterEngagement } from '../master-engagement/master-engagement.entity';
 
-@Entity('tbl_relative_importance')
+@Entity('tbl_pred_relativeimportance')
 @UseDto(PredRelativeImportanceDto)
 export class PredRelativeImportance extends AbstractEntity<PredRelativeImportanceDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
@@ -62,7 +62,7 @@ export class PredRelativeImportance extends AbstractEntity<PredRelativeImportanc
   engagement: MasterEngagement;
 
   @Column({ type: 'int', name: 'tahunsurvey', nullable: true })
-  tahunsurvey: string;
+  tahunsurvey: number;
 
   @Column({
     type: 'float',
