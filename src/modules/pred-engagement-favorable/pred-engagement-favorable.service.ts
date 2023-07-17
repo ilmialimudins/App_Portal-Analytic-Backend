@@ -1,26 +1,102 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePredEngagementFavorableDto } from './dto/create-pred-engagement-favorable.dto';
-import { UpdatePredEngagementFavorableDto } from './dto/update-pred-engagement-favorable.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PredEngagementFavorable } from './pred-engagement-favorable.entity';
+import {
+  GetAverageFavorableAllFactorQueryDTO,
+  GetAverageFavorableAllFactorResultDTO,
+} from './dto/get-engagement-favorable-factor.dto';
+import { Repository } from 'typeorm';
+import {
+  FavorableDataDTO,
+  GetFavorableFactorDetailDTO,
+  GetFavorableFactorDetailQueryDTO,
+} from './dto/get-engagement-favorable-factor-detail.dto';
 
 @Injectable()
 export class PredEngagementFavorableService {
-  create(createPredEngagementFavorableDto: CreatePredEngagementFavorableDto) {
-    return 'This action adds a new predEngagementFavorable';
+  constructor(
+    @InjectRepository(PredEngagementFavorable)
+    private engagementFavorableRepo: Repository<PredEngagementFavorable>,
+  ) {}
+
+  public async getAverageFavorableAllFactor({
+    d_companyid,
+  }: GetAverageFavorableAllFactorQueryDTO): Promise<
+    GetAverageFavorableAllFactorResultDTO[]
+  > {
+    try {
+      const result = await this.engagementFavorableRepo
+        .createQueryBuilder('favorable')
+        .select('DISTINCT favorable.d_factorid as d_factorid')
+        .addSelect('favorable.avg_per_factor as average_per_factor')
+        .addSelect('factor.factorname as factor_name')
+        .leftJoin('favorable.factor', 'factor')
+        .where('favorable.d_companyid = :d_companyid', {
+          d_companyid: d_companyid,
+        })
+        .getRawMany();
+
+      return result as GetAverageFavorableAllFactorResultDTO[];
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all predEngagementFavorable`;
-  }
+  public async getFavorableDetail({
+    d_companyid,
+    d_factorid,
+  }: GetFavorableFactorDetailQueryDTO): Promise<GetFavorableFactorDetailDTO> {
+    try {
+      const result = await this.engagementFavorableRepo.find({
+        where: {
+          d_companyid: parseInt(d_companyid),
+          d_factorid: parseInt(d_factorid),
+          iscurrentsurvey: 'Current',
+        },
+        relations: {
+          qcode: true,
+          factor: true,
+        },
+        order: {
+          favorable_type: 'ASC',
+        },
+      });
 
-  findOne(id: number) {
-    return `This action returns a #${id} predEngagementFavorable`;
-  }
+      const favorableData = result.reduce<FavorableDataDTO[]>((acc, val) => {
+        const indexFavorableType = acc.findIndex(
+          (x) => x.favorable_type === val.favorable_type,
+        );
 
-  update(id: number, updatePredEngagementFavorableDto: UpdatePredEngagementFavorableDto) {
-    return `This action updates a #${id} predEngagementFavorable`;
-  }
+        if (indexFavorableType === -1) {
+          acc.push({
+            favorable_type: val.favorable_type,
+            qcodedata: [
+              {
+                average_per_qcode: val.avg_per_qcode,
+                count_respondent: val.count_respondent,
+                percentage_all_favorabletype: val.percentage_all_favorabletype,
+                question: val.qcode.question,
+              },
+            ],
+          });
+        } else {
+          acc[indexFavorableType].qcodedata.push({
+            average_per_qcode: val.avg_per_qcode,
+            count_respondent: val.count_respondent,
+            percentage_all_favorabletype: val.percentage_all_favorabletype,
+            question: val.qcode.question,
+          });
+        }
+        return acc;
+      }, []);
 
-  remove(id: number) {
-    return `This action removes a #${id} predEngagementFavorable`;
+      return {
+        factor_name: result[0].factor.factorname,
+        average_per_factor: result[0].avg_per_factor,
+        favorabledata: favorableData,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

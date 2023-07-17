@@ -16,7 +16,7 @@ import { MasterQcode } from '../master-qcode/master-qcode.entity';
 @Entity('tbl_pred_engagementfavorable')
 @UseDto(PredEngagementFavorableDTO)
 export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavorableDTO> {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'd_surveygizmoid' })
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
   @Column({ nullable: true })
@@ -40,8 +40,8 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   })
   company: MasterEESCompany;
 
-  @Column({ type: 'tinyint', name: 'iscurrentsurvey', nullable: true })
-  iscurrentsurvey: number;
+  @Column({ type: 'varchar', name: 'iscurrentsurvey', nullable: true })
+  iscurrentsurvey: string;
 
   @Column({ type: 'int', name: 'tahunsurvey', nullable: true })
   tahunsurvey: number;

@@ -1,16 +1,15 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PredEngagementFavorableService } from './pred-engagement-favorable.service';
-import { CreatePredEngagementFavorableDto } from './dto/create-pred-engagement-favorable.dto';
-import { UpdatePredEngagementFavorableDto } from './dto/update-pred-engagement-favorable.dto';
-import { ApiTags } from '@nestjs/swagger';
+
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  GetAverageFavorableAllFactorQueryDTO,
+  GetAverageFavorableAllFactorResultDTO,
+} from './dto/get-engagement-favorable-factor.dto';
+import {
+  GetFavorableFactorDetailDTO,
+  GetFavorableFactorDetailQueryDTO,
+} from './dto/get-engagement-favorable-factor-detail.dto';
 
 @ApiTags('Engagement Favorable')
 @Controller('pred-engagement-favorable')
@@ -19,38 +18,25 @@ export class PredEngagementFavorableController {
     private readonly predEngagementFavorableService: PredEngagementFavorableService,
   ) {}
 
-  @Post()
-  create(
-    @Body() createPredEngagementFavorableDto: CreatePredEngagementFavorableDto,
-  ) {
-    return this.predEngagementFavorableService.create(
-      createPredEngagementFavorableDto,
+  @Get('/favorable-all-factor')
+  @ApiOkResponse({ type: [GetAverageFavorableAllFactorResultDTO] })
+  async getAllAverageFactor(
+    @Query() { d_companyid }: GetAverageFavorableAllFactorQueryDTO,
+  ): Promise<GetAverageFavorableAllFactorResultDTO[]> {
+    return await this.predEngagementFavorableService.getAverageFavorableAllFactor(
+      {
+        d_companyid,
+      },
     );
   }
 
-  @Get()
-  findAll() {
-    return this.predEngagementFavorableService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.predEngagementFavorableService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updatePredEngagementFavorableDto: UpdatePredEngagementFavorableDto,
-  ) {
-    return this.predEngagementFavorableService.update(
-      +id,
-      updatePredEngagementFavorableDto,
-    );
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.predEngagementFavorableService.remove(+id);
+  @Get('/favorable-detail')
+  async getFavorableDetail(
+    @Query() { d_companyid, d_factorid }: GetFavorableFactorDetailQueryDTO,
+  ): Promise<GetFavorableFactorDetailDTO> {
+    return await this.predEngagementFavorableService.getFavorableDetail({
+      d_companyid,
+      d_factorid,
+    });
   }
 }
