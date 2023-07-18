@@ -1,15 +1,25 @@
-import { Controller, Get, Post, Query, Body } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { PredEngagementValueDto } from './dto/pred-engagement-value.dto';
 import { PredEngagamentValueService } from './pred-engagement-value.service';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { GetByIdDto } from 'src/common/dto/get-by-id';
-import { AddPredEngagamentValueDto } from './dto/add-pred-engagement-value.dto';
-import { GetByDemography } from './dto/get-by-demography';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Average Driver')
-@Controller('average-driver')
+import {
+  GetDemographyByCompanyDTO,
+  GetDemographyValueByCompanyDTO,
+  ListDemographyDTO,
+  ListDemographyValueDTO,
+} from './dto/get-demography.dto';
+import {
+  DriversDTO,
+  GetAgregrationPerFactorDTO,
+} from './dto/get-aggregation-factor.dto';
+import { GetAverageDriverDTO } from './dto/get-average-driver.dto';
+import { AggregationPerFactorDTO } from './dto/aggregation-factor.dto';
+
+@ApiTags('Engagement Value')
+@Controller('engagement-value')
 export class PredEngagementValueController {
   constructor(private predEngagementValueService: PredEngagamentValueService) {}
   @Get('/')
@@ -22,33 +32,38 @@ export class PredEngagementValueController {
     );
   }
 
-  @Get('/getOne')
-  @ApiCreatedResponse({ type: PredEngagementValueDto })
-  async getPredEngagementValueById(
-    @Query() id: GetByIdDto,
-  ): Promise<PredEngagementValueDto | undefined> {
-    return this.predEngagementValueService.getPredEngagementValueById(id);
+  @Get('/demography')
+  @ApiOkResponse({ type: ListDemographyDTO })
+  async getAllDemographyByCompany(@Query() query: GetDemographyByCompanyDTO) {
+    return await this.predEngagementValueService.getDemographyByCompany(query);
   }
 
-  @Get('/getByDemography')
-  @ApiCreatedResponse({ type: PredEngagementValueDto })
-  async getPredEngagementValueByDemography(
-    @Query() pageOptions: PageOptionsDTO,
-    @Query() demography: GetByDemography,
-  ): Promise<PageDto<PredEngagementValueDto>> {
-    return this.predEngagementValueService.getPredEngagementValueByDemography(
-      pageOptions,
-      demography,
+  @Get('/demographyvalue')
+  @ApiOkResponse({ type: ListDemographyValueDTO })
+  async getDemographyValue(@Query() query: GetDemographyValueByCompanyDTO) {
+    return await this.predEngagementValueService.getDemographyValueByDemography(
+      query,
     );
   }
 
-  @Post('/createOne')
-  @ApiCreatedResponse({ type: PredEngagementValueDto })
-  async createPredEngagementValue(
-    @Body() predEngagementValue: AddPredEngagamentValueDto,
-  ) {
-    return this.predEngagementValueService.addPredEngagementValue(
-      predEngagementValue,
+  @Get('/average-driver')
+  async getAverageDriver(@Query() query: GetAverageDriverDTO) {
+    console.log(query);
+    const data = await this.predEngagementValueService.getAverageDriver(query);
+
+    console.log(data);
+    return data;
+  }
+
+  @Post('/get-aggregation')
+  @ApiOkResponse({ type: [AggregationPerFactorDTO] })
+  async getAggregation(
+    @Query() query: GetAgregrationPerFactorDTO,
+    @Body() body: DriversDTO,
+  ): Promise<AggregationPerFactorDTO[]> {
+    return await this.predEngagementValueService.calculateAverageDriver(
+      query,
+      body.drivers,
     );
   }
 }

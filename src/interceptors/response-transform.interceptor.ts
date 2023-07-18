@@ -11,7 +11,7 @@ export interface Response<T> {
   acknowledge: number;
   message: string;
   errorCode: number;
-  data: T;
+  result: T;
 }
 
 @Injectable()
@@ -28,7 +28,7 @@ export class ResponseTransformInterceptor<T>
           acknowledge: 0,
           message: data.message || '',
           errorCode: context.switchToHttp().getResponse().statusCode,
-          data: data.result || data,
+          result: data.result || data,
         };
       }),
     );

@@ -1,14 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AbstractDto } from './dto/abstract.dto';
 import { Constructor } from 'src/types';
 
 export interface IAbstractEntity<DTO extends AbstractDto, O = never> {
-  id: number;
   createdtime: Date;
   createddate: number;
   sourcecreatedmodifiedtime: Date;
@@ -21,9 +15,6 @@ export abstract class AbstractEntity<
   O = never,
 > implements IAbstractEntity<DTO, O>
 {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ type: 'varchar', name: 'createdby', nullable: true })
   createdby: string;
 

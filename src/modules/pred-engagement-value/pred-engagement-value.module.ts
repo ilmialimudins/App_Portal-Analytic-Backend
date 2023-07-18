@@ -8,5 +8,6 @@ import { PredEngagementValue } from './pred-engagement-value.entity';
   imports: [TypeOrmModule.forFeature([PredEngagementValue])],
   providers: [PredEngagamentValueService],
   controllers: [PredEngagementValueController],
+  exports: [PredEngagamentValueService],
 })
 export class PredEngagamentValueModule {}

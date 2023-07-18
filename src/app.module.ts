@@ -7,9 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LeadsModule } from './modules/leads/leads.module';
-import { UsersModule } from './modules/users/users.module';
-import { UsersController } from './modules/users/users.controller';
 import { SharedModule } from './shared/shared.module';
 
 import { ApiConfigService } from './shared/services/api-config.services';
@@ -18,13 +15,17 @@ import { SentryModule } from './sentry/sentry.module';
 import { MasterCompanyModule } from './modules/master-company/master-company.module';
 import { FactorModule } from './modules/factor/factor.module';
 import { PredEngagamentValueModule } from './modules/pred-engagement-value/pred-engagement-value.module';
+import { MasterQcodeModule } from './modules/master-qcode/master-qcode.module';
+import { MasterSurveygizmoModule } from './modules/master-surveygizmo/master-surveygizmo.module';
+import { PredEngagementFavorableModule } from './modules/pred-engagement-favorable/pred-engagement-favorable.module';
+import { PredPredictionEngagementModule } from './modules/pred-prediction-engagement/pred-prediction-engagement.module';
+import { PredRelativeImportanceModule } from './modules/pred-relative-importance/pred-relative-importance.module';
+import { MasterEngagementModule } from './modules/master-engagement/master-engagement.module';
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
 
 const ApiModules = [
-  LeadsModule,
-  UsersModule,
   SharedModule,
   MasterCompanyModule,
   FactorModule,
@@ -49,8 +50,14 @@ const ApiModules = [
       tracesSampleRate: 1.0,
       debug: true,
     }),
+    MasterQcodeModule,
+    MasterSurveygizmoModule,
+    PredEngagementFavorableModule,
+    PredPredictionEngagementModule,
+    PredRelativeImportanceModule,
+    MasterEngagementModule,
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController],
   providers: [
     AppService,
     {

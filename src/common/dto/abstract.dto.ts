@@ -2,9 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AbstractEntity } from '../abstract.entity';
 
 export class AbstractDto {
-  @ApiProperty()
-  id: number;
-
   @ApiPropertyOptional()
   createdby?: string;
 
@@ -24,7 +21,6 @@ export class AbstractDto {
 
   constructor(entity: AbstractEntity, options?: { exludeFields?: boolean }) {
     if (!options?.exludeFields) {
-      this.id = entity.id;
       this.createdtime = entity.createdtime;
       this.createddate = entity.createddate;
       this.sourcecreatedmodifiedtime = entity.sourcecreatedmodifiedtime;

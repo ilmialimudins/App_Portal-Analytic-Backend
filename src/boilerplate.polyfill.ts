@@ -133,6 +133,11 @@ SelectQueryBuilder.prototype.paginate = async function (
     ),
   );
 
+  const regexString = `${alias.name}_(.*)`;
+  const regexp = new RegExp(regexString);
+
+  const entityID = regexp.exec(keys[0]);
+
   for (const rawValue of raw) {
     const id = keys
       .map((key) => {
@@ -151,7 +156,10 @@ SelectQueryBuilder.prototype.paginate = async function (
       .join('_');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const entity = entities.find((item) => item.id == id) as AbstractEntity;
+    const entity = entities.find(
+      // this is hack primary id only one and name of id can be dynamic
+      (item) => item[entityID !== null ? entityID[1] : 'id'] == id,
+    ) as AbstractEntity;
 
     const metaInfo: Record<string, string> =
       Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entity) ?? {};

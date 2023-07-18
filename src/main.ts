@@ -15,7 +15,6 @@ import { setupSwagger } from './setup-swagger';
 async function bootstrap() {
   const logsDirectory = join(__dirname, `/../${process.env.LOGDIR || 'logs'}`);
 
-  console.log(logsDirectory);
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
       transports: [
