@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json yarn.lock ./
 
-RUN yarn install --frozen-lockfile
+RUN yarn --frozen-lockfile
 
 COPY . .
 
@@ -23,8 +23,9 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json yarn.lock ./
 
-RUN yarn install --production --frozen-lockfile
+RUN yarn --production --frozen-lockfile --ignore-script
 
 COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/.env ./
 
 CMD [ "node", "dist/main.js" ]
