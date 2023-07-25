@@ -1,4 +1,5 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import * as excel from 'exceljs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PredPredictionEngagement } from './pred-prediction-engagement.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +12,10 @@ import {
 import { SavePredictionEngagementTransaction } from './save-prediction-engagement.transaction';
 import { SavePredictionEngagementDTO } from './dto/save-prediction-engagement.dto';
 import { PredictionListDTO } from './dto/prediction-list.dto';
+import { DownloadPredictionBodyDTO } from './dto/download-prediction..dto';
+import { PredEngagamentValueService } from '../pred-engagement-value/pred-engagement-value.service';
+import { GetAverageDriverDTO } from '../pred-engagement-value/dto/get-average-driver.dto';
+import { addTable } from 'src/common/utils/addExcelTable';
 
 @Injectable()
 export class PredPredictionEngagementService {
@@ -20,6 +25,8 @@ export class PredPredictionEngagementService {
 
     @Inject(forwardRef(() => SavePredictionEngagementTransaction))
     private savePredictionTransaction: SavePredictionEngagementTransaction,
+
+    private readonly predEngagementValueService: PredEngagamentValueService,
   ) {}
 
   public async previewPrediction(
@@ -124,5 +131,119 @@ export class PredPredictionEngagementService {
     });
 
     return { prediction_after, prediction_before };
+  }
+
+  async generateExcelPrediction(
+    body: DownloadPredictionBodyDTO,
+  ): Promise<excel.Workbook> {
+    try {
+      if (body.isAll) {
+        const demographyValue =
+          await this.predEngagementValueService.getDemographyValueByDemography({
+            d_companyid: body.d_companyid,
+            demography: body.demography,
+          });
+        body.demoraphyvalue = demographyValue.map(
+          (item) => item.demographyvalue,
+        );
+      }
+
+      const dataToGenerate = await Promise.all(
+        body.demoraphyvalue.map(async (item) => {
+          const data = await this.getDriverAndPrediction({
+            d_companyid: body.d_companyid,
+            demography: body.demography,
+            demographyvalue: item,
+          });
+
+          return data;
+        }),
+      );
+
+      const workbook: excel.Workbook = new excel.Workbook();
+
+      // // Generate Excel Sheet
+      dataToGenerate.map((data) => {
+        const sheet: excel.Worksheet = workbook.addWorksheet(
+          data.demographyvalue,
+        );
+
+        addTable(
+          {
+            columnStart: 'A',
+            rowHeaderNum: 1,
+            rowDataNum: 2,
+            headerTitle: [
+              'Factor Name',
+              'Factor Shortname',
+              'Average Driver Before',
+              'Average Driver After',
+            ],
+            tableData: data.driver.map((item) => ({
+              factorname: item.factor.factorname,
+              factor_shortname: item.factor.factor_shortname,
+              avg_driver_before: item.avg_respondentanswer_before,
+              avg_driver_after: item.avg_respondentanswer_after,
+            })),
+          },
+          sheet,
+        );
+
+        const engagementKeys = Object.keys(data.prediction.prediction_after);
+
+        addTable(
+          {
+            columnStart: 'F',
+            rowHeaderNum: 1,
+            rowDataNum: 2,
+            headerTitle: [
+              'Engagement',
+              'Prediction Before',
+              'Prediction After',
+            ],
+            tableData: engagementKeys.map((engagement) => ({
+              engagement: engagement,
+              prediction_before: data.prediction.prediction_before[engagement],
+              prediction_after: data.prediction.prediction_after[engagement],
+            })),
+          },
+          sheet,
+        );
+      });
+
+      return workbook;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDriverAndPrediction(data: GetAverageDriverDTO) {
+    try {
+      const driver = await this.predEngagementValueService.getAverageDriver(
+        data,
+      );
+
+      const params = {
+        d_companyid: data.d_companyid,
+        demography: data.demography,
+        demographyvalue: data.demographyvalue,
+      };
+
+      const aggregation =
+        await this.predEngagementValueService.calculateAverageDriver(
+          params,
+          [],
+        );
+
+      const prediction = await this.previewPrediction(params, aggregation);
+
+      return {
+        driver: driver,
+        prediction: prediction,
+        demographyvalue: data.demographyvalue,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

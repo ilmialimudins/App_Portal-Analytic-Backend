@@ -103,7 +103,7 @@ export class PredEngagamentValueService {
           factor: true,
         },
         where: {
-          d_companyid: parseInt(d_companyid),
+          d_companyid: d_companyid,
           demography: demography,
           demographyvalue: demographyvalue,
         },
@@ -147,7 +147,6 @@ export class PredEngagamentValueService {
         const sumByFactorId = {};
 
         // change driver in list of data
-
         drivers.forEach((driver) => {
           const indexList = getListAverageRespondentByDemography.findIndex(
             (item) =>
