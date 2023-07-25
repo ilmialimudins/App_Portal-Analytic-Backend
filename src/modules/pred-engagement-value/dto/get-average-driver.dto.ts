@@ -1,14 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsString } from 'class-validator';
 
 export class GetAverageDriverDTO {
   @ApiProperty()
-  @IsString()
-  demography: string;
+  @IsInt()
+  @Type(() => Number)
+  d_companyid: number;
 
   @ApiProperty()
   @IsString()
-  d_companyid: string;
+  demography: string;
 
   @ApiProperty()
   @IsString()

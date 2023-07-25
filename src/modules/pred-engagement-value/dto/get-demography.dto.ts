@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsString } from 'class-validator';
 
 export class GetDemographyByCompanyDTO {
   @ApiProperty()
-  @IsString()
-  readonly d_companyid: string;
+  @IsInt()
+  @Type(() => Number)
+  readonly d_companyid: number;
 }
 
 export class ListDemographyDTO {
@@ -14,8 +16,9 @@ export class ListDemographyDTO {
 
 export class GetDemographyValueByCompanyDTO {
   @ApiProperty()
-  @IsString()
-  readonly d_companyid: string;
+  @IsInt()
+  @Type(() => Number)
+  readonly d_companyid: number;
 
   @ApiProperty()
   @IsString()
