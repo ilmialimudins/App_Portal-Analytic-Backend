@@ -158,7 +158,7 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
       }),
       new TableForeignKey({
         columnNames: ['locationid'],
-        referencedTableName: 'ms_datalocation',
+        referencedTableName: 'ms_location',
         referencedColumnNames: ['locationid'],
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
