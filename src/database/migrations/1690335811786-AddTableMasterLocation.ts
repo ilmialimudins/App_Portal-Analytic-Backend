@@ -6,42 +6,27 @@ export class AddTableMasterDataLocation1690335811786
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_datalocation',
+        name: 'ms_location',
         columns: [
           {
-            name: 'd_datalocationid',
+            name: 'locationid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
           },
           {
-            name: 'h_datalocationhaskey',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'datalocationcode',
+            name: 'locationcode',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'datalocationdesc',
+            name: 'locationdesc',
             type: 'varchar',
             isNullable: false,
           },
           {
             name: 'desc',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loaddendate',
             type: 'varchar',
             isNullable: true,
           },

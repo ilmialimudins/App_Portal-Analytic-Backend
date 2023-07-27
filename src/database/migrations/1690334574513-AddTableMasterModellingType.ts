@@ -9,16 +9,11 @@ export class AddTableMasterModellingType1690334574513
         name: 'ms_modellingtype',
         columns: [
           {
-            name: 'd_modellingtypeid',
+            name: 'modellingtypeid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_modellingtypehashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'modellingtypecode',
@@ -32,16 +27,6 @@ export class AddTableMasterModellingType1690334574513
           },
           {
             name: 'desc',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loaddendate',
             type: 'varchar',
             isNullable: true,
           },

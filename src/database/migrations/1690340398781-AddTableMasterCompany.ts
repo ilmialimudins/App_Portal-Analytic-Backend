@@ -12,23 +12,18 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
         name: 'ms_company',
         columns: [
           {
-            name: 'd_id',
+            name: 'id',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
           },
           {
-            name: 'd_companyid',
+            name: 'companyid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_companyhashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'businesslineid',
@@ -104,16 +99,6 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
             name: 'isdelete',
             type: 'varchar',
             isNullable: false,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loaddendate',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'createdby',

@@ -7,16 +7,11 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
         name: 'ms_cla',
         columns: [
           {
-            name: 'd_claid',
+            name: 'claid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_clahashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'clacode',
@@ -30,16 +25,6 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
           },
           {
             name: 'desc',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loaddendate',
             type: 'varchar',
             isNullable: true,
           },

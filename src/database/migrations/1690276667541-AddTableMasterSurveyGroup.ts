@@ -9,17 +9,12 @@ export class AddTableMasterSurveyGroup1690276667541
         name: 'ms_surveygroup',
         columns: [
           {
-            name: 'd_surveygroupid',
+            name: 'surveygroupid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             isGenerated: true,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_surveygrouphashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'surveygroupcode',
@@ -34,16 +29,6 @@ export class AddTableMasterSurveyGroup1690276667541
           {
             name: 'desc',
             type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loadenddate',
-            type: 'datetime',
             isNullable: true,
           },
           {

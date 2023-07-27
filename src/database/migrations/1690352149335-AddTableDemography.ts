@@ -7,16 +7,11 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
         name: 'ms_demography',
         columns: [
           {
-            name: 'd_demographyid',
+            name: 'demographyid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_demographyhashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'demographycode',
@@ -41,6 +36,36 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
           {
             name: 'desc',
             type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'createdby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'updatedby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'createdtime',
+            type: 'datetime2',
+            isNullable: true,
+          },
+          {
+            name: 'createddate',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'sourcecreatedmodifiedtime',
+            type: 'datetime2',
+            isNullable: true,
+          },
+          {
+            name: 'sync_date',
+            type: 'datetime',
             isNullable: true,
           },
         ],

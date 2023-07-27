@@ -9,17 +9,12 @@ export class AddTableMasterBusinessLine1690271264412
         name: 'ms_businessline',
         columns: [
           {
-            name: 'd_businesslineid',
+            name: 'businesslineid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             isGenerated: true,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_businesslinehashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'businesslinecode',
@@ -34,16 +29,6 @@ export class AddTableMasterBusinessLine1690271264412
           {
             name: 'desc',
             type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loadenddate',
-            type: 'datetime',
             isNullable: true,
           },
           {

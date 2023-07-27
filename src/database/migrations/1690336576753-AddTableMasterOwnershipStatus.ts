@@ -9,16 +9,11 @@ export class AddTableMasterOwnershipStatus1690336576753
         name: 'ms_ownershipstatus',
         columns: [
           {
-            name: 'd_ownershipstatusid',
+            name: 'ownershipstatusid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_ownershipstatushashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'ownershipstatuscode',
@@ -32,16 +27,6 @@ export class AddTableMasterOwnershipStatus1690336576753
           },
           {
             name: 'desc',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loaddendate',
             type: 'varchar',
             isNullable: true,
           },

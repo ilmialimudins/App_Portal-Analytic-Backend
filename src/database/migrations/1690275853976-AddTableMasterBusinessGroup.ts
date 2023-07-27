@@ -9,17 +9,12 @@ export class AddTableMasterBusinessGroup1690275853976
         name: 'ms_businessgroup',
         columns: [
           {
-            name: 'd_businessgroupid',
+            name: 'businessgroupid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             isGenerated: true,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_businessgrouphashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'businessgroupcode',
@@ -34,16 +29,6 @@ export class AddTableMasterBusinessGroup1690275853976
           {
             name: 'desc',
             type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loadenddate',
-            type: 'datetime',
             isNullable: true,
           },
           {

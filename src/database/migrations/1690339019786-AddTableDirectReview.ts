@@ -7,16 +7,11 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
         name: 'ms_directreview',
         columns: [
           {
-            name: 'd_directreviewid',
+            name: 'directreviewid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
             generationStrategy: 'increment',
-          },
-          {
-            name: 'h_directreviewhashkey',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'directreviewcode',
@@ -30,16 +25,6 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
           },
           {
             name: 'desc',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'recordsource',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'loaddendate',
             type: 'varchar',
             isNullable: true,
           },
