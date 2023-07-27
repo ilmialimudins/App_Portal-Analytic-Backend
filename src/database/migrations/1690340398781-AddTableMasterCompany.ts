@@ -21,34 +21,42 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
           {
             name: 'businesslineid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'businessgroupid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'surveygroupid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'locationid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'ownershipstatusid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'claid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'directreviewid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'modellingtypeid',
             type: 'bigint',
+            isNullable: false,
           },
           {
             name: 'companycode',
