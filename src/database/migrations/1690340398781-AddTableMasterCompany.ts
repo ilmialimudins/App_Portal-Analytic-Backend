@@ -12,13 +12,6 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
         name: 'ms_company',
         columns: [
           {
-            name: 'id',
-            type: 'bigint',
-            isPrimary: true,
-            isNullable: false,
-            generationStrategy: 'increment',
-          },
-          {
             name: 'companyid',
             type: 'bigint',
             isPrimary: true,
@@ -28,42 +21,34 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
           {
             name: 'businesslineid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'businessgroupid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'surveygroupid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'locationid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'ownershipstatusid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'claid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'directreviewid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'modellingtypeid',
             type: 'bigint',
-            isPrimary: true,
           },
           {
             name: 'companycode',
@@ -71,12 +56,12 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'companyeesdesc',
+            name: 'companyeesname',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'companympsdesc',
+            name: 'companympsname',
             type: 'varchar',
             isNullable: false,
           },
