@@ -55,6 +55,10 @@ Routes is following REST standard (Richardson level 3)
     documentBuilder.setVersion(process.env.API_VERSION);
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    documentBuilder.addServer('/hcanalyticbedev');
+  }
+
   const document = SwaggerModule.createDocument(app, documentBuilder.build());
   SwaggerModule.setup('documentation', app, document, {
     swaggerOptions: {
