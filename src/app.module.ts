@@ -24,10 +24,12 @@ import { MasterEngagementModule } from './modules/master-engagement/master-engag
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
+import { MasterCompanyEESModule } from './modules/master-company-ees/master-company-ees.module';
 
 const ApiModules = [
   SharedModule,
   MasterCompanyModule,
+  MasterCompanyEESModule,
   FactorModule,
   PredEngagamentValueModule,
 ];

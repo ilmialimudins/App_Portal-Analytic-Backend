@@ -63,7 +63,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   location: Location;
 
   @Column({ nullable: false })
-  ownershipstatuspid: number;
+  ownershipstatusid: number;
   @ManyToOne(
     () => OwnershipStatus,
     (ownershipstatus) => ownershipstatus.ownershipstatusid,
@@ -107,11 +107,11 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   @Column({ type: 'bigint', name: 'companycode', nullable: false })
   companycode: number;
 
-  @Column({ type: 'varchar', name: 'companynameees', nullable: false })
-  companynameees: string;
+  @Column({ type: 'varchar', name: 'companyeesname', nullable: false })
+  companyeesname: string;
 
-  @Column({ type: 'varchar', name: 'companynamemps', nullable: false })
-  companynamemps: string;
+  @Column({ type: 'varchar', name: 'companympsname', nullable: false })
+  companympsname: string;
 
   @Column({ type: 'varchar', name: 'aliascompany1', nullable: false })
   aliascompany1: string;
