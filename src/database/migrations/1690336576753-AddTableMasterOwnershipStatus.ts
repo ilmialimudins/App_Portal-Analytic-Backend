@@ -13,6 +13,7 @@ export class AddTableMasterOwnershipStatus1690336576753
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

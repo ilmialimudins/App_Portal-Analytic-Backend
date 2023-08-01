@@ -11,6 +11,7 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
