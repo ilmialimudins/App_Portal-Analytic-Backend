@@ -23,7 +23,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'companyid' })
   companyid: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   businesslineid: number;
   @ManyToOne(() => BusinessLine, (businessline) => businessline.businesslineid)
   @JoinColumn({
@@ -32,7 +32,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   businessline: BusinessLine;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   businessgroupid: number;
   @ManyToOne(
     () => BusinessGroup,
@@ -44,7 +44,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   businessgroup: BusinessGroup;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   surveygroupid: number;
   @ManyToOne(() => SurveyGroup, (surveygroup) => surveygroup.surveygroupid)
   @JoinColumn({
@@ -53,7 +53,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   surveygroup: SurveyGroup;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   locationid: number;
   @ManyToOne(() => Location, (location) => location.locationid)
   @JoinColumn({
@@ -62,8 +62,8 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   location: Location;
 
-  @Column({ nullable: false })
-  ownershipstatuspid: number;
+  @Column({ nullable: true })
+  ownershipstatusid: number;
   @ManyToOne(
     () => OwnershipStatus,
     (ownershipstatus) => ownershipstatus.ownershipstatusid,
@@ -74,7 +74,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   ownershipstatus: OwnershipStatus;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   claid: number;
   @ManyToOne(() => Cla, (cla) => cla.claid)
   @JoinColumn({
@@ -83,7 +83,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   cla: Cla;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   directreviewid: number;
   @ManyToOne(() => DirectReview, (directreview) => directreview.directreviewid)
   @JoinColumn({
@@ -92,7 +92,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   })
   directreview: DirectReview;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   modellingtypeid: number;
   @ManyToOne(
     () => ModellingType,
@@ -107,11 +107,11 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   @Column({ type: 'bigint', name: 'companycode', nullable: false })
   companycode: number;
 
-  @Column({ type: 'varchar', name: 'companynameees', nullable: false })
-  companynameees: string;
+  @Column({ type: 'varchar', name: 'companyeesname', nullable: false })
+  companyeesname: string;
 
-  @Column({ type: 'varchar', name: 'companynamemps', nullable: false })
-  companynamemps: string;
+  @Column({ type: 'varchar', name: 'companympsname', nullable: false })
+  companympsname: string;
 
   @Column({ type: 'varchar', name: 'aliascompany1', nullable: false })
   aliascompany1: string;

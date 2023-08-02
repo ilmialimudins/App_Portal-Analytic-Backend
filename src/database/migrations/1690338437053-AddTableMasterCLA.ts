@@ -11,6 +11,7 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

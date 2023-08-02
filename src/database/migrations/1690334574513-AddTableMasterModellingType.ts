@@ -13,6 +13,7 @@ export class AddTableMasterModellingType1690334574513
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

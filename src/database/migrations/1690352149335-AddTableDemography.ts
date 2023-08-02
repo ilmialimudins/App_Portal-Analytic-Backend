@@ -11,6 +11,7 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
