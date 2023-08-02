@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PredEngagementFavorable } from './pred-engagement-favorable.entity';
 import {
@@ -47,6 +47,7 @@ export class PredEngagementFavorableService {
     d_factorid,
   }: GetFavorableFactorDetailQueryDTO): Promise<GetFavorableFactorDetailDTO> {
     try {
+      console.log('here');
       const result = await this.engagementFavorableRepo.find({
         where: {
           d_companyid: parseInt(d_companyid),
@@ -90,6 +91,9 @@ export class PredEngagementFavorableService {
         return acc;
       }, []);
 
+      if (!result.length) {
+        throw new NotFoundException('No Data For That Company');
+      }
       return {
         factor_name: result[0].factor.factorname,
         average_per_factor: result[0].avg_per_factor,
