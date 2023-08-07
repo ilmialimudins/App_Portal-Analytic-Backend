@@ -58,6 +58,7 @@ export class DemographyService {
           demographyalias: demography.demographyalias,
           urutanfilter: demography.urutanfilter,
           desc: 'false',
+          createdtime: new Date(),
         })
         .execute();
 

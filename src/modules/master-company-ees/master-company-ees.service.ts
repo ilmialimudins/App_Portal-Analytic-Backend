@@ -83,6 +83,7 @@ export class MasterCompanyEESService {
           businesslineid: company.businesslineid,
           modellingtypeid: company.modellingtypeid,
           isdelete: 'false',
+          createdtime: new Date(),
         })
         .execute();
 
