@@ -1,12 +1,20 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { MasterCompanyDto } from './dto/master-company.dto';
 import { MasterCompanyService } from './master-company.service';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetByIdDto } from 'src/common/dto/get-by-id';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
 @ApiTags('Master Company')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('master-company')
 export class MasterCompanyController {
   constructor(private masterCompanyService: MasterCompanyService) {}

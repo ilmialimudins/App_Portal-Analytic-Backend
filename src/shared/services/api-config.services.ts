@@ -80,6 +80,10 @@ export class ApiConfigService {
     return this.get('NODE_ENV');
   }
 
+  get duendeAuthority(): string {
+    return this.get('DUENDE_AUTHORITY');
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

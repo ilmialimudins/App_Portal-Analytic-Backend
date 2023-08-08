@@ -50,6 +50,15 @@ async function bootstrap() {
     }),
   });
 
+  app.enableCors({
+    origin: [
+      'https://devproxy.astra.co.id',
+      'http://hcanalyticsdev.astra.co.id:3000',
+      'http://localhost:3000',
+    ],
+    methods: ['POST', 'PUT', 'DELETE', 'GET', 'PATCH'],
+  });
+
   app.use(helmet());
 
   app.useGlobalPipes(

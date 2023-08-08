@@ -21,6 +21,7 @@ import { PredEngagementFavorableModule } from './modules/pred-engagement-favorab
 import { PredPredictionEngagementModule } from './modules/pred-prediction-engagement/pred-prediction-engagement.module';
 import { PredRelativeImportanceModule } from './modules/pred-relative-importance/pred-relative-importance.module';
 import { MasterEngagementModule } from './modules/master-engagement/master-engagement.module';
+import { DuendeAuthenticationModule } from './modules/duende-authentication/duende-authentication.module';
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
@@ -30,6 +31,7 @@ const ApiModules = [
   MasterCompanyModule,
   FactorModule,
   PredEngagamentValueModule,
+  DuendeAuthenticationModule,
 ];
 
 @Module({
@@ -39,7 +41,6 @@ const ApiModules = [
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [SharedModule],
       useFactory: (configService: ApiConfigService) => {
         return configService.mssqlConfig;
       },
