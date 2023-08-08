@@ -58,6 +58,7 @@ export class BusinessLineService {
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
           desc: 'false',
+          createdtime: new Date(),
         })
         .execute();
 
