@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { PredEngagementValueDto } from './dto/pred-engagement-value.dto';
 import { PredEngagamentValueService } from './pred-engagement-value.service';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import {
   GetDemographyByCompanyDTO,
@@ -17,7 +22,10 @@ import {
 } from './dto/get-aggregation-factor.dto';
 import { GetAverageDriverDTO } from './dto/get-average-driver.dto';
 import { AggregationPerFactorDTO } from './dto/aggregation-factor.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Engagement Value')
 @Controller('engagement-value')
 export class PredEngagementValueController {

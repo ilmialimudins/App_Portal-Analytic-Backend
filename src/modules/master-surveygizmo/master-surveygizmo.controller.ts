@@ -6,12 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { MasterSurveygizmoService } from './master-surveygizmo.service';
 import { CreateMasterSurveygizmoDto } from './dto/create-master-surveygizmo.dto';
 import { UpdateMasterSurveygizmoDto } from './dto/update-master-surveygizmo.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Master Surveygizmo')
 @Controller('master-surveygizmo')
 export class MasterSurveygizmoController {
