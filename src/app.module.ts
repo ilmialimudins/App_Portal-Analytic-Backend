@@ -24,6 +24,7 @@ import { MasterEngagementModule } from './modules/master-engagement/master-engag
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
+import { SpmInvitedRespondentsModule } from './modules/spm-invited-respondents/spm-invited-respondents.module';
 
 const ApiModules = [
   SharedModule,
@@ -56,6 +57,7 @@ const ApiModules = [
     PredPredictionEngagementModule,
     PredRelativeImportanceModule,
     MasterEngagementModule,
+    SpmInvitedRespondentsModule,
   ],
   controllers: [AppController],
   providers: [
