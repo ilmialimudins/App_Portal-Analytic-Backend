@@ -1,7 +1,7 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { PredEngagementFavorableService } from './pred-engagement-favorable.service';
 
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
   GetAverageFavorableAllFactorQueryDTO,
   GetAverageFavorableAllFactorResultDTO,
@@ -10,7 +10,10 @@ import {
   GetFavorableFactorDetailDTO,
   GetFavorableFactorDetailQueryDTO,
 } from './dto/get-engagement-favorable-factor-detail.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Engagement Favorable')
 @Controller('pred-engagement-favorable')
 export class PredEngagementFavorableController {

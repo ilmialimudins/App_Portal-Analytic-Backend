@@ -21,16 +21,24 @@ import { PredEngagementFavorableModule } from './modules/pred-engagement-favorab
 import { PredPredictionEngagementModule } from './modules/pred-prediction-engagement/pred-prediction-engagement.module';
 import { PredRelativeImportanceModule } from './modules/pred-relative-importance/pred-relative-importance.module';
 import { MasterEngagementModule } from './modules/master-engagement/master-engagement.module';
+import { DuendeAuthenticationModule } from './modules/duende-authentication/duende-authentication.module';
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
 import { SpmInvitedRespondentsModule } from './modules/spm-invited-respondents/spm-invited-respondents.module';
+import { MasterCompanyEESModule } from './modules/master-company-ees/master-company-ees.module';
+import { BusinessLineModule } from './modules/master-business-line/master-business-line.module';
+import { DemographyModule } from './modules/master-demography/master-demography.module';
 
 const ApiModules = [
   SharedModule,
+  MasterCompanyEESModule,
+  BusinessLineModule,
+  DemographyModule,
   MasterCompanyModule,
   FactorModule,
   PredEngagamentValueModule,
+  DuendeAuthenticationModule,
 ];
 
 @Module({
@@ -40,7 +48,6 @@ const ApiModules = [
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [SharedModule],
       useFactory: (configService: ApiConfigService) => {
         return configService.mssqlConfig;
       },

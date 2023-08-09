@@ -6,12 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { MasterQcodeService } from './master-qcode.service';
 import { CreateMasterQcodeDto } from './dto/create-master-qcode.dto';
 import { UpdateMasterQcodeDto } from './dto/update-master-qcode.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Master Qcode')
 @Controller('master-qcode')
 export class MasterQcodeController {

@@ -103,6 +103,6 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   @Column({ type: 'datetime', name: 'created_on', nullable: true })
   created_on: Date;
 
-  @Column({ type: 'datetime', name: 'created_on', nullable: true })
+  @Column({ type: 'datetime', name: 'modified_on', nullable: true })
   modified_on: Date;
 }

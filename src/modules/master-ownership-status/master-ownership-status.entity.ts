@@ -21,7 +21,7 @@ export class OwnershipStatus extends AbstractEntity<OwnershipStatusDto> {
 
   @OneToMany(
     () => MasterCompanyEES,
-    (mastercompanyees) => mastercompanyees.ownershipstatuspid,
+    (mastercompanyees) => mastercompanyees.ownershipstatusid,
   )
   mastercompanyees: MasterCompanyEES[];
 }

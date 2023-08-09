@@ -10,10 +10,10 @@ export class MasterCompanyEESDto extends AbstractDto {
   companycode: number;
 
   @ApiProperty()
-  companynameees: string;
+  companyeesname: string;
 
   @ApiProperty()
-  companynamemps: string;
+  companympsname: string;
 
   @ApiProperty()
   aliascompany1: string;
@@ -31,8 +31,8 @@ export class MasterCompanyEESDto extends AbstractDto {
     super(masterCompanyEESEntity, { exludeFields: true });
     this.companyid = masterCompanyEESEntity.companyid * 1;
     this.companycode = masterCompanyEESEntity.companycode;
-    this.companynameees = masterCompanyEESEntity.companynameees;
-    this.companynamemps = masterCompanyEESEntity.companynamemps;
+    this.companyeesname = masterCompanyEESEntity.companyeesname;
+    this.companympsname = masterCompanyEESEntity.companympsname;
     this.aliascompany1 = masterCompanyEESEntity.aliascompany1;
     this.aliascompany2 = masterCompanyEESEntity.aliascompany2;
     this.aliascompany3 = masterCompanyEESEntity.aliascompany3;

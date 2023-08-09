@@ -13,6 +13,7 @@ export class AddTableMasterDataLocation1690335811786
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

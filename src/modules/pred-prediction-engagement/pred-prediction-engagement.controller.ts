@@ -1,7 +1,7 @@
-import { Controller, Post, Body, Query, Res } from '@nestjs/common';
+import { Controller, Post, Body, Query, Res, UseGuards } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import { PredPredictionEngagementService } from './pred-prediction-engagement.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import {
   DriversDTO,
   GetAgregrationPerFactorDTO,
@@ -10,7 +10,10 @@ import { PredEngagamentValueService } from '../pred-engagement-value/pred-engage
 import { GetPredictionEngagementDTO } from './dto/get-prediction-engagement.dto';
 import { SavePredictionEngagementDTO } from './dto/save-prediction-engagement.dto';
 import { DownloadPredictionBodyDTO } from './dto/download-prediction..dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Prediction Engagement')
 @Controller('prediction-engagement')
 export class PredPredictionEngagementController {
