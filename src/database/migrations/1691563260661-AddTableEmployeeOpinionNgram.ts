@@ -33,22 +33,22 @@ export class AddTableEmployeeOpinionNgram1691563260661
           },
           {
             name: 'h_companyhashkey',
-            type: 'vachar',
+            type: 'varchar',
             isNullable: true,
           },
           {
             name: 'h_surveygizmohashkey',
-            type: 'vachar',
+            type: 'varchar',
             isNullable: true,
           },
           {
             name: 'h_surveyquestionhashkey',
-            type: 'vachar',
+            type: 'varchar',
             isNullable: true,
           },
           {
             name: 'h_wordhashkey',
-            type: 'vachar',
+            type: 'varchar',
             isNullable: true,
           },
           {
