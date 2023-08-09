@@ -165,7 +165,7 @@ export class PredPredictionEngagementService {
       // // Generate Excel Sheet
       dataToGenerate.map((data) => {
         const sheet: excel.Worksheet = workbook.addWorksheet(
-          data.demographyvalue,
+          data.demographyvalue.replace(/([^\w ]|_)/g, ''),
         );
 
         addTable(
