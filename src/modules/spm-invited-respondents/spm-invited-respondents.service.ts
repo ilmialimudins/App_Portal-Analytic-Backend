@@ -134,7 +134,7 @@ export class SpmInvitedRespondentsService {
         .andWhere('is_delete = :is_delete', {
           is_delete: '0',
         });
-      return (await query.getMany()).toDtos();
+      return query.getMany();
     } catch (error) {
       throw error;
     }
@@ -144,31 +144,30 @@ export class SpmInvitedRespondentsService {
     companyid,
     surveyid,
     tahun_survey,
-  }): Promise<excel.Workbook> {
+  }: GetManyInvitedRespondentsQueryDTO): Promise<excel.Workbook> {
     try {
-      const data = await this.getManyService({
+      const data: GetInvitedRespondentsResultDTO[] = await this.getManyService({
         companyid,
         surveyid,
         tahun_survey,
+      }).then((response) => {
+        console.log(response);
+        // permisalan untuk data kosong
+        return response;
       });
       const demographyQuery = `
         SELECT * FROM ms_demography
       `;
       const demographyResults = await this.entityManager.query(demographyQuery);
 
-      if (data.length > 0) {
-        data.forEach((item) => {
-          item.startsurvey.getDay();
-          item.closesurvey.getDate();
-        });
-      }
-
       const strings = demographyResults.map((item) => item.demographyalias);
 
       const workbook: excel.Workbook = new excel.Workbook();
 
       data.map((item) => {
-        const sheet: excel.Worksheet = workbook.addWorksheet(item.demography);
+        const sheet: excel.Worksheet = workbook.addWorksheet(
+          item.valuedemography,
+        );
 
         addTableInvitedTable(
           {
@@ -176,27 +175,47 @@ export class SpmInvitedRespondentsService {
             rowHeaderNum: 1,
             rowDataNum: 2,
             headerTitle: [
-              'id',
               'companyid',
+              'surveyid',
+              'tahun_survey',
               'startsurvey',
               'closesurvey',
-              'surveyid',
-              'totalinvited_company',
-              'valuedemography',
               'demography',
-              'sourcecreatedmodifiedtime',
-              'createdby',
-              'createdtime',
-              'endcreatedtime',
-              'tahun_survey',
-              'is_delete',
+              'totalinvited_demography',
+              'valuedemography',
+              'totalinvited_company',
             ],
-            tableData: [item],
+            tableData: [
+              {
+                companyid: item.companyid,
+                surveyid: item.surveyid,
+                tahun_survey: item.tahun_survey,
+                startsurvey: new Date(item.startsurvey)
+                  .toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  })
+                  .replace(/\//g, '-'),
+                closesurvey: new Date(item.closesurvey)
+                  .toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  })
+                  .replace(/\//g, '-'),
+                demography: item.demography,
+                totalinvited_demography: item.totalinvited_demography,
+                valuedemography: item.valuedemography,
+                totalinvited_company: item.totalinvited_company,
+              },
+            ],
           },
           sheet,
-          [`"${strings}"`],
+          [`"${strings.join(',')}"`],
         );
       });
+      console.log(data);
       return workbook;
     } catch (error) {
       throw error;

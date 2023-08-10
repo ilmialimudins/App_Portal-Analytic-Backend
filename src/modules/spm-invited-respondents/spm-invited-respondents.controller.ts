@@ -19,13 +19,13 @@ import {
   GetSurveyInvitedRespondentsQueryDTO,
   GetSurveyInvitedRespondentsResultsDTO,
   GetInvitedRespondentsQueryDTO,
+  GetManyInvitedRespondentsQueryDTO,
 } from './dto/get-spm-invited-respondents.dto';
 import {
   PostInvitedRespondentsBodyDTO,
   PostInvitedRespondentsResultsDTO,
 } from './dto/post-spm-invited-respondents.dto';
 import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
-import { SpmInvitedRespondentsDTO } from './dto/spm-invited-respondents.dto';
 
 @ApiTags('Invited Respondents')
 @Controller('invited-respondents')
@@ -104,8 +104,8 @@ export class SpmInvitedRespondentsController {
   }
 
   @Get('/get-companylist')
-  @ApiOkResponse({ type: [SpmInvitedRespondentsDTO] })
-  async getInvitedCompany(): Promise<SpmInvitedRespondentsDTO[]> {
+  @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
+  async getInvitedCompany(): Promise<GetInvitedRespondentsResultDTO[]> {
     return await this.spmInvitedRespondentsService.getCompanyList();
   }
 
@@ -122,7 +122,8 @@ export class SpmInvitedRespondentsController {
   @Get('download-invitedRespondent')
   async getDownloadInvitedRespondent(
     @Res() res: ExpressResponse,
-    @Query() { companyid, surveyid, tahun_survey },
+    @Query()
+    { companyid, surveyid, tahun_survey }: GetManyInvitedRespondentsQueryDTO,
   ) {
     res.setHeader(
       'Content-Type',
@@ -141,6 +142,6 @@ export class SpmInvitedRespondentsController {
         tahun_survey,
       });
     await workbook.xlsx.write(res);
-    res.end();
+    res.send('File send');
   }
 }

@@ -79,7 +79,8 @@ export const addTableInvitedTable = <T extends object>(
   sheet: excel.Worksheet,
   formulae: string[],
 ) => {
-  const { columnStart, rowHeaderNum, headerTitle, tableData } = objTable;
+  const { columnStart, rowHeaderNum, headerTitle, tableData, rowDataNum } =
+    objTable;
 
   const indexColumnStart = alphabet.indexOf(columnStart);
   headerTitle.forEach((item, index) => {
@@ -101,10 +102,22 @@ export const addTableInvitedTable = <T extends object>(
     col.border = border;
   });
 
-  tableData.forEach((row) => {
+  tableData.forEach((row, index) => {
+    const rowNums = rowDataNum + index;
     const arrayHeaders = Object.keys(row);
     arrayHeaders.forEach((x, i) => {
-      const cell = sheet.getCell(`F${i + 2}`);
+      const cell = sheet.getCell(
+        `${alphabet.charAt(indexColumnStart + i)}${rowNums}`,
+      );
+
+      sheet.getCell(`F${i + 2}`).dataValidation = {
+        type: 'list',
+        allowBlank: false,
+        formulae: formulae,
+        showErrorMessage: true,
+        errorStyle: 'error',
+        error: 'Hanya dapat diisi dengan data yang telah tersedia',
+      };
       cell.value = isNaN(row[x]) ? row[x] : +row[x];
       cell.style = {
         font: {
@@ -115,14 +128,6 @@ export const addTableInvitedTable = <T extends object>(
         locked: isNaN(row[x]) ? true : false,
       };
       cell.border = border;
-      cell.dataValidation = {
-        type: 'list',
-        allowBlank: false,
-        formulae: formulae,
-        showErrorMessage: true,
-        errorStyle: 'error',
-        error: 'Hanya dapat diisi dengan data yang telah tersedia',
-      };
     });
   });
 };

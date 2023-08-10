@@ -56,6 +56,9 @@ export class GetInvitedRespondentsResultDTO {
   demography: string;
 
   @ApiProperty()
+  totalinvited_demography: number;
+
+  @ApiProperty()
   sourcecreatedmodifiedtime: Date;
 
   @ApiProperty()
