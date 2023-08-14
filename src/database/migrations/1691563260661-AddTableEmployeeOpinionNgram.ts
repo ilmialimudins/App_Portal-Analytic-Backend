@@ -53,8 +53,7 @@ export class AddTableEmployeeOpinionNgram1691563260661
           },
           {
             name: 'qcode',
-            type: 'enum',
-            enum: ['FOR', 'UOR'],
+            type: 'varchar',
             isNullable: true,
           },
           {
