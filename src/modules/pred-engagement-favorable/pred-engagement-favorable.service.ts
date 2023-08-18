@@ -34,9 +34,14 @@ export class PredEngagementFavorableService {
         .where('favorable.d_companyid = :d_companyid', {
           d_companyid: d_companyid,
         })
+        .andWhere('favorable.iscurrentsurvey = :value', { value: 'Current' })
         .getRawMany();
 
-      return result as GetAverageFavorableAllFactorResultDTO[];
+      const removeDuplicate = result.reduce((acc, val) => {
+        return { ...acc, [val.factor_name]: val };
+      }, {});
+
+      return Object.values(removeDuplicate);
     } catch (error) {
       throw error;
     }
