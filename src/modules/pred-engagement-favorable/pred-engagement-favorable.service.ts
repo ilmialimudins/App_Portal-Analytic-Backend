@@ -82,6 +82,7 @@ export class PredEngagementFavorableService {
                 count_respondent: val.count_respondent,
                 percentage_all_favorabletype: val.percentage_all_favorabletype,
                 question: val.qcode.question,
+                qcode: val.qcode.new_qcode,
               },
             ],
           });
@@ -91,6 +92,7 @@ export class PredEngagementFavorableService {
             count_respondent: val.count_respondent,
             percentage_all_favorabletype: val.percentage_all_favorabletype,
             question: val.qcode.question,
+            qcode: val.qcode.new_qcode,
           });
         }
         return acc;
