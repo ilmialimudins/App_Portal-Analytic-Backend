@@ -25,6 +25,7 @@ import { DuendeAuthenticationModule } from './modules/duende-authentication/duen
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
+import { SpmInvitedRespondentsModule } from './modules/spm-invited-respondents/spm-invited-respondents.module';
 import { MasterCompanyEESModule } from './modules/master-company-ees/master-company-ees.module';
 import { BusinessLineModule } from './modules/master-business-line/master-business-line.module';
 import { DemographyModule } from './modules/master-demography/master-demography.module';
@@ -63,6 +64,7 @@ const ApiModules = [
     PredPredictionEngagementModule,
     PredRelativeImportanceModule,
     MasterEngagementModule,
+    SpmInvitedRespondentsModule,
   ],
   controllers: [AppController],
   providers: [

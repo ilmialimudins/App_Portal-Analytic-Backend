@@ -18,6 +18,7 @@ export class AddTableSPMInvitedRespondents1690874049939
             type: 'int',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
@@ -78,6 +79,11 @@ export class AddTableSPMInvitedRespondents1690874049939
             isNullable: true,
           },
           {
+            name: 'updatedby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'createdtime',
             type: 'datetime2',
           },
@@ -87,7 +93,7 @@ export class AddTableSPMInvitedRespondents1690874049939
           },
           {
             name: 'sourcecreatedmodifiedtime',
-            type: 'datetime',
+            type: 'datetime2',
             isNullable: true,
           },
           {
@@ -101,6 +107,11 @@ export class AddTableSPMInvitedRespondents1690874049939
             length: '1',
             isNullable: false,
             default: '0',
+          },
+          {
+            name: 'createddate',
+            type: 'bigint',
+            isNullable: true,
           },
         ],
       }),

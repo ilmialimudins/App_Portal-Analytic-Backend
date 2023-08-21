@@ -3,6 +3,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UseDto } from 'src/decorators/use-dto.decorator';
@@ -16,12 +17,15 @@ import { OwnershipStatus } from '../master-ownership-status/master-ownership-sta
 import { Cla } from '../master-cla/master-cla.entity';
 import { DirectReview } from '../master-direct-review/master-direct-review.entity';
 import { ModellingType } from '../master-modelling-type/master-modelling-type.entity';
+import { InvitedRespondents } from '../spm-invited-respondents/spm-invited-respondents.entity';
 
 @Entity('ms_company')
 @UseDto(MasterCompanyEESDto)
 export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'companyid' })
   companyid: number;
+  @OneToMany(() => InvitedRespondents, (spmIR) => spmIR.companyid)
+  invitedRespondents: InvitedRespondents[];
 
   @Column({ nullable: true })
   businesslineid: number;
