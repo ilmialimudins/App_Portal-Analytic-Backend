@@ -52,7 +52,6 @@ export class PredEngagementFavorableService {
     d_factorid,
   }: GetFavorableFactorDetailQueryDTO): Promise<GetFavorableFactorDetailDTO> {
     try {
-      console.log('here');
       const result = await this.engagementFavorableRepo.find({
         where: {
           d_companyid: parseInt(d_companyid),
@@ -65,6 +64,9 @@ export class PredEngagementFavorableService {
         },
         order: {
           favorable_type: 'ASC',
+          qcode: {
+            qcode: 'ASC',
+          },
         },
       });
 
