@@ -106,7 +106,7 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
     name: 'modellingtypeid',
     referencedColumnName: 'modellingtypeid',
   })
-  modeliingtype: ModellingType;
+  modellingtype: ModellingType;
 
   @Column({ type: 'bigint', name: 'companycode', nullable: false })
   companycode: number;

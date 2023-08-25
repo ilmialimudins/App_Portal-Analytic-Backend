@@ -6,15 +6,17 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { DemographyService } from './master-demography.service';
 import { DemographyDto } from './dto/master-demography.dto';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Demography')
 @Controller('demography')
 export class DemographyController {
@@ -25,19 +27,32 @@ export class DemographyController {
     type: DemographyDto,
   })
   async getDemography(
-    @Query() pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<DemographyDto>> {
-    return this.demographyService.getAllDemography(pageOptions);
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ): Promise<{ data: DemographyDto[]; total: number }> {
+    return this.demographyService.getAllDemography(page, pageSize);
   }
 
-  @Get('/getOne')
+  @Get('/getDemographyName')
+  @ApiCreatedResponse({
+    type: DemographyDto,
+  })
+  async getDemographyName(
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+    @Query('Demography') demography: string,
+  ): Promise<{ data: DemographyDto[]; total: number }> {
+    return this.demographyService.getDemographyName(page, pageSize, demography);
+  }
+
+  @Get('/getDemographyId')
   @ApiCreatedResponse({
     type: DemographyDto,
   })
   async getDemographyById(
     @Query('demographyid') demographyid: number,
   ): Promise<DemographyDto | undefined> {
-    return this.demographyService.getDemographyById(demographyid);
+    return this.demographyService.getDemographyId(demographyid);
   }
 
   @Post('/createDemography')

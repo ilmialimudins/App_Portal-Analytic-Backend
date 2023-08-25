@@ -6,15 +6,22 @@ import {
   Post,
   Query,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MasterCompanyEESService } from './master-company-ees.service';
 import { MasterCompanyEESDto } from './dto/master-company-ees.dto';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { AddMasterCompanyEESDto } from './dto/add-master-company-ees.dto';
 import { UpdateMasterCompanyEESDto } from './dto/update-master-company-ees.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Master Company EES')
 @Controller('master-company-ees')
 export class MasterCompanyEESController {
@@ -23,26 +30,32 @@ export class MasterCompanyEESController {
   @Get('/')
   @ApiOkResponse({ type: MasterCompanyEESDto })
   async getAllCompany(
-    @Query() pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<MasterCompanyEESDto>> {
-    return this.masterCompanyServiceEES.getAllCompany(pageOptions);
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ): Promise<{ data: MasterCompanyEESDto[]; total: number }> {
+    return this.masterCompanyServiceEES.getAllCompany(page, pageSize);
   }
 
-  @Get('/getOneCompany')
+  @Get('/getCompanyName')
+  @ApiOkResponse({ type: MasterCompanyEESDto })
+  async getCompanyName(
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+    @Query('Companyname') companyname: string,
+  ): Promise<{ data: MasterCompanyEESDto[]; total: number }> {
+    return this.masterCompanyServiceEES.getCompanyName(
+      page,
+      pageSize,
+      companyname,
+    );
+  }
+
+  @Get('/getCompanyId')
   @ApiCreatedResponse({ type: MasterCompanyEESDto })
   async getAllCompanyById(
     @Query('companyid') companyid: number,
   ): Promise<MasterCompanyEESDto | undefined> {
-    return this.masterCompanyServiceEES.getCompanyById(companyid);
-  }
-
-  @Get('/getCompanyName')
-  @ApiCreatedResponse({ type: MasterCompanyEESDto })
-  async getCompanyEESName(
-    @Query() pageOptions: PageOptionsDTO,
-    @Query('name') name: string,
-  ): Promise<PageDto<MasterCompanyEESDto | undefined>> {
-    return this.masterCompanyServiceEES.getCompanyEESName(pageOptions, name);
+    return this.masterCompanyServiceEES.getCompanyId(companyid);
   }
 
   @Post('/createCompany')

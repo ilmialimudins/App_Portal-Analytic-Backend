@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Demography } from './master-demography.entity';
 import { Repository } from 'typeorm';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { DemographyDto } from './dto/master-demography.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
@@ -16,22 +14,65 @@ export class DemographyService {
   ) {}
 
   async getAllDemography(
-    pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<DemographyDto>> {
+    page: number,
+    pageSize: number,
+  ): Promise<{ data: DemographyDto[]; total: number }> {
     try {
-      const query = this.demographyRepository
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.demographyRepository
         .createQueryBuilder('demography')
-        .orderBy('demography.urutanfilter', pageOptions.order);
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.desc = :desc', { desc: false })
+        .orderBy('urutanfilter')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
 
-      const [items, pageMetaDto] = await query.paginate(pageOptions);
+      const total = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.desc = :desc', { desc: false })
+        .getCount();
 
-      return items.toPageDto(pageMetaDto);
+      return { data, total };
     } catch (error) {
       throw error;
     }
   }
 
-  async getDemographyById(
+  async getDemographyName(
+    page: number,
+    pageSize: number,
+    demography: string,
+  ): Promise<{ data: DemographyDto[]; total: number }> {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.desc = :desc', { desc: false })
+        .andWhere('demography.demographydesc = :demography', { demography })
+        .orderBy('urutanfilter')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
+
+      const total = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.desc = :desc', { desc: false })
+        .andWhere('demography.demographydesc = :demography', { demography })
+        .getCount();
+
+      return { data, total };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDemographyId(
     demographyid: number,
   ): Promise<DemographyDto | undefined> {
     try {
