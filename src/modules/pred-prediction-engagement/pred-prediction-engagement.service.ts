@@ -7,6 +7,7 @@ import { GetAgregrationPerFactorDTO } from '../pred-engagement-value/dto/get-agg
 import { AggregationPerFactorDTO } from '../pred-engagement-value/dto/aggregation-factor.dto';
 import {
   GetPredictionEngagementDTO,
+  PredictionAfterEngagementDTO,
   PredictionEngagementDTO,
 } from './dto/get-prediction-engagement.dto';
 import { SavePredictionEngagementTransaction } from './save-prediction-engagement.transaction';
@@ -40,10 +41,16 @@ export class PredPredictionEngagementService {
       );
       const { prediction_before, prediction_after } =
         await this.getPredictionBeforeAndAfter(aggregations, getPredictionList);
+
+      const after = prediction_after as PredictionAfterEngagementDTO;
+
+      const averageAfter = this.calculateAverageEngagement(after);
+      after.Sustainable_Engagement = averageAfter;
+
       return {
         aggregations: aggregations,
         prediction_before: prediction_before as PredictionEngagementDTO,
-        prediction_after: prediction_after as PredictionEngagementDTO,
+        prediction_after: prediction_after as PredictionAfterEngagementDTO,
       };
     } catch (error) {
       throw error;
@@ -245,5 +252,20 @@ export class PredPredictionEngagementService {
     } catch (error) {
       throw error;
     }
+  }
+
+  public calculateAverageEngagement(
+    prediction_after: PredictionEngagementDTO | undefined,
+  ): number {
+    if (!prediction_after) {
+      throw new Error('prediction_after is undefined');
+    }
+
+    const sumAfter =
+      prediction_after.Engaged +
+      prediction_after.Energized +
+      prediction_after.Enabled;
+
+    return sumAfter / 3;
   }
 }

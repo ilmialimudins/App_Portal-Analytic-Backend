@@ -12,12 +12,26 @@ export class PredictionEngagementDTO {
   Enabled: number;
 }
 
+export class PredictionAfterEngagementDTO {
+  @ApiProperty()
+  Engaged: number;
+
+  @ApiProperty()
+  Energized: number;
+
+  @ApiProperty()
+  Enabled: number;
+
+  @ApiProperty()
+  Sustainable_Engagement: number;
+}
+
 export class GetPredictionEngagementDTO {
   @ApiProperty()
   aggregations: AggregationPerFactorDTO[];
 
   @ApiProperty()
-  prediction_after: PredictionEngagementDTO;
+  prediction_after: PredictionAfterEngagementDTO;
 
   @ApiProperty()
   prediction_before: PredictionEngagementDTO;
