@@ -1,33 +1,37 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
+export class AddTableMasterWorkSpace1693990022387
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_masterworkspace',
         columns: [
           {
-            name: 'locationid',
+            name: 'workspaceid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
+            name: 'workspacecode',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
+            name: 'workspacename',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'desc',
+            name: 'workspacedesc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'workspacepowerbiid',
             type: 'varchar',
             isNullable: true,
           },
@@ -49,7 +53,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -73,6 +76,6 @@ export class AddTableMasterDataLocation1690335811786
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_masterworkspace');
   }
 }

@@ -16,7 +16,7 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
           },
           {
             name: 'directreviewcode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -26,6 +26,11 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

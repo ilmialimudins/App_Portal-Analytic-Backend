@@ -16,7 +16,7 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
           },
           {
             name: 'demographycode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -36,6 +36,11 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

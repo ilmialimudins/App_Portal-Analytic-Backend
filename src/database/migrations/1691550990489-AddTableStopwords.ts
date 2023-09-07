@@ -35,7 +35,7 @@ export class AddTableStopwords1691550990489 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'isDelete',
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },
@@ -66,6 +66,12 @@ export class AddTableStopwords1691550990489 implements MigrationInterface {
           {
             name: 'sync_date',
             type: 'datetime',
+            isNullable: true,
+          },
+          {
+            name: 'is_sync',
+            type: 'int',
+            default: '0',
             isNullable: true,
           },
         ],
