@@ -10,8 +10,8 @@ export class Location extends AbstractEntity<LocationDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'locationid' })
   locationid: number;
 
-  @Column({ type: 'bigint', name: 'locationcode', nullable: false })
-  locationcode: number;
+  @Column({ type: 'varchar', name: 'locationcode', nullable: false })
+  locationcode: string;
 
   @Column({ type: 'varchar', name: 'locationdesc', nullable: false })
   locationdesc: string;

@@ -7,7 +7,7 @@ export class DemographyDto extends AbstractDto {
   demographyid: number;
 
   @ApiProperty()
-  demographycode: number;
+  demographycode: string;
 
   @ApiProperty()
   demographydesc: string;
@@ -21,6 +21,9 @@ export class DemographyDto extends AbstractDto {
   @ApiProperty()
   desc: string;
 
+  @ApiProperty()
+  isdelete: string;
+
   constructor(demographyEntity: Demography) {
     super(demographyEntity, { exludeFields: true });
     this.demographyid = demographyEntity.demographyid * 1;
@@ -29,5 +32,6 @@ export class DemographyDto extends AbstractDto {
     this.demographyalias = demographyEntity.demographyalias;
     this.urutanfilter = demographyEntity.urutanfilter;
     this.desc = demographyEntity.desc;
+    this.isdelete = demographyEntity.isdelete;
   }
 }

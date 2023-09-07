@@ -10,8 +10,8 @@ export class SurveyGroup extends AbstractEntity<SurveyGroupDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'surveygroupid' })
   surveygroupid: number;
 
-  @Column({ type: 'bigint', name: 'surveygroupcode', nullable: false })
-  surveygroupcode: number;
+  @Column({ type: 'varchar', name: 'surveygroupcode', nullable: false })
+  surveygroupcode: string;
 
   @Column({ type: 'varchar', name: 'surveygroupdesc', nullable: false })
   surveygroupdesc: string;

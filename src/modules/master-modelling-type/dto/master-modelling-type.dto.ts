@@ -7,7 +7,7 @@ export class ModellingTypeDto extends AbstractDto {
   modellingtypeid: number;
 
   @ApiProperty()
-  modellingtypecode: number;
+  modellingtypecode: string;
 
   @ApiProperty()
   modellingtypedesc: string;

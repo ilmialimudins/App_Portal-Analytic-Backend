@@ -7,7 +7,7 @@ export class ClaDto extends AbstractDto {
   claid: number;
 
   @ApiProperty()
-  clacode: number;
+  clacode: string;
 
   @ApiProperty()
   cladesc: string;

@@ -6,22 +6,13 @@ import {
   Post,
   Query,
   Patch,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { MasterCompanyEESService } from './master-company-ees.service';
 import { MasterCompanyEESDto } from './dto/master-company-ees.dto';
 import { AddMasterCompanyEESDto } from './dto/add-master-company-ees.dto';
 import { UpdateMasterCompanyEESDto } from './dto/update-master-company-ees.dto';
-import { AuthGuard } from 'src/guards/auth/auth.guard';
 
-@ApiBearerAuth()
-@UseGuards(AuthGuard)
 @ApiTags('Master Company EES')
 @Controller('master-company-ees')
 export class MasterCompanyEESController {
@@ -59,17 +50,13 @@ export class MasterCompanyEESController {
   }
 
   @Post('/createCompany')
-  @ApiCreatedResponse({
-    type: MasterCompanyEESDto,
-  })
+  @ApiCreatedResponse({ type: MasterCompanyEESDto })
   async createCompany(@Body() company: AddMasterCompanyEESDto) {
-    return this.masterCompanyServiceEES.addCompany(company);
+    return this.masterCompanyServiceEES.createCompany(company);
   }
 
   @Patch('updateCompany')
-  @ApiCreatedResponse({
-    type: MasterCompanyEESDto,
-  })
+  @ApiCreatedResponse({ type: MasterCompanyEESDto })
   async updateCompany(
     @Query('companyid') companyid: number,
     @Body() company: UpdateMasterCompanyEESDto,
@@ -78,9 +65,7 @@ export class MasterCompanyEESController {
   }
 
   @Delete('/deleteCompany')
-  @ApiCreatedResponse({
-    type: MasterCompanyEESDto,
-  })
+  @ApiCreatedResponse({ type: MasterCompanyEESDto })
   async deleteCompany(@Query('companyid') companyid: number): Promise<string> {
     return this.masterCompanyServiceEES.deleteCompany(companyid);
   }

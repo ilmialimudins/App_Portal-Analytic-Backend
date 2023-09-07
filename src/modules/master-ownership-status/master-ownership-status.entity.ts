@@ -10,8 +10,8 @@ export class OwnershipStatus extends AbstractEntity<OwnershipStatusDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'ownershipstatusid' })
   ownershipstatusid: number;
 
-  @Column({ type: 'bigint', name: 'ownershipstatuscode', nullable: false })
-  ownershipstatuscode: number;
+  @Column({ type: 'varchar', name: 'ownershipstatuscode', nullable: false })
+  ownershipstatuscode: string;
 
   @Column({ type: 'varchar', name: 'ownershipstatusdesc', nullable: false })
   ownershipstatusdesc: string;

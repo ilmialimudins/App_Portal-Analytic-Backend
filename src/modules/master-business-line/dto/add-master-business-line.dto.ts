@@ -1,11 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class AddBusinessLineDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber()
-  readonly businesslinecode: number;
+  @IsString()
+  readonly businesslinecode: string;
 
   @ApiPropertyOptional()
   @IsOptional()

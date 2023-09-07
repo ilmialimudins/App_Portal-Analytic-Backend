@@ -23,7 +23,7 @@ export class DemographyService {
       const data = await this.demographyRepository
         .createQueryBuilder('demography')
         .select(['demographydesc', 'demographyalias', 'urutanfilter'])
-        .where('demography.desc = :desc', { desc: false })
+        .where('demography.isdelete = :isdelete', { isdelete: false })
         .orderBy('urutanfilter')
         .offset(offset)
         .limit(pageSize)
@@ -32,7 +32,7 @@ export class DemographyService {
       const total = await this.demographyRepository
         .createQueryBuilder('demography')
         .select(['demographydesc', 'demographyalias', 'urutanfilter'])
-        .where('demography.desc = :desc', { desc: false })
+        .where('demography.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -52,7 +52,7 @@ export class DemographyService {
       const data = await this.demographyRepository
         .createQueryBuilder('demography')
         .select(['demographydesc', 'demographyalias', 'urutanfilter'])
-        .where('demography.desc = :desc', { desc: false })
+        .where('demography.isdelete = :isdelete', { isdelete: false })
         .andWhere('demography.demographydesc = :demography', { demography })
         .orderBy('urutanfilter')
         .offset(offset)
@@ -62,7 +62,7 @@ export class DemographyService {
       const total = await this.demographyRepository
         .createQueryBuilder('demography')
         .select(['demographydesc', 'demographyalias', 'urutanfilter'])
-        .where('demography.desc = :desc', { desc: false })
+        .where('demography.isdelete = :isdelete', { isdelete: false })
         .andWhere('demography.demographydesc = :demography', { demography })
         .getCount();
 
@@ -89,7 +89,7 @@ export class DemographyService {
 
   async createDemography(demography: AddDemographyDto) {
     try {
-      const query = this.demographyRepository
+      const query = await this.demographyRepository
         .createQueryBuilder('demography')
         .insert()
         .into(Demography)
@@ -98,8 +98,9 @@ export class DemographyService {
           demographydesc: demography.demographydesc,
           demographyalias: demography.demographyalias,
           urutanfilter: demography.urutanfilter,
-          desc: 'false',
+          isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 
@@ -115,12 +116,12 @@ export class DemographyService {
   ) {
     try {
       const query = await this.demographyRepository
-        .createQueryBuilder('demography')
+        .createQueryBuilder()
         .update(Demography)
         .set({
           demographyalias: demography.demographyalias,
         })
-        .where('demography.demographyid =:demographyid', { demographyid })
+        .where('demographyid =:demographyid', { demographyid })
         .execute();
 
       return query;
@@ -132,10 +133,10 @@ export class DemographyService {
   async deleteDemography(demographyid: number) {
     try {
       const query = await this.demographyRepository
-        .createQueryBuilder('Demography')
+        .createQueryBuilder()
         .update(Demography)
-        .set({ desc: 'true' })
-        .where('demography.demographyid = :demographyid', { demographyid })
+        .set({ isdelete: 'true' })
+        .where('demographyid = :demographyid', { demographyid })
         .execute();
 
       return query;

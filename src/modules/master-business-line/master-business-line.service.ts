@@ -23,7 +23,7 @@ export class BusinessLineService {
       const data = await this.businessLineRepository
         .createQueryBuilder('businessline')
         .select(['businesslinecode', 'businesslinedesc'])
-        .where('businessline.desc = :desc', { desc: false })
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
         .orderBy('businesslinecode')
         .offset(offset)
         .limit(pageSize)
@@ -32,7 +32,7 @@ export class BusinessLineService {
       const total = await this.businessLineRepository
         .createQueryBuilder('businessline')
         .select(['businesslinecode', 'businesslinedesc'])
-        .where('businessline.desc = :desc', { desc: false })
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -52,7 +52,7 @@ export class BusinessLineService {
       const data = await this.businessLineRepository
         .createQueryBuilder('businessline')
         .select(['businesslinecode', 'businesslinedesc'])
-        .where('businessline.desc = :desc', { desc: false })
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
         .andWhere('businessline.businesslinedesc = :businessline', {
           businessline,
         })
@@ -64,7 +64,7 @@ export class BusinessLineService {
       const total = await this.businessLineRepository
         .createQueryBuilder('businessline')
         .select(['businesslinecode', 'businesslinedesc'])
-        .where('businessline.desc = :desc', { desc: false })
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
         .andWhere('businessline.businesslinedesc = :businessline', {
           businessline,
         })
@@ -102,8 +102,9 @@ export class BusinessLineService {
         .values({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
-          desc: 'false',
+          isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 
@@ -119,13 +120,13 @@ export class BusinessLineService {
   ) {
     try {
       const query = await this.businessLineRepository
-        .createQueryBuilder('businessline')
+        .createQueryBuilder()
         .update(BusinessLine)
         .set({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
         })
-        .where('businessline.businesslineid =:businesslineid', {
+        .where('businesslineid =:businesslineid', {
           businesslineid,
         })
         .execute();
@@ -139,10 +140,10 @@ export class BusinessLineService {
   async deleteBusinessline(businesslineid: number) {
     try {
       const query = await this.businessLineRepository
-        .createQueryBuilder('businessline')
+        .createQueryBuilder()
         .update(BusinessLine)
-        .set({ desc: 'true' })
-        .where('businessline.businesslineid =:businesslineid', {
+        .set({ isdelete: 'true' })
+        .where('businesslineid =:businesslineid', {
           businesslineid,
         })
         .execute();

@@ -9,8 +9,8 @@ export class Demography extends AbstractEntity<DemographyDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'demographyid' })
   demographyid: number;
 
-  @Column({ type: 'bigint', name: 'demographycode', nullable: false })
-  demographycode: number;
+  @Column({ type: 'varchar', name: 'demographycode', nullable: false })
+  demographycode: string;
 
   @Column({ type: 'varchar', name: 'demographydesc', nullable: false })
   demographydesc: string;
@@ -23,4 +23,7 @@ export class Demography extends AbstractEntity<DemographyDto> {
 
   @Column({ type: 'varchar', name: 'desc', nullable: true })
   desc: string;
+
+  @Column({ type: 'varchar', name: 'isdelete', nullable: true })
+  isdelete: string;
 }

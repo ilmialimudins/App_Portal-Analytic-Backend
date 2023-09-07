@@ -7,7 +7,7 @@ export class OwnershipStatusDto extends AbstractDto {
   ownershipstatusid: number;
 
   @ApiProperty()
-  ownershipstatuscode: number;
+  ownershipstatuscode: string;
 
   @ApiProperty()
   ownershipstatusdesc: string;

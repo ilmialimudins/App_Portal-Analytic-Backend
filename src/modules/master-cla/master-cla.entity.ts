@@ -10,8 +10,8 @@ export class Cla extends AbstractEntity<ClaDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'claid' })
   claid: number;
 
-  @Column({ type: 'bigint', name: 'clacode', nullable: false })
-  clacode: number;
+  @Column({ type: 'varchar', name: 'clacode', nullable: false })
+  clacode: string;
 
   @Column({ type: 'varchar', name: 'cladesc', nullable: false })
   cladesc: string;

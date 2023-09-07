@@ -4,8 +4,8 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class AddDemographyDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber()
-  readonly demographycode: number;
+  @IsString()
+  readonly demographycode: string;
 
   @ApiPropertyOptional()
   @IsOptional()

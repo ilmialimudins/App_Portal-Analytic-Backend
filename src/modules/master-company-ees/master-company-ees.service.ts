@@ -35,7 +35,7 @@ export class MasterCompanyEESService {
           'businesslinedesc',
           'modellingtypedesc',
         ])
-        .where('mastercompanyees.isDelete = :isDelete', { isDelete: false })
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
         .orderBy('companyeesname')
         .offset(offset)
         .limit(pageSize)
@@ -56,7 +56,7 @@ export class MasterCompanyEESService {
           'businesslinedesc',
           'modellingtypedesc',
         ])
-        .where('mastercompanyees.isDelete = :isDelete', { isDelete: false })
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -88,7 +88,7 @@ export class MasterCompanyEESService {
           'businesslinedesc',
           'modellingtypedesc',
         ])
-        .where('mastercompanyees.isDelete = :isDelete', { isDelete: false })
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
         .andWhere('mastercompanyees.companyeesname = :companyname', {
           companyname,
         })
@@ -112,7 +112,7 @@ export class MasterCompanyEESService {
           'businesslinedesc',
           'modellingtypedesc',
         ])
-        .where('mastercompanyees.isDelete = :isDelete', { isDelete: false })
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
         .andWhere('mastercompanyees.companyeesname = :companyname', {
           companyname,
         })
@@ -131,7 +131,7 @@ export class MasterCompanyEESService {
       const query = await this.masterCompanyEESRepository
         .createQueryBuilder('mastercompanyees')
         .where('mastercompanyees.companyid = :companyid', { companyid })
-        .andWhere('mastercompanyees.isDelete = :isDelete', { isDelete: false })
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query?.toDto();
@@ -140,7 +140,7 @@ export class MasterCompanyEESService {
     }
   }
 
-  async addCompany(company: AddMasterCompanyEESDto) {
+  async createCompany(company: AddMasterCompanyEESDto) {
     try {
       const query = await this.masterCompanyEESRepository
         .createQueryBuilder('mastercompanyees')
@@ -157,6 +157,7 @@ export class MasterCompanyEESService {
           modellingtypeid: company.modellingtypeid,
           isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 

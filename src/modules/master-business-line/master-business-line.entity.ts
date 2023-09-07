@@ -10,14 +10,17 @@ export class BusinessLine extends AbstractEntity<BusinessLineDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'businesslineid' })
   businesslineid: number;
 
-  @Column({ type: 'bigint', name: 'businesslinecode', nullable: false })
-  businesslinecode: number;
+  @Column({ type: 'varchar', name: 'businesslinecode', nullable: false })
+  businesslinecode: string;
 
   @Column({ type: 'varchar', name: 'businesslinedesc', nullable: false })
   businesslinedesc: string;
 
   @Column({ type: 'varchar', name: 'desc', nullable: true })
   desc: string;
+
+  @Column({ type: 'varchar', name: 'isdelete', nullable: true })
+  isdelete: string;
 
   @OneToMany(
     () => MasterCompanyEES,

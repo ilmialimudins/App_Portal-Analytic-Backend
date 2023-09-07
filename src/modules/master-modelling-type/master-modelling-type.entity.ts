@@ -10,8 +10,8 @@ export class ModellingType extends AbstractEntity<ModellingTypeDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'modellingtypeid' })
   modellingtypeid: number;
 
-  @Column({ type: 'bigint', name: 'modellingtypecode', nullable: false })
-  modellingtypecode: number;
+  @Column({ type: 'varchar', name: 'modellingtypecode', nullable: false })
+  modellingtypecode: string;
 
   @Column({ type: 'varchar', name: 'modellingtypedesc', nullable: false })
   modellingtypedesc: string;

@@ -7,7 +7,7 @@ export class BusinessGroupDto extends AbstractDto {
   businessgroupid: number;
 
   @ApiProperty()
-  businessgroupcode: number;
+  businessgroupcode: string;
 
   @ApiProperty()
   businessgroupdesc: string;

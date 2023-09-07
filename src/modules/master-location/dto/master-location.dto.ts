@@ -7,7 +7,7 @@ export class LocationDto extends AbstractDto {
   locationid: number;
 
   @ApiProperty()
-  locationcode: number;
+  locationcode: string;
 
   @ApiProperty()
   locationdesc: string;
