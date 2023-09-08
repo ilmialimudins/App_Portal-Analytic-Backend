@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessLine } from './master-business-line.entity';
 import { Repository } from 'typeorm';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { BusinessLineDto } from './dto/master-business-line.dto';
 import { AddBusinessLineDto } from './dto/add-master-business-line.dto';
 import { UpdateBusinessLineDto } from './dto/update-master-business-line.dto';
@@ -16,16 +14,63 @@ export class BusinessLineService {
   ) {}
 
   async getAllBusinessLine(
-    pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<BusinessLineDto>> {
+    page: number,
+    pageSize: number,
+  ): Promise<{ data: BusinessLineDto[]; total: number }> {
     try {
-      const query = this.businessLineRepository
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.businessLineRepository
         .createQueryBuilder('businessline')
-        .orderBy('businessline.businesslinedesc', pageOptions.order);
+        .select(['businesslinecode', 'businesslinedesc'])
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
+        .orderBy('businesslinecode')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
 
-      const [items, pageMetaDto] = await query.paginate(pageOptions);
+      const total = await this.businessLineRepository
+        .createQueryBuilder('businessline')
+        .select(['businesslinecode', 'businesslinedesc'])
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
+        .getCount();
 
-      return items.toPageDto(pageMetaDto);
+      return { data, total };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getBusinessLineName(
+    page: number,
+    pageSize: number,
+    businessline: string,
+  ): Promise<{ data: BusinessLineDto[]; total: number }> {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.businessLineRepository
+        .createQueryBuilder('businessline')
+        .select(['businesslinecode', 'businesslinedesc'])
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
+        .andWhere('businessline.businesslinedesc = :businessline', {
+          businessline,
+        })
+        .orderBy('businesslinecode')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
+
+      const total = await this.businessLineRepository
+        .createQueryBuilder('businessline')
+        .select(['businesslinecode', 'businesslinedesc'])
+        .where('businessline.isdelete = :isdelete', { isdelete: false })
+        .andWhere('businessline.businesslinedesc = :businessline', {
+          businessline,
+        })
+        .getCount();
+
+      return { data, total };
     } catch (error) {
       throw error;
     }
@@ -57,8 +102,9 @@ export class BusinessLineService {
         .values({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
-          desc: 'false',
+          isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 
@@ -74,13 +120,13 @@ export class BusinessLineService {
   ) {
     try {
       const query = await this.businessLineRepository
-        .createQueryBuilder('businessline')
+        .createQueryBuilder()
         .update(BusinessLine)
         .set({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
         })
-        .where('businessline.businesslineid =:businesslineid', {
+        .where('businesslineid =:businesslineid', {
           businesslineid,
         })
         .execute();
@@ -94,10 +140,10 @@ export class BusinessLineService {
   async deleteBusinessline(businesslineid: number) {
     try {
       const query = await this.businessLineRepository
-        .createQueryBuilder('businessline')
+        .createQueryBuilder()
         .update(BusinessLine)
-        .set({ desc: 'true' })
-        .where('businessline.businesslineid =:businesslineid', {
+        .set({ isdelete: 'true' })
+        .where('businesslineid =:businesslineid', {
           businesslineid,
         })
         .execute();

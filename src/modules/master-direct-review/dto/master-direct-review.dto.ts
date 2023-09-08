@@ -7,7 +7,7 @@ export class DirectReviewDto extends AbstractDto {
   directreviewid: number;
 
   @ApiProperty()
-  directreviewcode: number;
+  directreviewcode: string;
 
   @ApiProperty()
   directreviewdesc: string;

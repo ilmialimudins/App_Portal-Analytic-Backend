@@ -7,7 +7,7 @@ export class SurveyGroupDto extends AbstractDto {
   surveygroupid: number;
 
   @ApiProperty()
-  surveygroupcode: number;
+  surveygroupcode: string;
 
   @ApiProperty()
   surveygroupdesc: string;

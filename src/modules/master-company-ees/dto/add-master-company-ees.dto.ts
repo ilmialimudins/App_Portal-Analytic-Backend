@@ -14,13 +14,18 @@ export class AddMasterCompanyEESDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber()
-  readonly companycode: number;
+  @IsString()
+  readonly companycode: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   readonly companyeesname: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly companympsname: string;
 
   @ApiPropertyOptional()
   @IsOptional()

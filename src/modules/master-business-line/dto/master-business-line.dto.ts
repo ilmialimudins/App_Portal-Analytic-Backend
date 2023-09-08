@@ -7,7 +7,7 @@ export class BusinessLineDto extends AbstractDto {
   businesslineid: number;
 
   @ApiProperty()
-  businesslinecode: number;
+  businesslinecode: string;
 
   @ApiProperty()
   businesslinedesc: string;
@@ -15,11 +15,15 @@ export class BusinessLineDto extends AbstractDto {
   @ApiProperty()
   desc: string;
 
+  @ApiProperty()
+  isdelete: string;
+
   constructor(businessLineEntity: BusinessLine) {
     super(businessLineEntity, { exludeFields: true });
     this.businesslineid = businessLineEntity.businesslineid * 1;
     this.businesslinecode = businessLineEntity.businesslinecode;
     this.businesslinedesc = businessLineEntity.businesslinedesc;
     this.desc = businessLineEntity.desc;
+    this.isdelete = businessLineEntity.isdelete;
   }
 }

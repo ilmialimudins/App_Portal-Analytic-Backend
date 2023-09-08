@@ -10,8 +10,8 @@ export class BusinessGroup extends AbstractEntity<BusinessGroupDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'businessgroupid' })
   businessgroupid: number;
 
-  @Column({ type: 'bigint', name: 'businessgroupcode', nullable: false })
-  businessgroupcode: number;
+  @Column({ type: 'varchar', name: 'businessgroupcode', nullable: false })
+  businessgroupcode: string;
 
   @Column({ type: 'varchar', name: 'businessgroupdesc', nullable: false })
   businessgroupdesc: string;

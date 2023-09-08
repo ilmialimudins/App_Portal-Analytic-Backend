@@ -10,8 +10,8 @@ export class DirectReview extends AbstractEntity<DirectReviewDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'directreviewid' })
   directreviewid: number;
 
-  @Column({ type: 'bigint', name: 'directreviewcode', nullable: false })
-  directreviewcode: number;
+  @Column({ type: 'varchar', name: 'directreviewcode', nullable: false })
+  directreviewcode: string;
 
   @Column({ type: 'varchar', name: 'directreviewdesc', nullable: false })
   directreviewdesc: string;

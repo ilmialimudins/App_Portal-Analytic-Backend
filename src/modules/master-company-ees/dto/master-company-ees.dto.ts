@@ -7,7 +7,7 @@ export class MasterCompanyEESDto extends AbstractDto {
   companyid: number;
 
   @ApiProperty()
-  companycode: number;
+  companycode: string;
 
   @ApiProperty()
   companyeesname: string;

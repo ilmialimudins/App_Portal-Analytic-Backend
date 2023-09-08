@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Demography } from './master-demography.entity';
 import { Repository } from 'typeorm';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { DemographyDto } from './dto/master-demography.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
@@ -16,22 +14,65 @@ export class DemographyService {
   ) {}
 
   async getAllDemography(
-    pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<DemographyDto>> {
+    page: number,
+    pageSize: number,
+  ): Promise<{ data: DemographyDto[]; total: number }> {
     try {
-      const query = this.demographyRepository
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.demographyRepository
         .createQueryBuilder('demography')
-        .orderBy('demography.urutanfilter', pageOptions.order);
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.isdelete = :isdelete', { isdelete: false })
+        .orderBy('urutanfilter')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
 
-      const [items, pageMetaDto] = await query.paginate(pageOptions);
+      const total = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.isdelete = :isdelete', { isdelete: false })
+        .getCount();
 
-      return items.toPageDto(pageMetaDto);
+      return { data, total };
     } catch (error) {
       throw error;
     }
   }
 
-  async getDemographyById(
+  async getDemographyName(
+    page: number,
+    pageSize: number,
+    demography: string,
+  ): Promise<{ data: DemographyDto[]; total: number }> {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.isdelete = :isdelete', { isdelete: false })
+        .andWhere('demography.demographydesc = :demography', { demography })
+        .orderBy('urutanfilter')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
+
+      const total = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .where('demography.isdelete = :isdelete', { isdelete: false })
+        .andWhere('demography.demographydesc = :demography', { demography })
+        .getCount();
+
+      return { data, total };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDemographyId(
     demographyid: number,
   ): Promise<DemographyDto | undefined> {
     try {
@@ -48,7 +89,7 @@ export class DemographyService {
 
   async createDemography(demography: AddDemographyDto) {
     try {
-      const query = this.demographyRepository
+      const query = await this.demographyRepository
         .createQueryBuilder('demography')
         .insert()
         .into(Demography)
@@ -57,8 +98,9 @@ export class DemographyService {
           demographydesc: demography.demographydesc,
           demographyalias: demography.demographyalias,
           urutanfilter: demography.urutanfilter,
-          desc: 'false',
+          isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 
@@ -74,12 +116,12 @@ export class DemographyService {
   ) {
     try {
       const query = await this.demographyRepository
-        .createQueryBuilder('demography')
+        .createQueryBuilder()
         .update(Demography)
         .set({
           demographyalias: demography.demographyalias,
         })
-        .where('demography.demographyid =:demographyid', { demographyid })
+        .where('demographyid =:demographyid', { demographyid })
         .execute();
 
       return query;
@@ -91,10 +133,10 @@ export class DemographyService {
   async deleteDemography(demographyid: number) {
     try {
       const query = await this.demographyRepository
-        .createQueryBuilder('Demography')
+        .createQueryBuilder()
         .update(Demography)
-        .set({ desc: 'true' })
-        .where('demography.demographyid = :demographyid', { demographyid })
+        .set({ isdelete: 'true' })
+        .where('demographyid = :demographyid', { demographyid })
         .execute();
 
       return query;

@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MasterCompanyEES } from './master-company-ees.entity';
 import { Repository } from 'typeorm';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
 import { MasterCompanyEESDto } from './dto/master-company-ees.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { AddMasterCompanyEESDto } from './dto/add-master-company-ees.dto';
 import { UpdateMasterCompanyEESDto } from './dto/update-master-company-ees.dto';
 
@@ -16,30 +14,124 @@ export class MasterCompanyEESService {
   ) {}
 
   async getAllCompany(
-    pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<MasterCompanyEESDto>> {
+    page: number,
+    pageSize: number,
+  ): Promise<{ data: MasterCompanyEESDto[]; total: number }> {
     try {
-      const query = this.masterCompanyEESRepository
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.masterCompanyEESRepository
         .createQueryBuilder('mastercompanyees')
-        .where('mastercompanyees.isDelete = :isDelete', { isDelete: false })
-        .orderBy('mastercompanyees.companyeesname', pageOptions.order);
+        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
+        .leftJoin('mastercompanyees.businessline', 'businessline')
+        .leftJoin('mastercompanyees.modellingtype', 'modellingtype')
+        .select([
+          'companycode',
+          'companyeesname',
+          'aliascompany1',
+          'aliascompany2',
+          'aliascompany3',
+          'surveygroupdesc',
+          'businesslinedesc',
+          'modellingtypedesc',
+        ])
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
+        .orderBy('companyeesname')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
 
-      const [items, pageMetaDto] = await query.paginate(pageOptions);
+      const total = await this.masterCompanyEESRepository
+        .createQueryBuilder('mastercompanyees')
+        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
+        .leftJoin('mastercompanyees.businessline', 'businessline')
+        .leftJoin('mastercompanyees.modellingtype', 'modellingtype')
+        .select([
+          'companycode',
+          'companyeesname',
+          'aliascompany1',
+          'aliascompany2',
+          'aliascompany3',
+          'surveygroupdesc',
+          'businesslinedesc',
+          'modellingtypedesc',
+        ])
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
+        .getCount();
 
-      return items.toPageDto(pageMetaDto);
+      return { data, total };
     } catch (error) {
       throw error;
     }
   }
 
-  async getCompanyById(
+  async getCompanyName(
+    page: number,
+    pageSize: number,
+    companyname: string,
+  ): Promise<{ data: MasterCompanyEESDto[]; total: number }> {
+    try {
+      const offset = (page - 1) * pageSize;
+
+      const data = await this.masterCompanyEESRepository
+        .createQueryBuilder('mastercompanyees')
+        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
+        .leftJoin('mastercompanyees.businessline', 'businessline')
+        .leftJoin('mastercompanyees.modellingtype', 'modellingtype')
+        .select([
+          'companycode',
+          'companyeesname',
+          'aliascompany1',
+          'aliascompany2',
+          'aliascompany3',
+          'surveygroupdesc',
+          'businesslinedesc',
+          'modellingtypedesc',
+        ])
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
+        .andWhere('mastercompanyees.companyeesname = :companyname', {
+          companyname,
+        })
+        .orderBy('companyeesname')
+        .offset(offset)
+        .limit(pageSize)
+        .getRawMany();
+
+      const total = await this.masterCompanyEESRepository
+        .createQueryBuilder('mastercompanyees')
+        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
+        .leftJoin('mastercompanyees.businessline', 'businessline')
+        .leftJoin('mastercompanyees.modellingtype', 'modellingtype')
+        .select([
+          'companycode',
+          'companyeesname',
+          'aliascompany1',
+          'aliascompany2',
+          'aliascompany3',
+          'surveygroupdesc',
+          'businesslinedesc',
+          'modellingtypedesc',
+        ])
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
+        .andWhere('mastercompanyees.companyeesname = :companyname', {
+          companyname,
+        })
+        .getCount();
+
+      return { data, total };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getCompanyId(
     companyid: number,
   ): Promise<MasterCompanyEESDto | undefined> {
     try {
       const query = await this.masterCompanyEESRepository
         .createQueryBuilder('mastercompanyees')
         .where('mastercompanyees.companyid = :companyid', { companyid })
-        .andWhere('mastercompanyees.isDelete = :isDelete', { isDelete: false })
+        .where('mastercompanyees.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query?.toDto();
@@ -48,26 +140,7 @@ export class MasterCompanyEESService {
     }
   }
 
-  async getCompanyEESName(
-    pageOptions: PageOptionsDTO,
-    name: string,
-  ): Promise<PageDto<MasterCompanyEESDto>> {
-    try {
-      const query = this.masterCompanyEESRepository
-        .createQueryBuilder('mastercompanyees')
-        .where('mastercompanyees.companyeesname = :name', { name })
-        .andWhere('mastercompanyees.isDelete = :isDelete', { isDelete: false })
-        .orderBy('mastercompanyees.companyeesname', pageOptions.order);
-
-      const [items, pageMetaDto] = await query.paginate(pageOptions);
-
-      return items.toPageDto(pageMetaDto);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addCompany(company: AddMasterCompanyEESDto) {
+  async createCompany(company: AddMasterCompanyEESDto) {
     try {
       const query = await this.masterCompanyEESRepository
         .createQueryBuilder('mastercompanyees')
@@ -84,6 +157,7 @@ export class MasterCompanyEESService {
           modellingtypeid: company.modellingtypeid,
           isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 
