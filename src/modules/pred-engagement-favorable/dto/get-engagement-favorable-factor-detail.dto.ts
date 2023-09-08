@@ -24,6 +24,9 @@ export class QcodeDataDTO {
 
   @ApiProperty()
   question: string;
+
+  @ApiProperty()
+  qcode: string;
 }
 
 export class FavorableDataDTO {

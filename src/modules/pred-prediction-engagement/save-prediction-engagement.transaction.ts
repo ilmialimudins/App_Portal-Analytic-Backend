@@ -3,6 +3,7 @@ import { BaseTransaction } from 'src/common/abstract.transaction';
 import { SavePredictionEngagementDTO } from './dto/save-prediction-engagement.dto';
 import {
   GetPredictionEngagementDTO,
+  PredictionAfterEngagementDTO,
   PredictionEngagementDTO,
 } from './dto/get-prediction-engagement.dto';
 import { DataSource, EntityManager } from 'typeorm';
@@ -64,6 +65,13 @@ export class SavePredictionEngagementTransaction extends BaseTransaction<
         listOfPrediction,
       );
 
+    const after = prediction_after as PredictionAfterEngagementDTO;
+
+    const SustainableEngagement =
+      this.predictionEngagementServices.calculateAverageEngagement(after);
+
+    after.Sustainable_Engagement = SustainableEngagement;
+
     const engagements = [
       {
         id: 1,
@@ -99,7 +107,7 @@ export class SavePredictionEngagementTransaction extends BaseTransaction<
     return {
       aggregations: aggregations,
       prediction_before: prediction_before as PredictionEngagementDTO,
-      prediction_after: prediction_after as PredictionEngagementDTO,
+      prediction_after: prediction_after as PredictionAfterEngagementDTO,
     };
   }
 }

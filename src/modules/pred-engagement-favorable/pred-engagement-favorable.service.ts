@@ -34,9 +34,14 @@ export class PredEngagementFavorableService {
         .where('favorable.d_companyid = :d_companyid', {
           d_companyid: d_companyid,
         })
+        .andWhere('favorable.iscurrentsurvey = :value', { value: 'Current' })
         .getRawMany();
 
-      return result as GetAverageFavorableAllFactorResultDTO[];
+      const removeDuplicate = result.reduce((acc, val) => {
+        return { ...acc, [val.factor_name]: val };
+      }, {});
+
+      return Object.values(removeDuplicate);
     } catch (error) {
       throw error;
     }
@@ -47,7 +52,6 @@ export class PredEngagementFavorableService {
     d_factorid,
   }: GetFavorableFactorDetailQueryDTO): Promise<GetFavorableFactorDetailDTO> {
     try {
-      console.log('here');
       const result = await this.engagementFavorableRepo.find({
         where: {
           d_companyid: parseInt(d_companyid),
@@ -60,6 +64,9 @@ export class PredEngagementFavorableService {
         },
         order: {
           favorable_type: 'ASC',
+          qcode: {
+            qcode: 'ASC',
+          },
         },
       });
 
@@ -77,6 +84,7 @@ export class PredEngagementFavorableService {
                 count_respondent: val.count_respondent,
                 percentage_all_favorabletype: val.percentage_all_favorabletype,
                 question: val.qcode.question,
+                qcode: val.qcode.new_qcode,
               },
             ],
           });
@@ -86,6 +94,7 @@ export class PredEngagementFavorableService {
             count_respondent: val.count_respondent,
             percentage_all_favorabletype: val.percentage_all_favorabletype,
             question: val.qcode.question,
+            qcode: val.qcode.new_qcode,
           });
         }
         return acc;
