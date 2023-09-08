@@ -19,7 +19,7 @@ export class StopwordsController {
   constructor(private stopwordsService: StopwordsService) {}
 
   @Get('/')
-  @ApiOkResponse({ type: [StopwordsDto] })
+  @ApiOkResponse({ type: StopwordsDto })
   async getAllStopwords(
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
@@ -28,7 +28,7 @@ export class StopwordsController {
   }
 
   @Get('/stopwordsFilter')
-  @ApiOkResponse({ type: [StopwordsDto] })
+  @ApiOkResponse({ type: StopwordsDto })
   async getAllStopwordsFilter(
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
@@ -43,8 +43,14 @@ export class StopwordsController {
     );
   }
 
+  @Get('/getStopwordsId')
+  @ApiOkResponse({ type: StopwordsDto })
+  async getStopwordsId(@Query('uuid') uuid: string) {
+    return this.stopwordsService.getStopwordsId(uuid);
+  }
+
   @Post('/createStopwords')
-  @ApiOkResponse({ type: [StopwordsDto] })
+  @ApiOkResponse({ type: StopwordsDto })
   async createStopwords(@Body() stopwords: AddStopwordsDto) {
     const checkOne = await this.stopwordsService.checkOneStopwords(stopwords);
 
@@ -58,7 +64,7 @@ export class StopwordsController {
   }
 
   @Patch('/updateStopwords')
-  @ApiOkResponse({ type: [StopwordsDto] })
+  @ApiOkResponse({ type: StopwordsDto })
   async updateStopwords(
     @Query('uuid') uuid: string,
     @Body() Stopwords: UpdateStopwordsDto,
@@ -67,7 +73,7 @@ export class StopwordsController {
   }
 
   @Delete('/deleteStopwords')
-  @ApiOkResponse({ type: [StopwordsDto] })
+  @ApiOkResponse({ type: StopwordsDto })
   async deleteStopwords(@Query('uuid') uuid: string) {
     return this.stopwordsService.deleteStopwords(uuid);
   }

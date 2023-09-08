@@ -19,7 +19,7 @@ export class StopwordsDto extends AbstractDto {
   stopwords: string;
 
   @ApiProperty()
-  isDelete: string;
+  isdelete: string;
 
   constructor(stopwordsEntity: Stopwords) {
     super(stopwordsEntity, { exludeFields: true });
@@ -28,6 +28,6 @@ export class StopwordsDto extends AbstractDto {
     this.companyid = stopwordsEntity.companyid;
     this.tahun_survey = stopwordsEntity.tahun_survey;
     this.stopwords = stopwordsEntity.stopwords;
-    this.isDelete = stopwordsEntity.isDelete;
+    this.isdelete = stopwordsEntity.isdelete;
   }
 }
