@@ -61,7 +61,7 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
           },
           {
             name: 'companycode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: true,
           },
           {

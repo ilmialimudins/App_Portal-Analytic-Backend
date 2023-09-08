@@ -1,33 +1,31 @@
+import { query } from 'express';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
-  implements MigrationInterface
-{
+export class AddTableMasterRole1693464762337 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_masterrole',
         columns: [
           {
-            name: 'locationid',
+            name: 'roleid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
+            name: 'rolecode',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
+            name: 'rolename',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'desc',
+            name: 'roledesc',
             type: 'varchar',
             isNullable: true,
           },
@@ -49,7 +47,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -68,11 +65,10 @@ export class AddTableMasterDataLocation1690335811786
           },
         ],
       }),
-      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_masterrole');
   }
 }

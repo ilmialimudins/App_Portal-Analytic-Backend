@@ -1,34 +1,31 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
-  implements MigrationInterface
-{
+export class AddTableRoleUser1693470978025 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_roleuser',
         columns: [
           {
-            name: 'locationid',
+            name: 'roleuserid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
-            type: 'varchar',
-            isNullable: false,
+            name: 'roleid',
+            type: 'bigint',
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'desc',
-            type: 'varchar',
+            name: 'userid',
+            type: 'bigint',
             isNullable: true,
           },
           {
@@ -49,7 +46,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -70,9 +66,25 @@ export class AddTableMasterDataLocation1690335811786
       }),
       true,
     );
+    await queryRunner.createForeignKeys('ir_roleuser', [
+      new TableForeignKey({
+        columnNames: ['roleid'],
+        referencedTableName: 'ir_masterrole',
+        referencedColumnNames: ['roleid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+      new TableForeignKey({
+        columnNames: ['userid'],
+        referencedTableName: 'ir_masteruser',
+        referencedColumnNames: ['userid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+    ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_roleuser');
   }
 }

@@ -1,34 +1,46 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
-  implements MigrationInterface
-{
+export class AddTableMasterMenu1693988032415 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_mastermenu',
         columns: [
           {
-            name: 'locationid',
+            name: 'menuid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
+            name: 'menucode',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
+            name: 'menuname',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'desc',
+            name: 'parentid',
+            type: 'int',
+            isNullable: true,
+          },
+          {
+            name: 'sequence',
+            type: 'int',
+            isNullable: true,
+          },
+          {
+            name: 'url',
             type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'issection',
+            type: 'int',
             isNullable: true,
           },
           {
@@ -49,7 +61,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -73,6 +84,6 @@ export class AddTableMasterDataLocation1690335811786
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_mastermenu');
   }
 }

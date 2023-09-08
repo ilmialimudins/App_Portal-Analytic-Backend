@@ -1,33 +1,45 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
-  implements MigrationInterface
-{
+export class AddTableMasterUser1693452023313 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_masteruser',
         columns: [
           {
-            name: 'locationid',
+            name: 'userid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
+            name: 'username',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
+            name: 'email',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'desc',
+            name: 'companycode',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'companyname',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'phonenumber',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'npk',
             type: 'varchar',
             isNullable: true,
           },
@@ -49,7 +61,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -73,6 +84,6 @@ export class AddTableMasterDataLocation1690335811786
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_masteruser');
   }
 }

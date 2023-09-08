@@ -1,33 +1,45 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
-  implements MigrationInterface
-{
+export class AddTableMasterSection1693991279128 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_mastersection',
         columns: [
           {
-            name: 'locationid',
+            name: 'sectionid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
-            type: 'varchar',
-            isNullable: false,
+            name: 'reportid',
+            type: 'bigint',
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
+            name: 'sectioncode',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'desc',
+            name: 'sectionname',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'sectiondesc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'sectioncodepowerbiid',
             type: 'varchar',
             isNullable: true,
           },
@@ -49,7 +61,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -70,9 +81,19 @@ export class AddTableMasterDataLocation1690335811786
       }),
       true,
     );
+
+    await queryRunner.createForeignKeys('ir_mastersection', [
+      new TableForeignKey({
+        columnNames: ['reportid'],
+        referencedTableName: 'ir_mastersection',
+        referencedColumnNames: ['reportid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+    ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_mastersection');
   }
 }

@@ -1,33 +1,55 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
-  implements MigrationInterface
-{
+export class AddTableMasterReport1693990558611 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ir_masterreport',
         columns: [
           {
-            name: 'locationid',
+            name: 'reportid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
-            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
-            type: 'varchar',
-            isNullable: false,
+            name: 'workspaceid',
+            type: 'bigint',
+            isNullable: true,
           },
           {
-            name: 'locationdesc',
+            name: 'reportcode',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'desc',
+            name: 'reportname',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'reportdesc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'reporturl',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'reportpowerbiid',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'datasetpowerbiid',
             type: 'varchar',
             isNullable: true,
           },
@@ -49,7 +71,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -70,9 +91,19 @@ export class AddTableMasterDataLocation1690335811786
       }),
       true,
     );
+
+    await queryRunner.createForeignKeys('ir_masterreport', [
+      new TableForeignKey({
+        columnNames: ['workspaceid'],
+        referencedTableName: 'ir_masterworkspace',
+        referencedColumnNames: ['workspaceid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+    ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ir_masterreport');
   }
 }

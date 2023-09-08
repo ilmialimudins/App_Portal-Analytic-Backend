@@ -82,7 +82,7 @@ export class AddTableEmployeeOpinionNgram1691563260661
             isNullable: true,
           },
           {
-            name: 'isDelete',
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },
@@ -113,6 +113,18 @@ export class AddTableEmployeeOpinionNgram1691563260661
           {
             name: 'sync_date',
             type: 'datetime',
+            isNullable: true,
+          },
+          {
+            name: 'is_sync',
+            type: 'int',
+            default: '0',
+            isNullable: true,
+          },
+          {
+            name: 'is_update',
+            type: 'int',
+            default: '0',
             isNullable: true,
           },
         ],

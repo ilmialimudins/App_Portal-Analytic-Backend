@@ -42,7 +42,7 @@ export class AddTableReplaceWordcloud1691553401724
             isNullable: true,
           },
           {
-            name: 'isDelete',
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },
@@ -73,6 +73,12 @@ export class AddTableReplaceWordcloud1691553401724
           {
             name: 'sync_date',
             type: 'datetime',
+            isNullable: true,
+          },
+          {
+            name: 'is_sync',
+            type: 'int',
+            default: '0',
             isNullable: true,
           },
         ],
