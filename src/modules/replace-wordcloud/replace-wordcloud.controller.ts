@@ -6,13 +6,17 @@ import {
   Body,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ReplaceWordcloudService } from './replace-wordcloud.service';
 import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Replace Wordcloud')
 @Controller('ReplaceWordcloud')
 export class ReplaceWordcloudController {
