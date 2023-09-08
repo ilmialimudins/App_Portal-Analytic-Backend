@@ -1,9 +1,20 @@
-import { Body, Controller, Delete, Get, Patch, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { NgramService } from './ngram.service';
 import { NgramDto } from './dto/ngram.dto';
 import { UpdateNgramDto } from './dto/update-ngram.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Ngram')
 @Controller('Ngram')
 export class NgramController {
