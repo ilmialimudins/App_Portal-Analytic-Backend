@@ -6,13 +6,17 @@ import {
   Post,
   Query,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { StopwordsService } from './stopwords.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { StopwordsDto } from './dto/stopwords.dto';
 import { AddStopwordsDto } from './dto/add-stopwords.dto';
 import { UpdateStopwordsDto } from './dto/update-stopwords.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Stopwords')
 @Controller('Stopwords')
 export class StopwordsController {
