@@ -8,5 +8,6 @@ import { MasterEESCompany } from './master-company.entity';
   imports: [TypeOrmModule.forFeature([MasterEESCompany])],
   providers: [MasterCompanyService],
   controllers: [MasterCompanyController],
+  exports: [MasterCompanyService],
 })
 export class MasterCompanyModule {}
