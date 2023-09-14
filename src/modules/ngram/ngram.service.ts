@@ -22,6 +22,7 @@ export class NgramService {
       const data = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'DISTINCT ngram.word',
           'mastercompanyees.companyeesname',
           'ngram.tahun_survey',
@@ -36,6 +37,7 @@ export class NgramService {
       const total = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'DISTINCT ngram.word',
           'mastercompanyees.companyeesname',
           'ngram.tahun_survey',
@@ -62,6 +64,7 @@ export class NgramService {
       const data = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'DISTINCT ngram.word',
           'mastercompanyees.companyeesname',
           'ngram.tahun_survey',
@@ -80,6 +83,7 @@ export class NgramService {
       const total = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'DISTINCT ngram.word',
           'mastercompanyees.companyeesname',
           'ngram.tahun_survey',
@@ -124,6 +128,7 @@ export class NgramService {
       const data = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'ngram.uuid',
           'mastercompanyees.companyeesname',
           'ngram.tahun_survey',
@@ -148,6 +153,7 @@ export class NgramService {
       const total = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'ngram.uuid',
           'mastercompanyees.companyeesname',
           'ngram.tahun_survey',
