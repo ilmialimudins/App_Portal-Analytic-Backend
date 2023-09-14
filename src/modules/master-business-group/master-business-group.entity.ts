@@ -19,7 +19,7 @@ export class BusinessGroup extends AbstractEntity<BusinessGroupDto> {
   @Column({ type: 'varchar', name: 'desc', nullable: true })
   desc: string;
 
-  @Column({ type: 'varchar', name: 'desc', nullable: true })
+  @Column({ type: 'varchar', name: 'isdelete', nullable: true })
   isdelete: string;
 
   @OneToMany(
