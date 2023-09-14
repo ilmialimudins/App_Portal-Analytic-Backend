@@ -22,7 +22,7 @@ export class MasterRoleService {
 
       const data = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
-        .select(['rolename', 'roledesc'])
+        .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .orderBy('rolename')
         .offset(offset)
@@ -31,7 +31,7 @@ export class MasterRoleService {
 
       const total = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
-        .select(['rolename', 'roledesc'])
+        .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
@@ -51,7 +51,7 @@ export class MasterRoleService {
 
       const data = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
-        .select(['rolename', 'roledesc'])
+        .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .andWhere('masterrole.rolename = :rolename', { rolename })
         .orderBy('rolename')
@@ -61,7 +61,7 @@ export class MasterRoleService {
 
       const total = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
-        .select(['rolename', 'roledesc'])
+        .select(['roleid', 'rolename', 'roledesc'])
         .andWhere('masterrole.rolename = :rolename', { rolename })
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .getCount();

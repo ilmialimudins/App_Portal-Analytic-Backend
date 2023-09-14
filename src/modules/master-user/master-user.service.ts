@@ -22,7 +22,7 @@ export class MasterUserService {
 
       const data = await this.masterUserRepository
         .createQueryBuilder('masteruser')
-        .select(['username', 'email', 'phonenumber', 'companyname'])
+        .select(['userid', 'username', 'email', 'phonenumber', 'companyname'])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
         .orderBy('username')
         .offset(offset)
@@ -31,7 +31,7 @@ export class MasterUserService {
 
       const total = await this.masterUserRepository
         .createQueryBuilder('masteruser')
-        .select(['username', 'email', 'phonenumber', 'companyname'])
+        .select(['userid', 'username', 'email', 'phonenumber', 'companyname'])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
@@ -51,7 +51,7 @@ export class MasterUserService {
 
       const data = await this.masterUserRepository
         .createQueryBuilder('masteruser')
-        .select(['username', 'email', 'phonenumber', 'companyname'])
+        .select(['userid', 'username', 'email', 'phonenumber', 'companyname'])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masteruser.username = :username', { username })
         .orderBy('username')
@@ -61,7 +61,7 @@ export class MasterUserService {
 
       const total = await this.masterUserRepository
         .createQueryBuilder('masteruser')
-        .select(['username', 'email', 'phonenumber', 'companyname'])
+        .select(['userid', 'username', 'email', 'phonenumber', 'companyname'])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masteruser.username = :username', { username })
         .getCount();

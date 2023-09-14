@@ -24,7 +24,11 @@ export class RoleUserService {
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
-        .select(['masteruser.email', 'masterrole.rolename'])
+        .select([
+          'roleuser.roleuserid',
+          'masteruser.email',
+          'masterrole.rolename',
+        ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .orderBy('masteruser.email')
         .offset(offset)
@@ -35,7 +39,11 @@ export class RoleUserService {
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
-        .select(['masteruser.email', 'masterrole.rolename'])
+        .select([
+          'roleuser.roleuserid',
+          'masteruser.email',
+          'masterrole.rolename',
+        ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
@@ -57,7 +65,11 @@ export class RoleUserService {
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
-        .select(['masteruser.email', 'masterrole.rolename'])
+        .select([
+          'roleuser.roleuserid',
+          'masteruser.email',
+          'masterrole.rolename',
+        ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masterrole.rolename = :rolename', { rolename })
         .orderBy('masteruser.email')
@@ -69,7 +81,11 @@ export class RoleUserService {
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
-        .select(['masteruser.email', 'masterrole.rolename'])
+        .select([
+          'roleuser.roleuserid',
+          'masteruser.email',
+          'masterrole.rolename',
+        ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masterrole.rolename = :rolename', { rolename })
         .getCount();
@@ -92,7 +108,11 @@ export class RoleUserService {
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
-        .select(['masteruser.email', 'masterrole.rolename'])
+        .select([
+          'roleuser.roleuserid',
+          'masteruser.email',
+          'masterrole.rolename',
+        ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masteruser.email = :email', { email })
         .orderBy('masteruser.email')
@@ -104,7 +124,11 @@ export class RoleUserService {
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
-        .select(['masteruser.email', 'masterrole.rolename'])
+        .select([
+          'roleuser.roleuserid',
+          'masteruser.email',
+          'masterrole.rolename',
+        ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masteruser.email = :email', { email })
         .getCount();

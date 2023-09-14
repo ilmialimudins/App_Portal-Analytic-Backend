@@ -28,6 +28,7 @@ export class AccessUserService {
         .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
         .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
         .select([
+          'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
@@ -48,6 +49,7 @@ export class AccessUserService {
         .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
         .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
         .select([
+          'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
@@ -79,6 +81,7 @@ export class AccessUserService {
         .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
         .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
         .select([
+          'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
@@ -100,6 +103,7 @@ export class AccessUserService {
         .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
         .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
         .select([
+          'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
