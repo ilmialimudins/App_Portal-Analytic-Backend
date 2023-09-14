@@ -24,6 +24,7 @@ export class StopwordsService {
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'stopwords.stopwords',
           'mastercompanyees.companyeesname',
           'stopwords.tahun_survey',
@@ -39,6 +40,7 @@ export class StopwordsService {
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'stopwords.stopwords',
           'mastercompanyees.companyeesname',
           'stopwords.tahun_survey',
@@ -66,6 +68,7 @@ export class StopwordsService {
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'stopwords.stopwords',
           'mastercompanyees.companyeesname',
           'stopwords.tahun_survey',
@@ -85,6 +88,7 @@ export class StopwordsService {
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'stopwords.stopwords',
           'mastercompanyees.companyeesname',
           'stopwords.tahun_survey',
