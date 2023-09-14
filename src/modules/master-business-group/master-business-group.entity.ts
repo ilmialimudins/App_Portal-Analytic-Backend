@@ -19,6 +19,9 @@ export class BusinessGroup extends AbstractEntity<BusinessGroupDto> {
   @Column({ type: 'varchar', name: 'desc', nullable: true })
   desc: string;
 
+  @Column({ type: 'varchar', name: 'desc', nullable: true })
+  isdelete: string;
+
   @OneToMany(
     () => MasterCompanyEES,
     (mastercompanyees) => mastercompanyees.businessgroupid,
