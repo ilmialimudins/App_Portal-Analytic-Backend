@@ -24,7 +24,11 @@ export class RoleMenuService {
         .createQueryBuilder('rolemenu')
         .leftJoin('rolemenu.masterrole', 'masterrole')
         .leftJoin('rolemenu.mastermenu', 'mastermenu')
-        .select(['masterrole.rolename', 'mastermenu.menuname'])
+        .select([
+          'rolemenu.rolemenuid',
+          'masterrole.rolename',
+          'mastermenu.menuname',
+        ])
         .where('rolemenu.isdelete = :isdelete', { isdelete: 'false' })
         .orderBy('masterrole.rolemenu')
         .offset(offset)

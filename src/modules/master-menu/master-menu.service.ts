@@ -22,7 +22,14 @@ export class MasterMenuService {
 
       const data = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
-        .select(['menuname', 'parentid', 'sequence', 'url', 'issection'])
+        .select([
+          'menuid',
+          'menuname',
+          'parentid',
+          'sequence',
+          'url',
+          'issection',
+        ])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .orderBy('parentid')
         .offset(offset)
