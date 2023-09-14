@@ -24,6 +24,7 @@ export class ReplaceWordcloudService {
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'mastercompanyees.companyeesname',
@@ -39,6 +40,7 @@ export class ReplaceWordcloudService {
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'mastercompanyees.companyeesname',
@@ -66,6 +68,7 @@ export class ReplaceWordcloudService {
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'mastercompanyees.companyeesname',
@@ -87,6 +90,7 @@ export class ReplaceWordcloudService {
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
         .select([
+          'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'mastercompanyees.companyeesname',
