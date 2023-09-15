@@ -19,6 +19,9 @@ export class SurveyGroup extends AbstractEntity<SurveyGroupDto> {
   @Column({ type: 'varchar', name: 'desc', nullable: true })
   desc: string;
 
+  @Column({ type: 'varchar', name: 'isdelete', nullable: true })
+  isdelete: string;
+
   @OneToMany(
     () => MasterCompanyEES,
     (mastercompanyees) => mastercompanyees.surveygroupid,
