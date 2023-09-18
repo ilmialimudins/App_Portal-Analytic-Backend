@@ -85,6 +85,20 @@ export class MasterRoleService {
     }
   }
 
+  async getLastMasterRoleCode() {
+    try {
+      const query = await this.masterRoleRepository
+        .createQueryBuilder('masterole')
+        .select('masterole.rolecode')
+        .orderBy('masterrole.rolecode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterRole(masterrole: AddMasterRoleDto) {
     try {
       const query = await this.masterRoleRepository

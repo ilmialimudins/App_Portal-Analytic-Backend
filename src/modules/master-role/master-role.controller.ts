@@ -49,6 +49,12 @@ export class MasterRoleController {
     return this.masterRoleService.getMasterRoleId(roleid);
   }
 
+  @Get('/getLastMasterRoleCode')
+  @ApiCreatedResponse({ type: MasterRoleDto })
+  async getLastMasterRoleCode() {
+    return this.masterRoleService.getLastMasterRoleCode();
+  }
+
   @Post('/createMasterRole')
   @ApiCreatedResponse({ type: MasterRoleDto })
   async createMasterRole(@Body() masterrole: AddMasterRoleDto) {
