@@ -61,6 +61,20 @@ export class MasterMenuService {
     }
   }
 
+  async getLastMasterMenuCode() {
+    try {
+      const query = await this.masterMenuRepository
+        .createQueryBuilder('mastermenu')
+        .select('mastermenu.menucode')
+        .orderBy('mastermenu.menucode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterMenu(mastermenu: AddMasterMenuDto) {
     try {
       const query = await this.masterMenuRepository

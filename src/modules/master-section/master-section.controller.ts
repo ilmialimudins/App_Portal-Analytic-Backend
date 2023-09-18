@@ -39,6 +39,12 @@ export class MasterSectionController {
     return this.masterSectionService.getMasterSectionId(sectionid);
   }
 
+  @Get('/getLastMasterSectionCode')
+  @ApiCreatedResponse({ type: MasterSectionDto })
+  async getLastMasterSectionCode() {
+    return this.masterSectionService.getLastMasterSectionCode();
+  }
+
   @Post('/createMasterSection')
   @ApiCreatedResponse({ type: MasterSectionDto })
   async createMasterSection(@Body() mastersection: AddMasterSectionDto) {

@@ -37,6 +37,12 @@ export class MasterReportController {
     return this.masterReportService.getMasterReportId(reportid);
   }
 
+  @Get('/getLastMasterReportCode')
+  @ApiCreatedResponse({ type: MasterReportDto })
+  async getLastMasterReportCode() {
+    return this.masterReportService.getLastMasterReportCode();
+  }
+
   @Post('/createMasterReport')
   @ApiCreatedResponse({ type: MasterReportDto })
   async createMasterReport(@Body() masterreport: AddMasterReportDto) {

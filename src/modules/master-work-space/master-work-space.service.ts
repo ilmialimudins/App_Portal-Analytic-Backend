@@ -61,6 +61,20 @@ export class MasterWorkSpaceService {
     }
   }
 
+  async getLastMasterWorkSpaceCode() {
+    try {
+      const query = await this.masterWorkSpaceRepository
+        .createQueryBuilder('masterworkspace')
+        .select('masterworkspace.workspacecode')
+        .orderBy('masterworkspace.workspacecode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterWorkSpace(masterworkspace: AddMasterWorkSpaceDto) {
     try {
       const query = this.masterWorkSpaceRepository

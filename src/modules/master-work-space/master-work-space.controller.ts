@@ -39,6 +39,12 @@ export class MasterWorkSpaceController {
     return this.masterWorkSpaceService.getMasterWorkspaceId(workspaceid);
   }
 
+  @Get('/getLastMasterWorkSpaceCode')
+  @ApiCreatedResponse({ type: MasterWorkSpaceDto })
+  async getLastMasterWorkSpaceCode() {
+    return this.masterWorkSpaceService.getLastMasterWorkSpaceCode();
+  }
+
   @Post('/createMasterWorkSpace')
   @ApiCreatedResponse({ type: MasterWorkSpaceDto })
   async createMasterWorkSpace(@Body() masterworkspace: AddMasterWorkSpaceDto) {

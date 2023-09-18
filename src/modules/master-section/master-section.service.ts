@@ -75,6 +75,20 @@ export class MasterSectionService {
     }
   }
 
+  async getLastMasterSectionCode() {
+    try {
+      const query = await this.masterSectionRepository
+        .createQueryBuilder('mastersection')
+        .select('mastersection.sectioncode')
+        .orderBy('mastersection.sectioncode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterSection(mastersection: AddMasterSectionDto) {
     try {
       const query = this.masterSectionRepository

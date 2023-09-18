@@ -75,6 +75,20 @@ export class MasterReportService {
     }
   }
 
+  async getLastMasterReportCode() {
+    try {
+      const query = await this.masterReportRepository
+        .createQueryBuilder('masterreport')
+        .select('masterreport.reportcode')
+        .orderBy('masterreport.reportcode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterReport(masterreport: AddMasterReportDto) {
     try {
       const query = this.masterReportRepository

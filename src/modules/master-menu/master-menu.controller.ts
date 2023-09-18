@@ -31,6 +31,12 @@ export class MasterMenuController {
     return this.masterMenuService.getAllMasterMenu(page, pageSize);
   }
 
+  @Get('getLastMasterMenuCode')
+  @ApiCreatedResponse({ type: MasterMenuDto })
+  async getLastMasterMenuCode() {
+    return this.masterMenuService.getLastMasterMenuCode();
+  }
+
   @Post('/createMasterMenu')
   @ApiCreatedResponse({ type: MasterMenuDto })
   async createMasterMenu(@Body() mastermenu: AddMasterMenuDto) {
