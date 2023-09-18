@@ -6,13 +6,17 @@ import {
   Body,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { BusinessLineService } from './master-business-line.service';
 import { BusinessLineDto } from './dto/master-business-line.dto';
 import { AddBusinessLineDto } from './dto/add-master-business-line.dto';
 import { UpdateBusinessLineDto } from './dto/update-master-business-line.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Business Line')
 @Controller('business-line')
 export class BusinessLineController {
@@ -47,6 +51,12 @@ export class BusinessLineController {
     @Query('businesslineid') businesslineid: number,
   ): Promise<BusinessLineDto | undefined> {
     return this.businessLineService.getBusinessLineId(businesslineid);
+  }
+
+  @Get('/getLastBusinessLineCode')
+  @ApiCreatedResponse({ type: BusinessLineDto })
+  async getLastBusinessLineCode() {
+    return this.businessLineService.getLastBusinessLineCode();
   }
 
   @Post('/createBusinessLine')
