@@ -83,6 +83,20 @@ export class LocationService {
     }
   }
 
+  async getLastLocationCode() {
+    try {
+      const query = await this.locationRepository
+        .createQueryBuilder('location')
+        .select('location.locationcode')
+        .orderBy('location.locationcode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createLocation(location: AddLocationDto) {
     try {
       const query = await this.locationRepository

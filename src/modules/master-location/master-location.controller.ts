@@ -49,6 +49,12 @@ export class LocationController {
     return this.locationService.getLocationId(locationid);
   }
 
+  @Get('/getLastLocationCode')
+  @ApiCreatedResponse({ type: LocationDto })
+  async getLastLocationCode() {
+    return this.locationService.getLastLocationCode();
+  }
+
   @Post('/createLocation')
   @ApiCreatedResponse({ type: LocationDto })
   async createLocation(@Body() location: AddLocationDto) {
