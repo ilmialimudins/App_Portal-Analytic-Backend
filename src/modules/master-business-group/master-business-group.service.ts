@@ -95,6 +95,20 @@ export class BusinessGroupService {
     }
   }
 
+  async getLastBusinessGroupCode() {
+    try {
+      const query = await this.businessGroupRepository
+        .createQueryBuilder('businessgroup')
+        .select('businessgroup.businessgroupcode')
+        .orderBy('businessgroup.businessgroupcode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createBusinessGroup(businessgroup: AddBusinessGroupDto) {
     try {
       const query = await this.businessGroupRepository

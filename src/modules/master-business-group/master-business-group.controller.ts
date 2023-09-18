@@ -53,6 +53,12 @@ export class BusinessGroupController {
     return this.businessGroupService.getBusinessGroupId(businessgroupid);
   }
 
+  @Get('/getLastBusinessGroupCode')
+  @ApiCreatedResponse({ type: BusinessGroupDto })
+  async getLastBusinessGroupCode() {
+    return this.businessGroupService.getLastBusinessGroupCode();
+  }
+
   @Post('/createBusinessGroup')
   @ApiCreatedResponse({ type: BusinessGroupDto })
   async createBusinessGroup(@Body() businessgroup: AddBusinessGroupDto) {
