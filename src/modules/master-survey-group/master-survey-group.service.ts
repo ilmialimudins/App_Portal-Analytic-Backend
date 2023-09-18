@@ -87,6 +87,20 @@ export class SurveyGroupService {
     }
   }
 
+  async getLastSurveyGroupCode() {
+    try {
+      const query = await this.surveyGroupRepository
+        .createQueryBuilder('surveygroup')
+        .select('surveygroup.surveygroupcode')
+        .orderBy('surveygroup.surveygroupcode', 'DESC')
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createSurveyGroup(surveygroup: AddSurveyGroupDto) {
     try {
       const query = await this.surveyGroupRepository

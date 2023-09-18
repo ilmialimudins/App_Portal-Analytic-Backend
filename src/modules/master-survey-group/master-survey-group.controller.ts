@@ -53,6 +53,12 @@ export class SurveyGroupController {
     return this.surveyGroupService.getSurveyGroupId(surveygroupid);
   }
 
+  @Get('getLastSurveyGroupCode')
+  @ApiCreatedResponse({ type: SurveyGroupDto })
+  async getLastSurveyGroupCode() {
+    return this.surveyGroupService.getLastSurveyGroupCode();
+  }
+
   @Post('/createSurveyGroup')
   @ApiCreatedResponse({ type: SurveyGroupDto })
   async createSurveyGroup(@Body() surveygroup: AddSurveyGroupDto) {
