@@ -22,7 +22,7 @@ export class BusinessLineService {
 
       const data = await this.businessLineRepository
         .createQueryBuilder('businessline')
-        .select(['businesslinecode', 'businesslinedesc'])
+        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
         .where('businessline.isdelete = :isdelete', { isdelete: false })
         .orderBy('businesslinecode')
         .offset(offset)
@@ -31,7 +31,7 @@ export class BusinessLineService {
 
       const total = await this.businessLineRepository
         .createQueryBuilder('businessline')
-        .select(['businesslinecode', 'businesslinedesc'])
+        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
         .where('businessline.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
@@ -51,7 +51,7 @@ export class BusinessLineService {
 
       const data = await this.businessLineRepository
         .createQueryBuilder('businessline')
-        .select(['businesslinecode', 'businesslinedesc'])
+        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
         .where('businessline.isdelete = :isdelete', { isdelete: false })
         .andWhere('businessline.businesslinedesc = :businessline', {
           businessline,
@@ -63,7 +63,7 @@ export class BusinessLineService {
 
       const total = await this.businessLineRepository
         .createQueryBuilder('businessline')
-        .select(['businesslinecode', 'businesslinedesc'])
+        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
         .where('businessline.isdelete = :isdelete', { isdelete: false })
         .andWhere('businessline.businesslinedesc = :businessline', {
           businessline,
@@ -88,6 +88,20 @@ export class BusinessLineService {
         .getOne();
 
       return query?.toDto();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getLastBusinessLineCode() {
+    try {
+      const query = await this.businessLineRepository
+        .createQueryBuilder('businessline')
+        .select('businessline.businesslinecode')
+        .orderBy('businessline.businesslinecode', 'DESC')
+        .getOne();
+
+      return query;
     } catch (error) {
       throw error;
     }
