@@ -15,11 +15,15 @@ export class SurveyGroupDto extends AbstractDto {
   @ApiProperty()
   desc: string;
 
-  constructor(SurveyGroupEntity: SurveyGroup) {
-    super(SurveyGroupEntity, { exludeFields: true });
-    this.surveygroupid = SurveyGroupEntity.surveygroupid * 1;
-    this.surveygroupcode = SurveyGroupEntity.surveygroupcode;
-    this.surveygroupdesc = SurveyGroupEntity.surveygroupdesc;
-    this.desc = SurveyGroupEntity.desc;
+  @ApiProperty()
+  isdelete: string;
+
+  constructor(surveyGroupEntity: SurveyGroup) {
+    super(surveyGroupEntity, { exludeFields: true });
+    this.surveygroupid = surveyGroupEntity.surveygroupid * 1;
+    this.surveygroupcode = surveyGroupEntity.surveygroupcode;
+    this.surveygroupdesc = surveyGroupEntity.surveygroupdesc;
+    this.desc = surveyGroupEntity.desc;
+    this.isdelete = surveyGroupEntity.isdelete;
   }
 }
