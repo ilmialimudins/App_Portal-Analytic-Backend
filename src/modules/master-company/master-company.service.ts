@@ -41,4 +41,17 @@ export class MasterCompanyService {
       throw error;
     }
   }
+
+  async getCompanyId(id: number): Promise<MasterCompanyDto | undefined> {
+    try {
+      const query = await this.masterCompanyRepository
+        .createQueryBuilder('mastercompany')
+        .where('mastercompany.d_companyid = :id', { id: id })
+        .getOne();
+
+      return query?.toDto();
+    } catch (error) {
+      throw error;
+    }
+  }
 }
