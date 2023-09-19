@@ -15,11 +15,15 @@ export class BusinessGroupDto extends AbstractDto {
   @ApiProperty()
   desc: string;
 
+  @ApiProperty()
+  isdelete: string;
+
   constructor(businessGroupEntity: BusinessGroup) {
     super(businessGroupEntity, { exludeFields: true });
     this.businessgroupid = businessGroupEntity.businessgroupid * 1;
     this.businessgroupcode = businessGroupEntity.businessgroupcode;
     this.businessgroupdesc = businessGroupEntity.businessgroupdesc;
     this.desc = businessGroupEntity.desc;
+    this.isdelete = businessGroupEntity.isdelete;
   }
 }
