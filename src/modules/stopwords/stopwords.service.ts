@@ -23,8 +23,14 @@ export class StopwordsService {
       const data = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
-        .select(['stopwords', 'companyeesname', 'tahun_survey', 'uuid'])
-        .where('stopwords.isDelete = :isDelete', { isDelete: false })
+        .select([
+          'id',
+          'stopwords.stopwords',
+          'mastercompanyees.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey')
         .offset(offset)
         .limit(pageSize)
@@ -32,7 +38,15 @@ export class StopwordsService {
 
       const total = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .where('stopwords.isDelete = :isDelete', { isDelete: false })
+        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .select([
+          'id',
+          'stopwords.stopwords',
+          'mastercompanyees.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -52,9 +66,15 @@ export class StopwordsService {
 
       const data = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .select(['stopwords', 'companyeesname', 'tahun_survey', 'uuid'])
         .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
-        .where('stopwords.isDelete = :isDelete', { isDelete: false })
+        .select([
+          'id',
+          'stopwords.stopwords',
+          'mastercompanyees.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .andWhere('mastercompanyees.companyeesname = :companyname', {
           companyname,
         })
@@ -66,7 +86,15 @@ export class StopwordsService {
 
       const total = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .where('stopwords.isDelete = :isDelete', { isDelete: false })
+        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .select([
+          'id',
+          'stopwords.stopwords',
+          'mastercompanyees.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .andWhere('mastercompanyees.companyeesname = :companyname', {
           companyname,
         })
@@ -79,14 +107,27 @@ export class StopwordsService {
     }
   }
 
+  async getStopwordsId(uuid: string): Promise<StopwordsDto | undefined> {
+    try {
+      const query = await this.stopwordsRepository
+        .createQueryBuilder('stopwords')
+        .where('stopwords.uuid = :uuid', { uuid })
+        .getOne();
+
+      return query?.toDto();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async checkOneStopwords(stopwords: AddStopwordsDto) {
     try {
       const query = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .where('stopwords.stopwords = : stopwords', {
+        .where('stopwords.stopwords = :stopwords', {
           stopwords: stopwords.stopwords,
         })
-        .andWhere('stopwords.uuid =: uuid', { uuid: stopwords.uuid || '' })
+        .andWhere('stopwords.uuid != :uuid', { uuid: stopwords.uuid || '' })
         .getOne();
 
       return !!query;
@@ -105,8 +146,9 @@ export class StopwordsService {
           companyid: stopwords.companyid,
           stopwords: stopwords.stopwords,
           tahun_survey: stopwords.tahun_survey,
-          isDelete: 'false',
+          isdelete: 'false',
           createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 
@@ -119,12 +161,12 @@ export class StopwordsService {
   async updateStopwords(uuid: string, stopwords: UpdateStopwordsDto) {
     try {
       const query = await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
+        .createQueryBuilder()
         .update(Stopwords)
         .set({
           stopwords: stopwords.stopwords,
         })
-        .where('stopwords.uuid = : uuid', { uuid })
+        .where('uuid = :uuid', { uuid })
         .andWhere('stopwords != :stopwords', { stopwords: stopwords.stopwords })
         .execute();
 
@@ -137,10 +179,10 @@ export class StopwordsService {
   async deleteStopwords(uuid: string) {
     try {
       await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
+        .createQueryBuilder()
         .update(Stopwords)
-        .set({ isDelete: 'true' })
-        .where('stopwords.uuid = :uuid', { uuid })
+        .set({ isdelete: 'true' })
+        .where('uuid = :uuid', { uuid })
         .execute();
 
       return `Data Berhasil Di Hapus`;

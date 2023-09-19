@@ -8,9 +8,12 @@ import {
 } from 'typeorm';
 import { MasterCompanyEES } from '../master-company-ees/master-company-ees.entity';
 import { AbstractEntity } from 'src/common/abstract.entity';
+import { UseDto } from 'src/decorators/use-dto.decorator';
+import { StopwordsDto } from './dto/stopwords.dto';
 
 @Entity('tbl_stopwords')
-export class Stopwords extends AbstractEntity {
+@UseDto(StopwordsDto)
+export class Stopwords extends AbstractEntity<StopwordsDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
@@ -37,5 +40,5 @@ export class Stopwords extends AbstractEntity {
   stopwords: string;
 
   @Column({ type: 'varchar', name: 'isDelete', nullable: true })
-  isDelete: string;
+  isdelete: string;
 }
