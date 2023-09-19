@@ -15,11 +15,15 @@ export class LocationDto extends AbstractDto {
   @ApiProperty()
   desc: string;
 
-  constructor(LocationEntity: Location) {
-    super(LocationEntity, { exludeFields: true });
-    this.locationid = LocationEntity.locationid * 1;
-    this.locationcode = LocationEntity.locationcode;
-    this.locationdesc = LocationEntity.locationdesc;
-    this.desc = LocationEntity.desc;
+  @ApiProperty()
+  isdelete: string;
+
+  constructor(locationEntity: Location) {
+    super(locationEntity, { exludeFields: true });
+    this.locationid = locationEntity.locationid * 1;
+    this.locationcode = locationEntity.locationcode;
+    this.locationdesc = locationEntity.locationdesc;
+    this.desc = locationEntity.desc;
+    this.isdelete = locationEntity.isdelete;
   }
 }
