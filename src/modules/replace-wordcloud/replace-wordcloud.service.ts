@@ -15,10 +15,18 @@ export class ReplaceWordcloudService {
 
   async getAllReplaceWordcloud(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: ReplaceWordcloudDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: ReplaceWordcloudDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
@@ -33,10 +41,10 @@ export class ReplaceWordcloudService {
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.replaceWordcloudRepository
+      const itemCount = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.company', 'company')
         .select([
@@ -49,7 +57,19 @@ export class ReplaceWordcloudService {
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -57,12 +77,20 @@ export class ReplaceWordcloudService {
 
   async getAllReplaceWordcloudFilter(
     page: number,
-    pageSize: number,
+    take: number,
     companyname: string,
     tahun_survey: number,
-  ): Promise<{ data: ReplaceWordcloudDto[]; total: number }> {
+  ): Promise<{
+    data: ReplaceWordcloudDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
@@ -83,10 +111,10 @@ export class ReplaceWordcloudService {
         })
         .orderBy('tahun_survey')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.replaceWordcloudRepository
+      const itemCount = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.company', 'company')
         .select([
@@ -105,7 +133,19 @@ export class ReplaceWordcloudService {
         })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

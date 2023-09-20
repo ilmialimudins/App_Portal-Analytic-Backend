@@ -26,22 +26,38 @@ export class ReplaceWordcloudController {
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async getAllReplaceWordcloud(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: ReplaceWordcloudDto[]; total: number }> {
-    return this.replaceWordcloudService.getAllReplaceWordcloud(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: ReplaceWordcloudDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.replaceWordcloudService.getAllReplaceWordcloud(page, take);
   }
 
   @Get('/replaceWordcloudFilter')
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async getAllReplaceWordcloudFilter(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('companyname') companyname: string,
     @Query('tahun_survey') tahun_survey: number,
-  ): Promise<{ data: ReplaceWordcloudDto[]; total: number }> {
+  ): Promise<{
+    data: ReplaceWordcloudDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     return this.replaceWordcloudService.getAllReplaceWordcloudFilter(
       page,
-      pageSize,
+      take,
       companyname,
       tahun_survey,
     );

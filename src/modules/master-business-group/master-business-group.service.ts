@@ -15,10 +15,18 @@ export class BusinessGroupService {
 
   async getAllBusinessGroup(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: BusinessGroupDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: BusinessGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
@@ -26,17 +34,29 @@ export class BusinessGroupService {
         .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
         .orderBy('businessgroupcode')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.businessGroupRepository
+      const itemCount = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
         .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
         .orderBy('businessgroupcode')
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -44,11 +64,19 @@ export class BusinessGroupService {
 
   async getBusinessGroupName(
     page: number,
-    pageSize: number,
+    take: number,
     businessgroup: string,
-  ): Promise<{ data: BusinessGroupDto[]; total: number }> {
+  ): Promise<{
+    data: BusinessGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
@@ -59,10 +87,10 @@ export class BusinessGroupService {
         })
         .orderBy('businessgroupcode')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.businessGroupRepository
+      const itemCount = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
         .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
@@ -72,7 +100,19 @@ export class BusinessGroupService {
         .orderBy('businessgroupcode')
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

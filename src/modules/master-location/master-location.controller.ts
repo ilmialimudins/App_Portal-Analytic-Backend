@@ -26,19 +26,35 @@ export class LocationController {
   @ApiCreatedResponse({ type: LocationDto })
   async getLocation(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: LocationDto[]; total: number }> {
-    return this.locationService.getAllLocation(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: LocationDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.locationService.getAllLocation(page, take);
   }
 
   @Get('/getLocationName')
   @ApiCreatedResponse({ type: LocationDto })
   async getLocationName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('location') location: string,
-  ): Promise<{ data: LocationDto[]; total: number }> {
-    return this.locationService.getLocationName(page, pageSize, location);
+  ): Promise<{
+    data: LocationDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.locationService.getLocationName(page, take, location);
   }
 
   @Get('/getLocationId')

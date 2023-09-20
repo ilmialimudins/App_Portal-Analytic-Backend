@@ -26,21 +26,37 @@ export class BusinessGroupController {
   @ApiCreatedResponse({ type: BusinessGroupDto })
   async getBusinessGroup(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: BusinessGroupDto[]; total: number }> {
-    return this.businessGroupService.getAllBusinessGroup(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: BusinessGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.businessGroupService.getAllBusinessGroup(page, take);
   }
 
   @Get('/getBusinessGroupName')
   @ApiCreatedResponse({ type: BusinessGroupDto })
   async getBusinessGroupName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('businessgroup') businessgroup: string,
-  ): Promise<{ data: BusinessGroupDto[]; total: number }> {
+  ): Promise<{
+    data: BusinessGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     return this.businessGroupService.getBusinessGroupName(
       page,
-      pageSize,
+      take,
       businessgroup,
     );
   }

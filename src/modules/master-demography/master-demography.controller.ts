@@ -26,19 +26,35 @@ export class DemographyController {
   @ApiCreatedResponse({ type: DemographyDto })
   async getDemography(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: DemographyDto[]; total: number }> {
-    return this.demographyService.getAllDemography(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: DemographyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.demographyService.getAllDemography(page, take);
   }
 
   @Get('/getDemographyName')
   @ApiCreatedResponse({ type: DemographyDto })
   async getDemographyName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('Demography') demography: string,
-  ): Promise<{ data: DemographyDto[]; total: number }> {
-    return this.demographyService.getDemographyName(page, pageSize, demography);
+  ): Promise<{
+    data: DemographyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.demographyService.getDemographyName(page, take, demography);
   }
 
   @Get('/getDemographyId')

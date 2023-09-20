@@ -24,22 +24,38 @@ export class NgramController {
   @ApiOkResponse({ type: NgramDto })
   async getAllNgram(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: NgramDto[]; total: number }> {
-    return this.ngramService.getAllNgram(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.ngramService.getAllNgram(page, take);
   }
 
   @Get('/getAllNgramFilter')
   @ApiOkResponse({ type: NgramDto })
   async getAllNgramFilter(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('companyname') companyname: string,
     @Query('tahun_survey') tahun_survey: number,
-  ): Promise<{ data: NgramDto[]; total: number }> {
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     return this.ngramService.getAllNgramFilter(
       page,
-      pageSize,
+      take,
       companyname,
       tahun_survey,
     );
@@ -55,15 +71,23 @@ export class NgramController {
   @ApiOkResponse({ type: NgramDto })
   async getNgramByWord(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('companyname') companyname: string,
     @Query('tahun_survey') tahun_survey: number,
     @Query('qcode') qcode: string,
     @Query('word') word: string,
-  ): Promise<{ data: NgramDto[]; total: number }> {
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     return this.ngramService.getNgramByWord(
       page,
-      pageSize,
+      take,
       companyname,
       tahun_survey,
       qcode,

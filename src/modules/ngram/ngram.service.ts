@@ -14,39 +14,59 @@ export class NgramService {
 
   async getAllNgram(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: NgramDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.company', 'company')
         .select([
           'id',
-          'DISTINCT ngram.word',
+          'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
+        .leftJoin('ngram.company', 'company')
         .where('ngram.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.company', 'company')
+      const itemCount = await this.NgramRepository.createQueryBuilder('ngram')
         .select([
           'id',
-          'DISTINCT ngram.word',
+          'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
+        .leftJoin('ngram.company', 'company')
         .where('ngram.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -54,37 +74,43 @@ export class NgramService {
 
   async getAllNgramFilter(
     page: number,
-    pageSize: number,
+    take: number,
     companyname: string,
     tahun_survey: number,
-  ): Promise<{ data: NgramDto[]; total: number }> {
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
-          'DISTINCT ngram.word',
+          'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
-        })
+        .andWhere('company.companyeesname = :companyname', { companyname })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
         .orderBy('tahun_survey')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.NgramRepository.createQueryBuilder('ngram')
+      const itemCount = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
-          'DISTINCT ngram.word',
+          'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
@@ -96,7 +122,19 @@ export class NgramService {
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -116,14 +154,22 @@ export class NgramService {
 
   async getNgramByWord(
     page: number,
-    pageSize: number,
+    take: number,
     companyname: string,
     tahun_survey: number,
     qcode: string,
     word: string,
-  ): Promise<{ data: NgramDto[]; total: number }> {
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.company', 'company')
@@ -139,18 +185,16 @@ export class NgramService {
           'ngram.ngramfrequency',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
-        })
+        .andWhere('company.companyeesname = :companyname', { companyname })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
         .andWhere('ngram.qcode = :qcode', { qcode })
         .andWhere('ngram.word = :word', { word })
         .orderBy('ngram.ngramfrequency', 'DESC')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.NgramRepository.createQueryBuilder('ngram')
+      const itemCount = await this.NgramRepository.createQueryBuilder('ngram')
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
@@ -164,15 +208,25 @@ export class NgramService {
           'ngram.ngramfrequency',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
-        })
+        .andWhere('company.companyeesname = :companyname', { companyname })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
         .andWhere('ngram.qcode = :qcode', { qcode })
         .andWhere('ngram.word = :word', { word })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
