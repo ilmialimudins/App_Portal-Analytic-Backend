@@ -22,12 +22,12 @@ export class ReplaceWordcloudService {
 
       const data = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
-        .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
+        .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'replacewordcloud.tahun_survey',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
@@ -38,12 +38,12 @@ export class ReplaceWordcloudService {
 
       const total = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
-        .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
+        .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'replacewordcloud.tahun_survey',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
@@ -66,16 +66,16 @@ export class ReplaceWordcloudService {
 
       const data = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
-        .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
+        .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'replacewordcloud.tahun_survey',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('replacewordcloud.tahun_survey = :tahun_survey', {
@@ -88,16 +88,16 @@ export class ReplaceWordcloudService {
 
       const total = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
-        .leftJoin('replacewordcloud.mastercompanyees', 'mastercompanyees')
+        .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'replacewordcloud.tahun_survey',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('replacewordcloud.tahun_survey = :tahun_survey', {

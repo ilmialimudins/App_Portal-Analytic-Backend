@@ -6,67 +6,88 @@ import {
   Post,
   Query,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { MasterCompanyEESService } from './master-company-ees.service';
-import { MasterCompanyEESDto } from './dto/master-company-ees.dto';
-import { AddMasterCompanyEESDto } from './dto/add-master-company-ees.dto';
-import { UpdateMasterCompanyEESDto } from './dto/update-master-company-ees.dto';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CompanyService } from './master-company-ees.service';
+import { CompanyDto } from './dto/master-company-ees.dto';
+import { AddCompanyDto } from './dto/add-master-company-ees.dto';
+import { UpdateCompanyDto } from './dto/update-master-company-ees.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
-@ApiTags('Master Company EES')
-@Controller('master-company-ees')
-export class MasterCompanyEESController {
-  constructor(private masterCompanyServiceEES: MasterCompanyEESService) {}
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
+@ApiTags('Company')
+@Controller('company')
+export class CompanyController {
+  constructor(private companyService: CompanyService) {}
 
   @Get('/')
-  @ApiOkResponse({ type: MasterCompanyEESDto })
+  @ApiOkResponse({ type: CompanyDto })
   async getAllCompany(
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
-  ): Promise<{ data: MasterCompanyEESDto[]; total: number }> {
-    return this.masterCompanyServiceEES.getAllCompany(page, pageSize);
+  ): Promise<{
+    data: CompanyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.companyService.getAllCompany(page, pageSize);
   }
 
   @Get('/getCompanyName')
-  @ApiOkResponse({ type: MasterCompanyEESDto })
+  @ApiOkResponse({ type: CompanyDto })
   async getCompanyName(
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
     @Query('Companyname') companyname: string,
-  ): Promise<{ data: MasterCompanyEESDto[]; total: number }> {
-    return this.masterCompanyServiceEES.getCompanyName(
-      page,
-      pageSize,
-      companyname,
-    );
+  ): Promise<{
+    data: CompanyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.companyService.getCompanyName(page, pageSize, companyname);
   }
 
   @Get('/getCompanyId')
-  @ApiCreatedResponse({ type: MasterCompanyEESDto })
+  @ApiCreatedResponse({ type: CompanyDto })
   async getAllCompanyById(
     @Query('companyid') companyid: number,
-  ): Promise<MasterCompanyEESDto | undefined> {
-    return this.masterCompanyServiceEES.getCompanyId(companyid);
+  ): Promise<CompanyDto | undefined> {
+    return this.companyService.getCompanyId(companyid);
   }
 
   @Post('/createCompany')
-  @ApiCreatedResponse({ type: MasterCompanyEESDto })
-  async createCompany(@Body() company: AddMasterCompanyEESDto) {
-    return this.masterCompanyServiceEES.createCompany(company);
+  @ApiCreatedResponse({ type: CompanyDto })
+  async createCompany(@Body() company: AddCompanyDto) {
+    return this.companyService.createCompany(company);
   }
 
   @Patch('updateCompany')
-  @ApiCreatedResponse({ type: MasterCompanyEESDto })
+  @ApiCreatedResponse({ type: CompanyDto })
   async updateCompany(
     @Query('companyid') companyid: number,
-    @Body() company: UpdateMasterCompanyEESDto,
+    @Body() company: UpdateCompanyDto,
   ) {
-    return this.masterCompanyServiceEES.updateCompany(companyid, company);
+    return this.companyService.updateCompany(companyid, company);
   }
 
   @Delete('/deleteCompany')
-  @ApiCreatedResponse({ type: MasterCompanyEESDto })
+  @ApiCreatedResponse({ type: CompanyDto })
   async deleteCompany(@Query('companyid') companyid: number): Promise<string> {
-    return this.masterCompanyServiceEES.deleteCompany(companyid);
+    return this.companyService.deleteCompany(companyid);
   }
 }

@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MasterCompanyEES } from '../master-company-ees/master-company-ees.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { UseDto } from 'src/decorators/use-dto.decorator';
 import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
@@ -23,15 +23,12 @@ export class ReplaceWordcloud extends AbstractEntity<ReplaceWordcloudDto> {
 
   @Column({ nullable: true })
   companyid: number;
-  @ManyToOne(
-    () => MasterCompanyEES,
-    (mastercompanyees) => mastercompanyees.companyid,
-  )
+  @ManyToOne(() => Company, (company) => company.companyid)
   @JoinColumn({
     name: 'companyid',
     referencedColumnName: 'companyid',
   })
-  mastercompanyees: MasterCompanyEES;
+  company: Company;
 
   @Column({ type: 'int', name: 'tahun_survey', nullable: true })
   tahun_survey: number;

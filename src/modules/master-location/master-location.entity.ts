@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { LocationDto } from './dto/master-location.dto';
-import { MasterCompanyEES } from '../master-company-ees/master-company-ees.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Entity('ms_location')
 @UseDto(LocationDto)
@@ -22,9 +22,6 @@ export class Location extends AbstractEntity<LocationDto> {
   @Column({ type: 'varchar', name: 'isdelete', nullable: true })
   isdelete: string;
 
-  @OneToMany(
-    () => MasterCompanyEES,
-    (mastercompanyees) => mastercompanyees.locationid,
-  )
-  mastercompanyees: MasterCompanyEES[];
+  @OneToMany(() => Company, (company) => company.locationid)
+  company: Company[];
 }

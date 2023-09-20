@@ -20,11 +20,11 @@ export class NgramService {
       const offset = (page - 1) * 1;
 
       const data = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
+        .leftJoin('ngram.company', 'company')
         .select([
           'id',
           'DISTINCT ngram.word',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
@@ -35,11 +35,11 @@ export class NgramService {
         .getRawMany();
 
       const total = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
+        .leftJoin('ngram.company', 'company')
         .select([
           'id',
           'DISTINCT ngram.word',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
@@ -62,16 +62,16 @@ export class NgramService {
       const offset = (page - 1) * 1;
 
       const data = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
+        .leftJoin('ngram.company', 'company')
         .select([
           'id',
           'DISTINCT ngram.word',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
@@ -81,16 +81,16 @@ export class NgramService {
         .getRawMany();
 
       const total = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
+        .leftJoin('ngram.company', 'company')
         .select([
           'id',
           'DISTINCT ngram.word',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
@@ -126,11 +126,11 @@ export class NgramService {
       const offset = (page - 1) * 1;
 
       const data = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
+        .leftJoin('ngram.company', 'company')
         .select([
           'id',
           'ngram.uuid',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
           'ngram.word',
@@ -139,7 +139,7 @@ export class NgramService {
           'ngram.ngramfrequency',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })
@@ -151,11 +151,11 @@ export class NgramService {
         .getRawMany();
 
       const total = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.mastercompanyees', 'mastercompanyees')
+        .leftJoin('ngram.company', 'company')
         .select([
           'id',
           'ngram.uuid',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'ngram.tahun_survey',
           'ngram.qcode',
           'ngram.word',
@@ -164,7 +164,7 @@ export class NgramService {
           'ngram.ngramfrequency',
         ])
         .where('ngram.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('ngram.tahun_survey = :tahun_survey', { tahun_survey })

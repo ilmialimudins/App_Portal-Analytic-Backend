@@ -1,6 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { AddMasterCompanyEESDto } from './add-master-company-ees.dto';
+import { AddCompanyDto } from './add-master-company-ees.dto';
 
-export class UpdateMasterCompanyEESDto extends PartialType(
-  AddMasterCompanyEESDto,
-) {}
+export class UpdateCompanyDto extends PartialType(AddCompanyDto) {}

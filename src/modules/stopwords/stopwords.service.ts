@@ -22,11 +22,11 @@ export class StopwordsService {
 
       const data = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
@@ -38,11 +38,11 @@ export class StopwordsService {
 
       const total = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
@@ -66,16 +66,16 @@ export class StopwordsService {
 
       const data = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
@@ -86,16 +86,16 @@ export class StopwordsService {
 
       const total = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })

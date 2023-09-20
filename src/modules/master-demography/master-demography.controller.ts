@@ -6,13 +6,17 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { DemographyService } from './master-demography.service';
 import { DemographyDto } from './dto/master-demography.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Demography')
 @Controller('demography')
 export class DemographyController {
