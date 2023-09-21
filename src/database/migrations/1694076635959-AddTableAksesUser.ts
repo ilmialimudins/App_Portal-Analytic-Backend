@@ -16,6 +16,7 @@ export class AddTableAksesUser1693466585115 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

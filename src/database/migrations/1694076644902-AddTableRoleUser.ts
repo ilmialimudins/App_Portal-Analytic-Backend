@@ -16,6 +16,7 @@ export class AddTableRoleUser1693470978025 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

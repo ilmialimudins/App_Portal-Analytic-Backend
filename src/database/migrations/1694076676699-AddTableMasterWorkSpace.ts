@@ -13,6 +13,7 @@ export class AddTableMasterWorkSpace1693990022387
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
