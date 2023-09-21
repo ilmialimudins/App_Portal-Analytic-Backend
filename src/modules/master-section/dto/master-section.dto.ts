@@ -19,7 +19,7 @@ export class MasterSectionDto extends AbstractDto {
   sectiondesc: string;
 
   @ApiProperty()
-  sectionpowerbiid: string;
+  sectioncodepowerbiid: string;
 
   @ApiProperty()
   isdelete: string;
@@ -31,7 +31,7 @@ export class MasterSectionDto extends AbstractDto {
     this.sectioncode = masterSectionEntity.sectioncode;
     this.sectionname = masterSectionEntity.sectionname;
     this.sectiondesc = masterSectionEntity.sectiondesc;
-    this.sectionpowerbiid = masterSectionEntity.sectionpowerbiid;
+    this.sectioncodepowerbiid = masterSectionEntity.sectioncodepowerbiid;
     this.isdelete = masterSectionEntity.isdelete;
   }
 }

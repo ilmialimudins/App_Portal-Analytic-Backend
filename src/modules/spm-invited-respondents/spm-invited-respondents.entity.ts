@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { SpmInvitedRespondentsDTO } from './dto/spm-invited-respondents.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
-import { MasterCompanyEES } from '../master-company-ees/master-company-ees.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Entity('tbl_spm_invitedrespondents')
 @UseDto(SpmInvitedRespondentsDTO)
@@ -21,7 +21,7 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
 
   @Column()
   companyid: number;
-  @ManyToOne(() => MasterCompanyEES, (masterCompany) => masterCompany.companyid)
+  @ManyToOne(() => Company, (masterCompany) => masterCompany.companyid)
   @JoinColumn({
     name: 'companyid',
     referencedColumnName: 'companyid',

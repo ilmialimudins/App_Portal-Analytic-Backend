@@ -15,10 +15,18 @@ export class MasterSectionService {
 
   async getAllMasterSection(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: MasterSectionDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: MasterSectionDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.masterSectionRepository
         .createQueryBuilder('mastersection')
@@ -28,7 +36,7 @@ export class MasterSectionService {
           'mastersection.sectionid',
           'mastersection.sectionname',
           'mastersection.sectiondesc',
-          'mastersection.sectionpowerbiid',
+          'mastersection.sectioncodepowerbiid',
           'masterreport.reportname',
           'masterreport.reportpowerbiid',
           'masterreport.datasetpowerbiid',
@@ -36,17 +44,17 @@ export class MasterSectionService {
         .where('mastersection.isdelete = :isdelete', { isdelete: 'false' })
         .orderBy('masterreport.reportname')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.masterSectionRepository
+      const itemCount = await this.masterSectionRepository
         .createQueryBuilder('mastersection')
         .leftJoin('mastersection.masterreport', 'masterreport')
         .select([
           'mastersection.sectionid',
           'mastersection.sectionname',
           'mastersection.sectiondesc',
-          'mastersection.sectionpowerbiid',
+          'mastersection.sectioncodepowerbiid',
           'masterreport.reportname',
           'masterreport.reportpowerbiid',
           'masterreport.datasetpowerbiid',
@@ -54,7 +62,19 @@ export class MasterSectionService {
         .where('mastersection.isdelete = :isdelete', { isdelete: 'false' })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -99,7 +119,7 @@ export class MasterSectionService {
           reportid: mastersection.reportid,
           sectionname: mastersection.sectionname,
           sectiondesc: mastersection.sectiondesc,
-          sectionpowerbiid: mastersection.sectionpowerbiid,
+          sectioncodepowerbiid: mastersection.sectioncodepowerbiid,
           isdelete: 'false',
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),
@@ -124,7 +144,7 @@ export class MasterSectionService {
           reportid: mastersection.reportid,
           sectionname: mastersection.sectionname,
           sectiondesc: mastersection.sectiondesc,
-          sectionpowerbiid: mastersection.sectionpowerbiid,
+          sectioncodepowerbiid: mastersection.sectioncodepowerbiid,
         })
         .where('sectionid = :sectionid', { sectionid })
         .execute();

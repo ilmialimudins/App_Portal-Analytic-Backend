@@ -1,7 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class AddMasterCompanyEESDto {
+export class AddCompanyDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly businesslineid: number;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
@@ -10,7 +15,32 @@ export class AddMasterCompanyEESDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
-  readonly businesslineid: number;
+  readonly modellingtypeid: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly businessgroupid: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly ownershipstatusid: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly locationid: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly claid: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly directreviewid: number;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -41,9 +71,4 @@ export class AddMasterCompanyEESDto {
   @IsOptional()
   @IsString()
   readonly aliascompany3: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
-  readonly modellingtypeid: number;
 }

@@ -26,21 +26,37 @@ export class BusinessLineController {
   @ApiCreatedResponse({ type: BusinessLineDto })
   async getBusinessLine(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: BusinessLineDto[]; total: number }> {
-    return this.businessLineService.getAllBusinessLine(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: BusinessLineDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.businessLineService.getAllBusinessLine(page, take);
   }
 
   @Get('/getBusinessLineName')
   @ApiCreatedResponse({ type: BusinessLineDto })
   async getBusinessLineName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('businessline') businessline: string,
-  ): Promise<{ data: BusinessLineDto[]; total: number }> {
+  ): Promise<{
+    data: BusinessLineDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     return this.businessLineService.getBusinessLineName(
       page,
-      pageSize,
+      take,
       businessline,
     );
   }

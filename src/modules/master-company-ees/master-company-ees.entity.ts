@@ -3,12 +3,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { BusinessLine } from '../master-business-line/master-business-line.entity';
-import { MasterCompanyEESDto } from './dto/master-company-ees.dto';
+import { CompanyDto } from './dto/master-company-ees.dto';
 import { BusinessGroup } from '../master-business-group/master-business-group.entity';
 import { SurveyGroup } from '../master-survey-group/master-survey-group.entity';
 import { Location } from '../master-location/master-location.entity';
@@ -16,11 +17,11 @@ import { OwnershipStatus } from '../master-ownership-status/master-ownership-sta
 import { Cla } from '../master-cla/master-cla.entity';
 import { DirectReview } from '../master-direct-review/master-direct-review.entity';
 import { ModellingType } from '../master-modelling-type/master-modelling-type.entity';
-// import { AccessUser } from '../access-user/access-user.entity';
+import { AccessUser } from '../access-user/access-user.entity';
 
 @Entity('ms_company')
-@UseDto(MasterCompanyEESDto)
-export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
+@UseDto(CompanyDto)
+export class Company extends AbstractEntity<CompanyDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'companyid' })
   companyid: number;
 
@@ -126,9 +127,6 @@ export class MasterCompanyEES extends AbstractEntity<MasterCompanyEESDto> {
   @Column({ type: 'varchar', name: 'isdelete', nullable: false })
   isdelete: string;
 
-  // @OneToOne(
-  //   () => AccessUser,
-  //   (accessuser) => accessuser.companyid,
-  // )
-  // accessuser: AccessUser[]
+  @OneToOne(() => AccessUser, (accessuser) => accessuser.companyid)
+  accessuser: AccessUser[];
 }

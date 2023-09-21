@@ -6,13 +6,17 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { DemographyService } from './master-demography.service';
 import { DemographyDto } from './dto/master-demography.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Demography')
 @Controller('demography')
 export class DemographyController {
@@ -22,19 +26,35 @@ export class DemographyController {
   @ApiCreatedResponse({ type: DemographyDto })
   async getDemography(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: DemographyDto[]; total: number }> {
-    return this.demographyService.getAllDemography(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: DemographyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.demographyService.getAllDemography(page, take);
   }
 
   @Get('/getDemographyName')
   @ApiCreatedResponse({ type: DemographyDto })
   async getDemographyName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('Demography') demography: string,
-  ): Promise<{ data: DemographyDto[]; total: number }> {
-    return this.demographyService.getDemographyName(page, pageSize, demography);
+  ): Promise<{
+    data: DemographyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.demographyService.getDemographyName(page, take, demography);
   }
 
   @Get('/getDemographyId')

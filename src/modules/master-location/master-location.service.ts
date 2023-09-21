@@ -15,10 +15,18 @@ export class LocationService {
 
   async getAllLocation(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: LocationDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: LocationDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.locationRepository
         .createQueryBuilder('location')
@@ -26,15 +34,27 @@ export class LocationService {
         .where('location.isdelete = :isdelete', { isdelete: 'false' })
         .orderBy('locationcode')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.locationRepository
+      const itemCount = await this.locationRepository
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -42,11 +62,19 @@ export class LocationService {
 
   async getLocationName(
     page: number,
-    pageSize: number,
+    take: number,
     location: string,
-  ): Promise<{ data: LocationDto[]; total: number }> {
+  ): Promise<{
+    data: LocationDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.locationRepository
         .createQueryBuilder('location')
@@ -55,16 +83,28 @@ export class LocationService {
         .andWhere('location.locationdesc = :location', { location })
         .orderBy('locationcode')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.locationRepository
+      const itemCount = await this.locationRepository
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
         .andWhere('location.locationdesc = :location', { location })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

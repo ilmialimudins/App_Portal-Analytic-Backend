@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AccessUserDto } from './dto/access-user.dto';
-import { MasterCompanyEES } from '../master-company-ees/master-company-ees.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 import { MasterUser } from '../master-user/master-user.entity';
 
 @Entity('ir_aksesuser')
@@ -19,15 +19,12 @@ export class AccessUser extends AbstractEntity<AccessUserDto> {
 
   @Column({ nullable: true })
   companyid: number;
-  @OneToOne(
-    () => MasterCompanyEES,
-    (mastercompanyees) => mastercompanyees.companyid,
-  )
+  @OneToOne(() => Company, (company) => company.companyid)
   @JoinColumn({
     name: 'companyid',
     referencedColumnName: 'companyid',
   })
-  mastercompanyees: MasterCompanyEES;
+  company: Company;
 
   @Column({ nullable: true })
   userid: number;

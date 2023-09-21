@@ -26,9 +26,17 @@ export class MasterWorkSpaceController {
   @ApiCreatedResponse({ type: MasterWorkSpaceDto })
   async getMasterWorkSpace(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: MasterWorkSpaceDto[]; total: number }> {
-    return this.masterWorkSpaceService.getAllMasterWorkSpace(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: MasterWorkSpaceDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.masterWorkSpaceService.getAllMasterWorkSpace(page, take);
   }
 
   @Get('/getMasterWorkSpaceId')

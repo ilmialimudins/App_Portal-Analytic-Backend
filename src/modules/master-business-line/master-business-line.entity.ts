@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { BusinessLineDto } from './dto/master-business-line.dto';
-import { MasterCompanyEES } from '../master-company-ees/master-company-ees.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Entity('ms_businessline')
 @UseDto(BusinessLineDto)
@@ -22,9 +22,6 @@ export class BusinessLine extends AbstractEntity<BusinessLineDto> {
   @Column({ type: 'varchar', name: 'isdelete', nullable: true })
   isdelete: string;
 
-  @OneToMany(
-    () => MasterCompanyEES,
-    (mastercompanyees) => mastercompanyees.businesslineid,
-  )
-  mastercompanyees: MasterCompanyEES[];
+  @OneToMany(() => Company, (company) => company.businesslineid)
+  company: Company[];
 }

@@ -15,27 +15,57 @@ export class DemographyService {
 
   async getAllDemography(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: DemographyDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: DemographyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.demographyRepository
         .createQueryBuilder('demography')
-        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .select([
+          'demographyid',
+          'demographydesc',
+          'demographyalias',
+          'urutanfilter',
+        ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
         .orderBy('urutanfilter')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.demographyRepository
+      const itemCount = await this.demographyRepository
         .createQueryBuilder('demography')
-        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .select([
+          'demographyid',
+          'demographydesc',
+          'demographyalias',
+          'urutanfilter',
+        ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -43,30 +73,60 @@ export class DemographyService {
 
   async getDemographyName(
     page: number,
-    pageSize: number,
+    take: number,
     demography: string,
-  ): Promise<{ data: DemographyDto[]; total: number }> {
+  ): Promise<{
+    data: DemographyDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.demographyRepository
         .createQueryBuilder('demography')
-        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .select([
+          'demographyid',
+          'demographydesc',
+          'demographyalias',
+          'urutanfilter',
+        ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
         .andWhere('demography.demographydesc = :demography', { demography })
         .orderBy('urutanfilter')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.demographyRepository
+      const itemCount = await this.demographyRepository
         .createQueryBuilder('demography')
-        .select(['demographydesc', 'demographyalias', 'urutanfilter'])
+        .select([
+          'demographyid',
+          'demographydesc',
+          'demographyalias',
+          'urutanfilter',
+        ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
         .andWhere('demography.demographydesc = :demography', { demography })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

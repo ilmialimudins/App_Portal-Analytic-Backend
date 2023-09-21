@@ -15,41 +15,61 @@ export class StopwordsService {
 
   async getAllStopwords(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: StopwordsDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: StopwordsDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.stopwordsRepository
+      const itemCount = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -57,51 +77,71 @@ export class StopwordsService {
 
   async getStopwordsFilter(
     page: number,
-    pageSize: number,
+    take: number,
     companyname: string,
     tahun_survey: number,
-  ): Promise<{ data: StopwordsDto[]; total: number }> {
+  ): Promise<{
+    data: StopwordsDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * 1;
+      const offset = (page - 1) * take;
 
       const data = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
         .orderBy('tahun_survey')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.stopwordsRepository
+      const itemCount = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.mastercompanyees', 'mastercompanyees')
+        .leftJoin('stopwords.company', 'company')
         .select([
           'id',
           'stopwords.stopwords',
-          'mastercompanyees.companyeesname',
+          'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('mastercompanyees.companyeesname = :companyname', {
+        .andWhere('company.companyeesname = :companyname', {
           companyname,
         })
         .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

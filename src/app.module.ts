@@ -26,15 +26,45 @@ import { DuendeAuthenticationModule } from './modules/duende-authentication/duen
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
 import { SpmInvitedRespondentsModule } from './modules/spm-invited-respondents/spm-invited-respondents.module';
-import { MasterCompanyEESModule } from './modules/master-company-ees/master-company-ees.module';
+import { CompanyModule } from './modules/master-company-ees/master-company-ees.module';
 import { BusinessLineModule } from './modules/master-business-line/master-business-line.module';
 import { DemographyModule } from './modules/master-demography/master-demography.module';
+import { BusinessGroupModule } from './modules/master-business-group/master-business-group.module';
+import { LocationModule } from './modules/master-location/master-location.module';
+import { StopwordsModule } from './modules/stopwords/stopwords.module';
+import { ReplaceWordcloudModule } from './modules/replace-wordcloud/replace-wordcloud.module';
+import { NgramModule } from './modules/ngram/ngram.module';
+import { MasterUserModule } from './modules/master-user/master-user.module';
+import { MasterRoleModule } from './modules/master-role/master-role.module';
+import { AccessUserModule } from './modules/access-user/access-user.module';
+import { RoleUserModule } from './modules/role-user/role-user.module';
+import { MasterMenuModule } from './modules/master-menu/master-menu.module';
+import { RoleMenuModule } from './modules/role-menu/role-menu.module';
+import { MasterWorkSpaceModule } from './modules/master-work-space/master-work-space.module';
+import { MasterReportModule } from './modules/master-report/master-report.module';
+import { MasterSectionModule } from './modules/master-section/master-section.module';
+import { MappingMenuReportModule } from './modules/mapping-menu-report/mapping-menu-report.module';
 
 const ApiModules = [
   SharedModule,
-  MasterCompanyEESModule,
+  CompanyModule,
   BusinessLineModule,
+  BusinessGroupModule,
+  LocationModule,
   DemographyModule,
+  StopwordsModule,
+  ReplaceWordcloudModule,
+  NgramModule,
+  MasterUserModule,
+  MasterRoleModule,
+  AccessUserModule,
+  RoleUserModule,
+  MasterMenuModule,
+  RoleMenuModule,
+  MasterWorkSpaceModule,
+  MasterReportModule,
+  MasterSectionModule,
+  MappingMenuReportModule,
   MasterCompanyModule,
   FactorModule,
   PredEngagamentValueModule,

@@ -26,19 +26,35 @@ export class MasterRoleController {
   @ApiCreatedResponse({ type: MasterRoleDto })
   async getMasterRole(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: MasterRoleDto[]; total: number }> {
-    return this.masterRoleService.getAllMasterRole(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: MasterRoleDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.masterRoleService.getAllMasterRole(page, take);
   }
 
   @Get('/getMasterRoleName')
   @ApiCreatedResponse({ type: MasterRoleDto })
   async getMasterRoleName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('rolename') rolename: string,
-  ): Promise<{ data: MasterRoleDto[]; total: number }> {
-    return this.masterRoleService.getMasterRoleName(page, pageSize, rolename);
+  ): Promise<{
+    data: MasterRoleDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.masterRoleService.getMasterRoleName(page, take, rolename);
   }
 
   @Get('/getMasterRoleId')

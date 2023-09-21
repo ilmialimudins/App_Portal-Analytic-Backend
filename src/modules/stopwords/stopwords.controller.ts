@@ -26,22 +26,38 @@ export class StopwordsController {
   @ApiOkResponse({ type: StopwordsDto })
   async getAllStopwords(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: StopwordsDto[]; total: number }> {
-    return this.stopwordsService.getAllStopwords(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: StopwordsDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.stopwordsService.getAllStopwords(page, take);
   }
 
   @Get('/stopwordsFilter')
   @ApiOkResponse({ type: StopwordsDto })
   async getAllStopwordsFilter(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('companyname') companyname: string,
     @Query('tahun_survey') tahun_survey: number,
-  ): Promise<{ data: StopwordsDto[]; total: number }> {
+  ): Promise<{
+    data: StopwordsDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     return this.stopwordsService.getStopwordsFilter(
       page,
-      pageSize,
+      take,
       companyname,
       tahun_survey,
     );

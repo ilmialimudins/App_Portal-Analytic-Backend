@@ -15,10 +15,18 @@ export class MasterReportService {
 
   async getAllMasterReport(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: MasterReportDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: MasterReportDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.masterReportRepository
         .createQueryBuilder('masterreport')
@@ -31,15 +39,15 @@ export class MasterReportService {
           'masterreport.reportpowerbiid',
           'masterreport.datasetpowerbiid',
           'masterworkspace.workspacename',
-          'masterworkspace.workspacebiid',
+          'masterworkspace.workspacepowerbiid',
         ])
         .where('masterreport.isdelete = :isdelete', { isdelete: 'false' })
         .orderBy('masterreport.reportname')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.masterReportRepository
+      const itemCount = await this.masterReportRepository
         .createQueryBuilder('masterreport')
         .leftJoin('masterreport.masterworkspace', 'masterworkspace')
         .select([
@@ -49,12 +57,24 @@ export class MasterReportService {
           'masterreport.reportpowerbiid',
           'masterreport.datasetpowerbiid',
           'masterworkspace.workspacename',
-          'masterworkspace.workspacebiid',
+          'masterworkspace.workspacepowerbiid',
         ])
         .where('masterreport.isdelete = :isdelete', { isdelete: 'false' })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

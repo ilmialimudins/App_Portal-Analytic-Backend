@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
-import { MasterCompanyEES } from '../master-company-ees.entity';
+import { Company } from '../master-company-ees.entity';
 
-export class MasterCompanyEESDto extends AbstractDto {
+export class CompanyDto extends AbstractDto {
   @ApiProperty()
   companyid: number;
 
@@ -27,15 +27,15 @@ export class MasterCompanyEESDto extends AbstractDto {
   @ApiProperty()
   isdelete: string;
 
-  constructor(masterCompanyEESEntity: MasterCompanyEES) {
-    super(masterCompanyEESEntity, { exludeFields: true });
-    this.companyid = masterCompanyEESEntity.companyid * 1;
-    this.companycode = masterCompanyEESEntity.companycode;
-    this.companyeesname = masterCompanyEESEntity.companyeesname;
-    this.companympsname = masterCompanyEESEntity.companympsname;
-    this.aliascompany1 = masterCompanyEESEntity.aliascompany1;
-    this.aliascompany2 = masterCompanyEESEntity.aliascompany2;
-    this.aliascompany3 = masterCompanyEESEntity.aliascompany3;
-    this.isdelete = masterCompanyEESEntity.isdelete;
+  constructor(companyEntity: Company) {
+    super(companyEntity, { exludeFields: true });
+    this.companyid = companyEntity.companyid * 1;
+    this.companycode = companyEntity.companycode;
+    this.companyeesname = companyEntity.companyeesname;
+    this.companympsname = companyEntity.companympsname;
+    this.aliascompany1 = companyEntity.aliascompany1;
+    this.aliascompany2 = companyEntity.aliascompany2;
+    this.aliascompany3 = companyEntity.aliascompany3;
+    this.isdelete = companyEntity.isdelete;
   }
 }
