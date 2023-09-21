@@ -16,6 +16,7 @@ export class AddTableMasterSection1693991279128 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
@@ -85,7 +86,7 @@ export class AddTableMasterSection1693991279128 implements MigrationInterface {
     await queryRunner.createForeignKeys('ir_mastersection', [
       new TableForeignKey({
         columnNames: ['reportid'],
-        referencedTableName: 'ir_mastersection',
+        referencedTableName: 'ir_masterreport',
         referencedColumnNames: ['reportid'],
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',

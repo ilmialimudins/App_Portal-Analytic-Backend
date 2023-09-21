@@ -18,6 +18,7 @@ export class AddTableMappingMenuReport1693992031245
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
@@ -85,15 +86,11 @@ export class AddTableMappingMenuReport1693992031245
         columnNames: ['reportid'],
         referencedTableName: 'ir_masterreport',
         referencedColumnNames: ['reportid'],
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       }),
       new TableForeignKey({
         columnNames: ['sectionid'],
         referencedTableName: 'ir_mastersection',
         referencedColumnNames: ['sectionid'],
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       }),
     ]);
   }

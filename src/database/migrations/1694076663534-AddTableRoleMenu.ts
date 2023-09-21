@@ -16,6 +16,7 @@ export class AddTableRoleMenu1693988974204 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

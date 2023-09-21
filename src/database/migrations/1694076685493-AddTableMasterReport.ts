@@ -16,6 +16,7 @@ export class AddTableMasterReport1693990558611 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {

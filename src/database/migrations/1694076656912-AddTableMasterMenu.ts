@@ -11,6 +11,7 @@ export class AddTableMasterMenu1693988032415 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
