@@ -36,8 +36,8 @@ export class MasterSection extends AbstractEntity<MasterSectionDto> {
   @Column({ type: 'varchar', name: 'sectiondesc', nullable: true })
   sectiondesc: string;
 
-  @Column({ type: 'varchar', name: 'sectionpowerbiid', nullable: true })
-  sectionpowerbiid: string;
+  @Column({ type: 'varchar', name: 'sectioncodepowerbiid', nullable: true })
+  sectioncodepowerbiid: string;
 
   @Column({ type: 'varchar', name: 'isdelete', nullable: true })
   isdelete: string;

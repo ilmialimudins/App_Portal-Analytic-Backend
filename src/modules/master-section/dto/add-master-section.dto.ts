@@ -20,5 +20,5 @@ export class AddMasterSectionDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly sectionpowerbiid: string;
+  readonly sectioncodepowerbiid: string;
 }

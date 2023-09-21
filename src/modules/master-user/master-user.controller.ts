@@ -26,23 +26,35 @@ export class MasterUserController {
   @ApiCreatedResponse({ type: MasterUserDto })
   async getMasterUser(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: MasterUserDto[]; total: number }> {
-    return this.masteruserService.getAllMasterUser(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: MasterUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.masteruserService.getAllMasterUser(page, take);
   }
 
   @Get('/getMasterUserUsername')
   @ApiCreatedResponse({ type: MasterUserDto })
   async getMasterUserUsername(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('username') username: string,
-  ): Promise<{ data: MasterUserDto[]; total: number }> {
-    return this.masteruserService.getMasterUserUsername(
-      page,
-      pageSize,
-      username,
-    );
+  ): Promise<{
+    data: MasterUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.masteruserService.getMasterUserUsername(page, take, username);
   }
 
   @Get('/getMasterUserId')

@@ -26,9 +26,17 @@ export class MasterReportController {
   @ApiCreatedResponse({ type: MasterReportDto })
   async getMasterReport(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: MasterReportDto[]; total: number }> {
-    return this.masterReportService.getAllMasterReport(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: MasterReportDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.masterReportService.getAllMasterReport(page, take);
   }
 
   @Get('/getMasterReportId')

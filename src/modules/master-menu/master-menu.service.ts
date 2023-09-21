@@ -15,10 +15,18 @@ export class MasterMenuService {
 
   async getAllMasterMenu(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: MasterMenuDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: MasterMenuDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
@@ -30,19 +38,31 @@ export class MasterMenuService {
           'url',
           'issection',
         ])
-        .where('masterrole.isdelete = :isdelete', { isdelete: false })
+        .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .orderBy('parentid')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.masterMenuRepository
+      const itemCount = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
         .select(['menuname', 'parentid', 'sequence', 'url', 'issection'])
-        .where('masterrole.isdelete = :isdelete', { isdelete: false })
+        .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

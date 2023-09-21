@@ -26,19 +26,35 @@ export class AccessUserController {
   @ApiCreatedResponse({ type: AccessUserDto })
   async getAccessUser(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: AccessUserDto[]; total: number }> {
-    return this.accessUserService.getAllAccessUser(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: AccessUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.accessUserService.getAllAccessUser(page, take);
   }
 
   @Get('/getAccessUserEmail')
   @ApiCreatedResponse({ type: AccessUserDto })
   async getAccessUserEmail(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('email') email: string,
-  ): Promise<{ data: AccessUserDto[]; total: number }> {
-    return this.accessUserService.getAccessUserEmail(page, pageSize, email);
+  ): Promise<{
+    data: AccessUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.accessUserService.getAccessUserEmail(page, take, email);
   }
 
   @Get('/getAccessUserId')

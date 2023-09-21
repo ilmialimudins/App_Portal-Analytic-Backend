@@ -15,51 +15,71 @@ export class AccessUserService {
 
   async getAllAccessUser(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: AccessUserDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: AccessUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.accessUserRepository
         .createQueryBuilder('accessuser')
-        .leftJoin('accessuser.mastercompanyees', 'mastercompanyees')
+        .leftJoin('accessuser.company', 'company')
         .leftJoin('accessuser.masteruser', 'masteruser')
-        .leftJoin('mastercompanyees.businessline', 'businessline')
-        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
-        .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
+        .leftJoin('company.businessline', 'businessline')
+        .leftJoin('company.surveygroup', 'surveygroup')
+        .leftJoin('company.businessgroup', 'businessgroup')
         .select([
           'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
           'businessgroup.businessgroupdesc',
-          'mastercompanyees.companyname',
+          'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
         .orderBy('masteruser.email')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.accessUserRepository
+      const itemCount = await this.accessUserRepository
         .createQueryBuilder('accessuser')
-        .leftJoin('accessuser.mastercompanyees', 'mastercompanyees')
+        .leftJoin('accessuser.company', 'company')
         .leftJoin('accessuser.masteruser', 'masteruser')
-        .leftJoin('mastercompanyees.businessline', 'businessline')
-        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
-        .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
+        .leftJoin('company.businessline', 'businessline')
+        .leftJoin('company.surveygroup', 'surveygroup')
+        .leftJoin('company.businessgroup', 'businessgroup')
         .select([
           'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
           'businessgroup.businessgroupdesc',
-          'mastercompanyees.companyname',
+          'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -67,54 +87,74 @@ export class AccessUserService {
 
   async getAccessUserEmail(
     page: number,
-    pageSize: number,
+    take: number,
     email: string,
-  ): Promise<{ data: AccessUserDto[]; total: number }> {
+  ): Promise<{
+    data: AccessUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.accessUserRepository
         .createQueryBuilder('accessuser')
-        .leftJoin('accessuser.mastercompanyees', 'mastercompanyees')
+        .leftJoin('accessuser.company', 'company')
         .leftJoin('accessuser.masteruser', 'masteruser')
-        .leftJoin('mastercompanyees.businessline', 'businessline')
-        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
-        .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
+        .leftJoin('company.businessline', 'businessline')
+        .leftJoin('company.surveygroup', 'surveygroup')
+        .leftJoin('company.businessgroup', 'businessgroup')
         .select([
           'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
           'businessgroup.businessgroupdesc',
-          'mastercompanyees.companyname',
+          'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masteruser.email = :email', { email })
         .orderBy('masteruser.email')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.accessUserRepository
+      const itemCount = await this.accessUserRepository
         .createQueryBuilder('accessuser')
-        .leftJoin('accessuser.mastercompanyees', 'mastercompanyees')
+        .leftJoin('accessuser.company', 'company')
         .leftJoin('accessuser.masteruser', 'masteruser')
-        .leftJoin('mastercompanyees.businessline', 'businessline')
-        .leftJoin('mastercompanyees.surveygroup', 'surveygroup')
-        .leftJoin('mastercompanyees.businessgroup', 'businessgroup')
+        .leftJoin('company.businessline', 'businessline')
+        .leftJoin('company.surveygroup', 'surveygroup')
+        .leftJoin('company.businessgroup', 'businessgroup')
         .select([
           'accessuser.aksesuserid',
           'masteruser.email',
           'businessline.businesslinedesc',
           'surveygroup.surveygroupdesc',
           'businessgroup.businessgroupdesc',
-          'mastercompanyees.companyname',
+          'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('masteruser.email = :email', { email })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

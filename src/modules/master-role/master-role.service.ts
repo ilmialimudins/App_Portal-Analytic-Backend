@@ -15,10 +15,18 @@ export class MasterRoleService {
 
   async getAllMasterRole(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: MasterRoleDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: MasterRoleDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
@@ -26,16 +34,28 @@ export class MasterRoleService {
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .orderBy('rolename')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.masterRoleRepository
+      const itemCount = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
         .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -43,11 +63,19 @@ export class MasterRoleService {
 
   async getMasterRoleName(
     page: number,
-    pageSize: number,
+    take: number,
     rolename: string,
-  ): Promise<{ data: MasterRole[]; total: number }> {
+  ): Promise<{
+    data: MasterRoleDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
@@ -56,17 +84,29 @@ export class MasterRoleService {
         .andWhere('masterrole.rolename = :rolename', { rolename })
         .orderBy('rolename')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.masterRoleRepository
+      const itemCount = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
         .select(['roleid', 'rolename', 'roledesc'])
         .andWhere('masterrole.rolename = :rolename', { rolename })
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
