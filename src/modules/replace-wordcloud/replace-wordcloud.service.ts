@@ -5,6 +5,8 @@ import { Brackets, Repository } from 'typeorm';
 import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
+import * as excel from 'exceljs';
+import { addTable } from 'src/common/utils/addExcelTable';
 
 @Injectable()
 export class ReplaceWordcloudService {
@@ -205,6 +207,60 @@ export class ReplaceWordcloudService {
         .execute();
 
       return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async generateExcelReplaceWordcloud(
+    companyname: string,
+    tahun_survey: number,
+  ) {
+    try {
+      const query = await this.replaceWordcloudRepository
+        .createQueryBuilder('replacewordcloud')
+        .leftJoin('replacewordcloud.company', 'company')
+        .select([
+          'replacewordcloud.original_text',
+          'replacewordcloud.replace_text',
+          'company.companyeesname',
+          'replacewordcloud.tahun_survey',
+        ])
+        .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
+        .andWhere('company.companyeesname = :companyname', { companyname })
+        .andWhere('replacewordcloud.tahun_survey = :tahun_survey', {
+          tahun_survey,
+        })
+        .getMany();
+
+      const workbook = new excel.Workbook();
+      const worksheet = workbook.addWorksheet('Replace Wordcloud Data');
+
+      const headerTitle = [
+        'Original Text',
+        'Replacement Text',
+        'Company Name',
+        'Tahun Survey',
+      ];
+      const tableData = query.map((item) => ({
+        'Original Text': item.original_text,
+        'Replacement Text': item.replace_text,
+        'Company Name': item.company.companyeesname,
+        'Tahun Survey': item.tahun_survey,
+      }));
+
+      addTable(
+        {
+          columnStart: 'A',
+          rowHeaderNum: 1,
+          rowDataNum: 2,
+          headerTitle: headerTitle,
+          tableData: tableData,
+        },
+        worksheet,
+      );
+
+      return workbook;
     } catch (error) {
       throw error;
     }

@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { StopwordsDto } from './dto/stopwords.dto';
 import { AddStopwordsDto } from './dto/add-stopwords.dto';
 import { UpdateStopwordsDto } from './dto/update-stopwords.dto';
+import * as excel from 'exceljs';
+import { addTable } from 'src/common/utils/addExcelTable';
 
 @Injectable()
 export class StopwordsService {
@@ -193,6 +195,50 @@ export class StopwordsService {
         .execute();
 
       return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async generateExcelStopwords(companyname: string, tahun_survey: number) {
+    try {
+      const query = await this.stopwordsRepository
+        .createQueryBuilder('stopwords')
+        .leftJoin('stopwords.company', 'company')
+        .select([
+          'stopwords.stopwords',
+          'company.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
+        .andWhere('company.companyeesname = :companyname', { companyname })
+        .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
+        .orderBy('tahun_survey')
+        .getMany();
+
+      const workbook = new excel.Workbook();
+      const worksheet = workbook.addWorksheet('Stopwords Data');
+
+      const headerTitle = ['Stopwords', 'Company Name', 'Tahun Survey'];
+      const tableData = query.map((item) => ({
+        Stopwords: item.stopwords,
+        'Company Name': item.company.companyeesname,
+        'Tahun Survey': item.tahun_survey,
+      }));
+
+      addTable(
+        {
+          columnStart: 'A',
+          rowHeaderNum: 1,
+          rowDataNum: 2,
+          headerTitle: headerTitle,
+          tableData: tableData,
+        },
+        worksheet,
+      );
+
+      return workbook;
     } catch (error) {
       throw error;
     }
