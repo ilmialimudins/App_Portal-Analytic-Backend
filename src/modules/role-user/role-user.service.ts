@@ -162,6 +162,7 @@ export class RoleUserService {
         .values({
           roleid: roleuser.roleid,
           userid: roleuser.userid,
+          isdelete: 'false',
           createdby: roleuser.createdby,
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),

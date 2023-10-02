@@ -185,6 +185,7 @@ export class AccessUserService {
         .values({
           companyid: accessuser.companyid,
           userid: accessuser.userid,
+          isdelete: 'false',
           createdby: accessuser.createdby,
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),

@@ -20,6 +20,11 @@ export class AddMasterUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  readonly companycode: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   readonly companyname: string;
 
   @ApiPropertyOptional()

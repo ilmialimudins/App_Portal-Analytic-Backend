@@ -72,6 +72,7 @@ export class RoleMenuService {
         .values({
           roleid: rolemenu.roleid,
           menuid: rolemenu.menuid,
+          isdelete: 'false',
           createdby: rolemenu.createdby,
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),

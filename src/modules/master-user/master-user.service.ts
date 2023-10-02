@@ -167,6 +167,7 @@ export class MasterUserService {
           npk: masteruser.npk,
           username: masteruser.username,
           phonenumber: masteruser.phonenumber,
+          companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
           isdelete: 'false',
@@ -190,6 +191,7 @@ export class MasterUserService {
           npk: masteruser.npk,
           username: masteruser.username,
           phonenumber: masteruser.phonenumber,
+          companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
         })

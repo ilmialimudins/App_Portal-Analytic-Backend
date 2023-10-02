@@ -128,8 +128,8 @@ export class MasterRoleService {
   async getLastMasterRoleCode() {
     try {
       const query = await this.masterRoleRepository
-        .createQueryBuilder('masterole')
-        .select('masterole.rolecode')
+        .createQueryBuilder('masterrole')
+        .select('masterrole.rolecode')
         .orderBy('masterrole.rolecode', 'DESC')
         .getOne();
 
