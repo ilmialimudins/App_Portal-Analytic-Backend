@@ -117,7 +117,9 @@ export class AccessUserService {
           'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.email = :email', { email })
+        .andWhere('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLocaleLowerCase()}%`,
+        })
         .orderBy('masteruser.email')
         .offset(offset)
         .limit(take)
@@ -139,7 +141,9 @@ export class AccessUserService {
           'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.email = :email', { email })
+        .andWhere('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLocaleLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

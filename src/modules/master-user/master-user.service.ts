@@ -105,7 +105,9 @@ export class MasterUserService {
           'companyname',
         ])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.username = :username', { username })
+        .andWhere('LOWER(masteruser.username) LIKE :username', {
+          username: `%${username.toLocaleLowerCase()}%`,
+        })
         .orderBy('username')
         .offset(offset)
         .limit(take)
@@ -123,7 +125,9 @@ export class MasterUserService {
           'companyname',
         ])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.username = :username', { username })
+        .andWhere('LOWER(masteruser.username) LIKE :username', {
+          username: `%${username.toLocaleLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

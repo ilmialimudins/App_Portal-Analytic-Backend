@@ -81,7 +81,9 @@ export class MasterRoleService {
         .createQueryBuilder('masterrole')
         .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masterrole.rolename = :rolename', { rolename })
+        .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
+          rolename: `%${rolename.toLocaleLowerCase()}%`,
+        })
         .orderBy('rolename')
         .offset(offset)
         .limit(take)
@@ -90,8 +92,10 @@ export class MasterRoleService {
       const itemCount = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
         .select(['roleid', 'rolename', 'roledesc'])
-        .andWhere('masterrole.rolename = :rolename', { rolename })
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
+          rolename: `%${rolename.toLocaleLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
