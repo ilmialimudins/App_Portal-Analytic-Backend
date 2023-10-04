@@ -72,7 +72,7 @@ export class RoleUserService {
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
-          rolename: `%${rolename.toLocaleLowerCase()}%`,
+          rolename: `%${rolename.toLowerCase()}%`,
         })
         .orderBy('masteruser.email')
         .offset(offset)
@@ -90,7 +90,7 @@ export class RoleUserService {
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
-          rolename: `%${rolename.toLocaleLowerCase()}%`,
+          rolename: `%${rolename.toLowerCase()}%`,
         })
         .getCount();
 
@@ -119,7 +119,7 @@ export class RoleUserService {
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masteruser.email) LIKE :email', {
-          email: `%${email.toLocaleLowerCase()}%`,
+          email: `%${email.toLowerCase()}%`,
         })
         .orderBy('masteruser.email')
         .offset(offset)
@@ -137,7 +137,7 @@ export class RoleUserService {
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masteruser.email) LIKE :email', {
-          email: `%${email.toLocaleLowerCase()}%`,
+          email: `%${email.toLowerCase()}%`,
         })
         .getCount();
 

@@ -106,7 +106,7 @@ export class MasterUserService {
         ])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masteruser.username) LIKE :username', {
-          username: `%${username.toLocaleLowerCase()}%`,
+          username: `%${username.toLowerCase()}%`,
         })
         .orderBy('username')
         .offset(offset)
@@ -126,7 +126,7 @@ export class MasterUserService {
         ])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masteruser.username) LIKE :username', {
-          username: `%${username.toLocaleLowerCase()}%`,
+          username: `%${username.toLowerCase()}%`,
         })
         .getCount();
 

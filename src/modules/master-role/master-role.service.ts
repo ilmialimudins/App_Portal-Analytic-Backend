@@ -82,7 +82,7 @@ export class MasterRoleService {
         .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
-          rolename: `%${rolename.toLocaleLowerCase()}%`,
+          rolename: `%${rolename.toLowerCase()}%`,
         })
         .orderBy('rolename')
         .offset(offset)
@@ -94,7 +94,7 @@ export class MasterRoleService {
         .select(['roleid', 'rolename', 'roledesc'])
         .where('masterrole.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
-          rolename: `%${rolename.toLocaleLowerCase()}%`,
+          rolename: `%${rolename.toLowerCase()}%`,
         })
         .getCount();
 

@@ -118,7 +118,7 @@ export class AccessUserService {
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masteruser.email) LIKE :email', {
-          email: `%${email.toLocaleLowerCase()}%`,
+          email: `%${email.toLowerCase()}%`,
         })
         .orderBy('masteruser.email')
         .offset(offset)
@@ -142,7 +142,7 @@ export class AccessUserService {
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(masteruser.email) LIKE :email', {
-          email: `%${email.toLocaleLowerCase()}%`,
+          email: `%${email.toLowerCase()}%`,
         })
         .getCount();
 
