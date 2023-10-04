@@ -41,7 +41,7 @@ export class MasterReportService {
           'masterworkspace.workspacename',
           'masterworkspace.workspacepowerbiid',
         ])
-        .where('masterreport.isdelete = :isdelete', { isdelete: 'false' })
+        .where('masterreport.isdelete = :isdelete', { isdelete: false })
         .orderBy('masterreport.reportname')
         .offset(offset)
         .limit(take)
@@ -59,7 +59,7 @@ export class MasterReportService {
           'masterworkspace.workspacename',
           'masterworkspace.workspacepowerbiid',
         ])
-        .where('masterreport.isdelete = :isdelete', { isdelete: 'false' })
+        .where('masterreport.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

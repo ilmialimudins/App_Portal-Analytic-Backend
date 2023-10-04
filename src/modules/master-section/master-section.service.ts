@@ -41,7 +41,7 @@ export class MasterSectionService {
           'masterreport.reportpowerbiid',
           'masterreport.datasetpowerbiid',
         ])
-        .where('mastersection.isdelete = :isdelete', { isdelete: 'false' })
+        .where('mastersection.isdelete = :isdelete', { isdelete: false })
         .orderBy('masterreport.reportname')
         .offset(offset)
         .limit(take)
@@ -59,7 +59,7 @@ export class MasterSectionService {
           'masterreport.reportpowerbiid',
           'masterreport.datasetpowerbiid',
         ])
-        .where('mastersection.isdelete = :isdelete', { isdelete: 'false' })
+        .where('mastersection.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
