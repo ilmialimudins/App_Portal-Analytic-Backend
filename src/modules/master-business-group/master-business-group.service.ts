@@ -82,9 +82,10 @@ export class BusinessGroupService {
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
         .where('businessgroup.isdelete = :isdelete', { isdelete: false })
-        .andWhere('businessgroup.businessgroupdesc = :businessgroup', {
-          businessgroup,
-        })
+        .andWhere(
+          'LOWER(businessgroup.businessgroupdesc) LIKE :businessgroup',
+          { businessgroup: `%${businessgroup.toLowerCase()}%` },
+        )
         .orderBy('businessgroupcode')
         .offset(offset)
         .limit(take)
@@ -94,9 +95,10 @@ export class BusinessGroupService {
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
         .where('businessgroup.isdelete = :isdelete', { isdelete: false })
-        .andWhere('businessgroup.businessgroupdesc = :businessgroup', {
-          businessgroup,
-        })
+        .andWhere(
+          'LOWER(businessgroup.businessgroupdesc) LIKE :businessgroup',
+          { businessgroup: `%${businessgroup.toLowerCase()}%` },
+        )
         .orderBy('businessgroupcode')
         .getCount();
 

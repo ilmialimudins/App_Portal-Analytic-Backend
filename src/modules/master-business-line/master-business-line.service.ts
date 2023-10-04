@@ -81,8 +81,8 @@ export class BusinessLineService {
         .createQueryBuilder('businessline')
         .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
         .where('businessline.isdelete = :isdelete', { isdelete: false })
-        .andWhere('businessline.businesslinedesc = :businessline', {
-          businessline,
+        .andWhere('LOWER(businessline.businesslinedesc) LIKE :businessline', {
+          businessline: `%${businessline.toLowerCase()}%`,
         })
         .orderBy('businesslinecode')
         .offset(offset)
@@ -93,8 +93,8 @@ export class BusinessLineService {
         .createQueryBuilder('businessline')
         .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
         .where('businessline.isdelete = :isdelete', { isdelete: false })
-        .andWhere('businessline.businesslinedesc = :businessline', {
-          businessline,
+        .andWhere('LOWER(businessline.businesslinedesc) LIKE :businessline', {
+          businessline: `%${businessline.toLowerCase()}%`,
         })
         .getCount();
 

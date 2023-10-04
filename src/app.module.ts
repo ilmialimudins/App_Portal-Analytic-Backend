@@ -44,6 +44,7 @@ import { MasterWorkSpaceModule } from './modules/master-work-space/master-work-s
 import { MasterReportModule } from './modules/master-report/master-report.module';
 import { MasterSectionModule } from './modules/master-section/master-section.module';
 import { MappingMenuReportModule } from './modules/mapping-menu-report/mapping-menu-report.module';
+import { SurveyGroupModule } from './modules/master-survey-group/master-survey-group.module';
 
 const ApiModules = [
   SharedModule,
@@ -52,6 +53,7 @@ const ApiModules = [
   BusinessGroupModule,
   LocationModule,
   DemographyModule,
+  SurveyGroupModule,
   StopwordsModule,
   ReplaceWordcloudModule,
   NgramModule,

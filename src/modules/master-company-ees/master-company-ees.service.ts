@@ -55,8 +55,8 @@ export class CompanyService {
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
         .orderBy({ 'company.companyeesname': 'ASC', 'company.isdelete': 'ASC' })
-        .skip(offset)
-        .take(take)
+        .offset(offset)
+        .limit(take)
         .getRawMany();
 
       const itemCount = await this.companyRepository
@@ -147,7 +147,10 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .andWhere('company.companyeesname = :companyname', { companyname })
+        .andWhere(
+          'company.companyeesname LIKE :companyname OR LOWER(company.companympsname) LIKE :companyname',
+          { companyname: `%${companyname}%` },
+        )
         .orderBy({ 'company.companyeesname': 'ASC', 'company.isdelete': 'ASC' })
         .offset(offset)
         .limit(take)
@@ -179,7 +182,10 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .andWhere('company.companyeesname = :companyname', { companyname })
+        .andWhere(
+          'LOWER(company.companyeesname) OR LOWER(company.companympsname) LIKE :companyname',
+          { companyname: `%${companyname.toLowerCase()}%` },
+        )
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

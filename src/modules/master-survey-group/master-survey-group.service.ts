@@ -53,7 +53,9 @@ export class SurveyGroupService {
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
-        .andWhere('suverygroup.surveygroupdesc = :surveygroup', { surveygroup })
+        .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
+          surveygroup: `%${surveygroup.toLocaleLowerCase()}%`,
+        })
         .orderBy('surveygroupcode')
         .offset(offset)
         .limit(pageSize)
@@ -63,7 +65,9 @@ export class SurveyGroupService {
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
-        .andWhere('suverygroup.surveygroupdesc = :surveygroup', { surveygroup })
+        .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
+          surveygroup: `%${surveygroup.toLocaleLowerCase()}%`,
+        })
         .getCount();
 
       return { data, total };

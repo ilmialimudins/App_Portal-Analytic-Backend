@@ -81,7 +81,9 @@ export class LocationService {
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
         .where('location.isdelete = :isdelete', { isdelete: false })
-        .andWhere('location.locationdesc = :location', { location })
+        .andWhere('LOWER(location.locationdesc) LIKE :location', {
+          location: `%${location.toLocaleLowerCase()}%`,
+        })
         .orderBy('locationcode')
         .offset(offset)
         .limit(take)
@@ -91,7 +93,9 @@ export class LocationService {
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
         .where('location.isdelete = :isdelete', { isdelete: false })
-        .andWhere('location.locationdesc = :location', { location })
+        .andWhere('LOWER(location.locationdesc) LIKE :location', {
+          location: `%${location.toLocaleLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
