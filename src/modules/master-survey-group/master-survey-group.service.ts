@@ -54,7 +54,7 @@ export class SurveyGroupService {
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
-          surveygroup: `%${surveygroup.toLocaleLowerCase()}%`,
+          surveygroup: `%${surveygroup.toLowerCase()}%`,
         })
         .orderBy('surveygroupcode')
         .offset(offset)
@@ -66,7 +66,7 @@ export class SurveyGroupService {
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
-          surveygroup: `%${surveygroup.toLocaleLowerCase()}%`,
+          surveygroup: `%${surveygroup.toLowerCase()}%`,
         })
         .getCount();
 

@@ -97,7 +97,7 @@ export class DemographyService {
         ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(demography.demographydesc) LIKE :demography', {
-          demography: `%${demography.toLocaleLowerCase()}%`,
+          demography: `%${demography.toLowerCase()}%`,
         })
         .orderBy('urutanfilter')
         .offset(offset)
@@ -114,7 +114,7 @@ export class DemographyService {
         ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(demography.demographydesc) LIKE :demography', {
-          demography: `%${demography.toLocaleLowerCase()}%`,
+          demography: `%${demography.toLowerCase()}%`,
         })
         .getCount();
 

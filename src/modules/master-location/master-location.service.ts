@@ -82,7 +82,7 @@ export class LocationService {
         .select(['locationid', 'locationcode', 'locationdesc'])
         .where('location.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(location.locationdesc) LIKE :location', {
-          location: `%${location.toLocaleLowerCase()}%`,
+          location: `%${location.toLowerCase()}%`,
         })
         .orderBy('locationcode')
         .offset(offset)
@@ -94,7 +94,7 @@ export class LocationService {
         .select(['locationid', 'locationcode', 'locationdesc'])
         .where('location.isdelete = :isdelete', { isdelete: false })
         .andWhere('LOWER(location.locationdesc) LIKE :location', {
-          location: `%${location.toLocaleLowerCase()}%`,
+          location: `%${location.toLowerCase()}%`,
         })
         .getCount();
 
