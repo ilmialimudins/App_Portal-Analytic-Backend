@@ -37,6 +37,7 @@ export class ReplaceWordcloudService {
           'replacewordcloud.replace_text',
           'company.companyeesname',
           'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey')
@@ -53,6 +54,7 @@ export class ReplaceWordcloudService {
           'replacewordcloud.replace_text',
           'company.companyeesname',
           'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
         .getCount();
@@ -101,12 +103,13 @@ export class ReplaceWordcloudService {
           'replacewordcloud.replace_text',
           'company.companyeesname',
           'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
+        .andWhere('LOWER(company.companyeesname) LIKE :companyname', {
+          companyname: `%${companyname.toLowerCase()}%`,
         })
-        .andWhere('replacewordcloud.tahun_survey = :tahun_survey', {
+        .andWhere('LOWER(replacewordcloud.tahun_survey) LIKE :tahun_survey', {
           tahun_survey,
         })
         .orderBy('tahun_survey')
@@ -123,13 +126,85 @@ export class ReplaceWordcloudService {
           'replacewordcloud.replace_text',
           'company.companyeesname',
           'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
+        .andWhere('LOWER(company.companyeesname) LIKE :companyname', {
+          companyname: `%${companyname.toLowerCase()}%`,
         })
-        .andWhere('replacewordcloud.tahun_survey = :tahun_survey', {
+        .andWhere('LOWER(replacewordcloud.tahun_survey) LIKE :tahun_survey', {
           tahun_survey,
+        })
+        .getCount();
+
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllReplaceWordcloudFilterOriginalText(
+    page: number,
+    take: number,
+    original_text: string,
+  ): Promise<{
+    data: ReplaceWordcloudDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    try {
+      const offset = (page - 1) * take;
+
+      const data = await this.replaceWordcloudRepository
+        .createQueryBuilder('replacewordcloud')
+        .leftJoin('replacewordcloud.company', 'company')
+        .select([
+          'id',
+          'replacewordcloud.original_text',
+          'replacewordcloud.replace_text',
+          'company.companyeesname',
+          'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
+        ])
+        .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(replacewordcloud.original_text) LIKE :original_text', {
+          original_text: `%${original_text.toLowerCase()}%`,
+        })
+        .orderBy('tahun_survey')
+        .offset(offset)
+        .limit(take)
+        .getRawMany();
+
+      const itemCount = await this.replaceWordcloudRepository
+        .createQueryBuilder('replacewordcloud')
+        .leftJoin('replacewordcloud.company', 'company')
+        .select([
+          'id',
+          'replacewordcloud.original_text',
+          'replacewordcloud.replace_text',
+          'company.companyeesname',
+          'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
+        ])
+        .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(replacewordcloud.original_text) LIKE :original_text', {
+          original_text: `%${original_text.toLowerCase()}%`,
         })
         .getCount();
 

@@ -63,6 +63,28 @@ export class ReplaceWordcloudController {
     );
   }
 
+  @Get('/replaceWordcloudFilterOriginalText')
+  @ApiOkResponse({ type: ReplaceWordcloudDto })
+  async getAllReplaceWordcloudFilterOriginalText(
+    @Query('page') page: number,
+    @Query('take') take: number,
+    @Query('original_text') original_text: string,
+  ): Promise<{
+    data: ReplaceWordcloudDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.replaceWordcloudService.getAllReplaceWordcloudFilterOriginalText(
+      page,
+      take,
+      original_text,
+    );
+  }
+
   @Get('/getReplaceWordcloudId')
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async getReplaceWordcloudId(@Query('uuid') uuid: string) {
