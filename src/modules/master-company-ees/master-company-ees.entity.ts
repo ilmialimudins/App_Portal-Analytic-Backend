@@ -124,6 +124,9 @@ export class Company extends AbstractEntity<CompanyDto> {
   @Column({ type: 'varchar', name: 'aliascompany3', nullable: true })
   aliascompany3: string;
 
+  @Column({ type: 'varchar', name: 'remark', nullable: true })
+  remark: string;
+
   @Column({ type: 'varchar', name: 'isdelete', nullable: false })
   isdelete: string;
 

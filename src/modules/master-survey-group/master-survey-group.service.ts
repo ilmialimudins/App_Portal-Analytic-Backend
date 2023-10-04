@@ -23,7 +23,7 @@ export class SurveyGroupService {
       const data = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .orderBy('surveygroupcode')
         .offset(offset)
         .limit(pageSize)
@@ -32,7 +32,7 @@ export class SurveyGroupService {
       const total = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -52,7 +52,7 @@ export class SurveyGroupService {
       const data = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .andWhere('suverygroup.surveygroupdesc = :surveygroup', { surveygroup })
         .orderBy('surveygroupcode')
         .offset(offset)
@@ -62,7 +62,7 @@ export class SurveyGroupService {
       const total = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .andWhere('suverygroup.surveygroupdesc = :surveygroup', { surveygroup })
         .getCount();
 

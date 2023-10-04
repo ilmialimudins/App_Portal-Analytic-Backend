@@ -31,7 +31,7 @@ export class LocationService {
       const data = await this.locationRepository
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
-        .where('location.isdelete = :isdelete', { isdelete: 'false' })
+        .where('location.isdelete = :isdelete', { isdelete: false })
         .orderBy('locationcode')
         .offset(offset)
         .limit(take)
@@ -40,6 +40,7 @@ export class LocationService {
       const itemCount = await this.locationRepository
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
+        .where('location.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -79,7 +80,7 @@ export class LocationService {
       const data = await this.locationRepository
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
-        .where('location.isdelete = :isdelete', { isdelete: 'false' })
+        .where('location.isdelete = :isdelete', { isdelete: false })
         .andWhere('location.locationdesc = :location', { location })
         .orderBy('locationcode')
         .offset(offset)
@@ -89,6 +90,7 @@ export class LocationService {
       const itemCount = await this.locationRepository
         .createQueryBuilder('location')
         .select(['locationid', 'locationcode', 'locationdesc'])
+        .where('location.isdelete = :isdelete', { isdelete: false })
         .andWhere('location.locationdesc = :location', { location })
         .getCount();
 

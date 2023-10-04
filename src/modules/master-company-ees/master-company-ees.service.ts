@@ -54,8 +54,7 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .where('company.isdelete = :isdelete', { isdelete: false })
-        .orderBy('company.companyeesname')
+        .orderBy({ 'company.companyeesname': 'ASC', 'company.isdelete': 'ASC' })
         .skip(offset)
         .take(take)
         .getRawMany();
@@ -86,7 +85,6 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .where('company.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -149,9 +147,8 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .where('company.isdelete = :isdelete', { isdelete: false })
         .andWhere('company.companyeesname = :companyname', { companyname })
-        .orderBy('companyeesname')
+        .orderBy({ 'company.companyeesname': 'ASC', 'company.isdelete': 'ASC' })
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -182,7 +179,6 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .where('company.isdelete = :isdelete', { isdelete: false })
         .andWhere('company.companyeesname = :companyname', { companyname })
         .getCount();
 
@@ -209,7 +205,6 @@ export class CompanyService {
       const query = await this.companyRepository
         .createQueryBuilder('company')
         .where('company.companyid = :companyid', { companyid })
-        .where('company.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query?.toDto();
@@ -239,7 +234,8 @@ export class CompanyService {
           aliascompany1: company.aliascompany1,
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
-          isdelete: 'false',
+          remark: company.remark,
+          isdelete: 'active',
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),
         })
@@ -271,6 +267,7 @@ export class CompanyService {
           aliascompany1: company.aliascompany1,
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
+          remark: company.remark,
         })
         .where('companyid = :companyid', { companyid })
         .execute();
@@ -286,7 +283,7 @@ export class CompanyService {
       await this.companyRepository
         .createQueryBuilder()
         .update(Company)
-        .set({ isdelete: 'true' })
+        .set({ isdelete: 'deactive' })
         .where('companyid = :companyid', { companyid })
         .execute();
 
