@@ -90,6 +90,11 @@ export class AddTableMasterCompany1690340398781 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'remark',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'isdelete',
             type: 'varchar',
             isNullable: true,

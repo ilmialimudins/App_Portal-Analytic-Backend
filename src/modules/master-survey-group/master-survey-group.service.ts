@@ -23,7 +23,7 @@ export class SurveyGroupService {
       const data = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .orderBy('surveygroupcode')
         .offset(offset)
         .limit(pageSize)
@@ -32,7 +32,7 @@ export class SurveyGroupService {
       const total = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -52,8 +52,10 @@ export class SurveyGroupService {
       const data = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
-        .andWhere('suverygroup.surveygroupdesc = :surveygroup', { surveygroup })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
+          surveygroup: `%${surveygroup.toLowerCase()}%`,
+        })
         .orderBy('surveygroupcode')
         .offset(offset)
         .limit(pageSize)
@@ -62,8 +64,10 @@ export class SurveyGroupService {
       const total = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: 'false' })
-        .andWhere('suverygroup.surveygroupdesc = :surveygroup', { surveygroup })
+        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
+          surveygroup: `%${surveygroup.toLowerCase()}%`,
+        })
         .getCount();
 
       return { data, total };

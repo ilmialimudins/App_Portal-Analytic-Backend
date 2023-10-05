@@ -31,7 +31,7 @@ export class BusinessGroupService {
       const data = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
-        .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('businessgroup.isdelete = :isdelete', { isdelete: false })
         .orderBy('businessgroupcode')
         .offset(offset)
         .limit(take)
@@ -40,7 +40,7 @@ export class BusinessGroupService {
       const itemCount = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
-        .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
+        .where('businessgroup.isdelete = :isdelete', { isdelete: false })
         .orderBy('businessgroupcode')
         .getCount();
 
@@ -81,10 +81,11 @@ export class BusinessGroupService {
       const data = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
-        .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
-        .andWhere('businessgroup.businessgroupdesc = :businessgroup', {
-          businessgroup,
-        })
+        .where('businessgroup.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'LOWER(businessgroup.businessgroupdesc) LIKE :businessgroup',
+          { businessgroup: `%${businessgroup.toLowerCase()}%` },
+        )
         .orderBy('businessgroupcode')
         .offset(offset)
         .limit(take)
@@ -93,10 +94,11 @@ export class BusinessGroupService {
       const itemCount = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select(['businessgroupid', 'businessgroupcode', 'businessgroupdesc'])
-        .where('businessgroup.isdelete = :isdelete', { isdelete: 'false' })
-        .andWhere('businessgroup.businessgroupdesc = :businessgroup', {
-          businessgroup,
-        })
+        .where('businessgroup.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'LOWER(businessgroup.businessgroupdesc) LIKE :businessgroup',
+          { businessgroup: `%${businessgroup.toLowerCase()}%` },
+        )
         .orderBy('businessgroupcode')
         .getCount();
 

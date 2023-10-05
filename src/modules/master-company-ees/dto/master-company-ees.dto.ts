@@ -25,6 +25,9 @@ export class CompanyDto extends AbstractDto {
   aliascompany3: string;
 
   @ApiProperty()
+  remark: string;
+
+  @ApiProperty()
   isdelete: string;
 
   constructor(companyEntity: Company) {
@@ -36,6 +39,7 @@ export class CompanyDto extends AbstractDto {
     this.aliascompany1 = companyEntity.aliascompany1;
     this.aliascompany2 = companyEntity.aliascompany2;
     this.aliascompany3 = companyEntity.aliascompany3;
+    this.remark = companyEntity.remark;
     this.isdelete = companyEntity.isdelete;
   }
 }

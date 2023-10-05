@@ -96,7 +96,9 @@ export class DemographyService {
           'urutanfilter',
         ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
-        .andWhere('demography.demographydesc = :demography', { demography })
+        .andWhere('LOWER(demography.demographydesc) LIKE :demography', {
+          demography: `%${demography.toLowerCase()}%`,
+        })
         .orderBy('urutanfilter')
         .offset(offset)
         .limit(take)
@@ -111,7 +113,9 @@ export class DemographyService {
           'urutanfilter',
         ])
         .where('demography.isdelete = :isdelete', { isdelete: false })
-        .andWhere('demography.demographydesc = :demography', { demography })
+        .andWhere('LOWER(demography.demographydesc) LIKE :demography', {
+          demography: `%${demography.toLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
