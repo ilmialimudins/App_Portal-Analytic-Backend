@@ -45,6 +45,10 @@ import { MasterReportModule } from './modules/master-report/master-report.module
 import { MasterSectionModule } from './modules/master-section/master-section.module';
 import { MappingMenuReportModule } from './modules/mapping-menu-report/mapping-menu-report.module';
 import { SurveyGroupModule } from './modules/master-survey-group/master-survey-group.module';
+import { ClaModule } from './modules/master-cla/master-cla.module';
+import { DirectReviewModule } from './modules/master-direct-review/master-direct-review.module';
+import { ModellingTypeModule } from './modules/master-modelling-type/master-modelling-type.module';
+import { OwnershipStatusModule } from './modules/master-ownership-status/master-ownership-status.module';
 
 const ApiModules = [
   SharedModule,
@@ -52,6 +56,10 @@ const ApiModules = [
   BusinessLineModule,
   BusinessGroupModule,
   LocationModule,
+  ClaModule,
+  DirectReviewModule,
+  ModellingTypeModule,
+  OwnershipStatusModule,
   DemographyModule,
   SurveyGroupModule,
   StopwordsModule,
