@@ -49,6 +49,7 @@ import { ClaModule } from './modules/master-cla/master-cla.module';
 import { DirectReviewModule } from './modules/master-direct-review/master-direct-review.module';
 import { ModellingTypeModule } from './modules/master-modelling-type/master-modelling-type.module';
 import { OwnershipStatusModule } from './modules/master-ownership-status/master-ownership-status.module';
+import { PowerBIModule } from './modules/powerbi-token-temp/powerbi-temp.module';
 
 const ApiModules = [
   SharedModule,
@@ -75,6 +76,7 @@ const ApiModules = [
   MasterReportModule,
   MasterSectionModule,
   MappingMenuReportModule,
+  PowerBIModule,
   MasterCompanyModule,
   FactorModule,
   PredEngagamentValueModule,
