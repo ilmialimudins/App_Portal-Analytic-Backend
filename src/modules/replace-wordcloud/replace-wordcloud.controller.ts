@@ -7,6 +7,7 @@ import {
   Delete,
   Patch,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ReplaceWordcloudService } from './replace-wordcloud.service';
@@ -14,6 +15,7 @@ import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { Response as ExpressResponse } from 'express';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -110,6 +112,32 @@ export class ReplaceWordcloudController {
     );
 
     return result;
+  }
+
+  @Post('/generateExcelReplaceWordcloud')
+  @ApiOkResponse({ type: ReplaceWordcloudDto })
+  async generateExcelReplaceWordcloud(
+    @Query('companyname') companyname: string,
+    @Query('tahun_survey') tahun_survey: number,
+    @Res() res: ExpressResponse,
+  ) {
+    const workbook =
+      await this.replaceWordcloudService.generateExcelReplaceWordcloud(
+        companyname,
+        tahun_survey,
+      );
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=ReplaceWordcloud_${companyname}.xlsx`,
+    );
+
+    await workbook.xlsx.write(res);
+    res.send('File Send');
   }
 
   @Patch('/updateReplaceWordcloud')

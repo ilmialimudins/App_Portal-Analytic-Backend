@@ -7,6 +7,7 @@ import {
   Query,
   Delete,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { StopwordsService } from './stopwords.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { StopwordsDto } from './dto/stopwords.dto';
 import { AddStopwordsDto } from './dto/add-stopwords.dto';
 import { UpdateStopwordsDto } from './dto/update-stopwords.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { Response as ExpressResponse } from 'express';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -103,6 +105,31 @@ export class StopwordsController {
     const result = await this.stopwordsService.createStopwords(stopwords);
 
     return result;
+  }
+
+  @Post('/generateExcelStopwords')
+  @ApiOkResponse({ type: StopwordsDto })
+  async generateExcelStopwords(
+    @Query('companyname') companyname: string,
+    @Query('tahun_survey') tahun_survey: number,
+    @Res() res: ExpressResponse,
+  ) {
+    const workbook = await this.stopwordsService.generateExcelStopwords(
+      companyname,
+      tahun_survey,
+    );
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=Stopwords_${companyname}.xlsx`,
+    );
+
+    await workbook.xlsx.write(res);
+    res.send('File Send');
   }
 
   @Patch('/updateStopwords')
