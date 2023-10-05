@@ -29,7 +29,7 @@ export class RoleMenuService {
           'masterrole.rolename',
           'mastermenu.menuname',
         ])
-        .where('rolemenu.isdelete = :isdelete', { isdelete: 'false' })
+        .where('rolemenu.isdelete = :isdelete', { isdelete: false })
         .orderBy('masterrole.rolemenu')
         .offset(offset)
         .limit(pageSize)
@@ -40,7 +40,7 @@ export class RoleMenuService {
         .leftJoin('rolemenu.masterrole', 'masterrole')
         .leftJoin('rolemenu.mastermenu', 'mastermenu')
         .select(['masterrole.rolename', 'mastermenu.menuname'])
-        .where('rolemenu.isdelete = :isdelete', { isdelete: 'false' })
+        .where('rolemenu.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       return { data, total };
@@ -54,7 +54,7 @@ export class RoleMenuService {
       const query = await this.roleMenuRepository
         .createQueryBuilder('rolemenu')
         .where('rolemenu.rolemenuid = :rolemenuid', { rolemenuid })
-        .where('rolemenu.isdelete = :isdelete', { isdelete: 'false' })
+        .where('rolemenu.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query?.toDto();
@@ -72,6 +72,7 @@ export class RoleMenuService {
         .values({
           roleid: rolemenu.roleid,
           menuid: rolemenu.menuid,
+          isdelete: 'false',
           createdby: rolemenu.createdby,
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),

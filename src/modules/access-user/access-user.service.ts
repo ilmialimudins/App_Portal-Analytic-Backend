@@ -117,7 +117,9 @@ export class AccessUserService {
           'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.email = :email', { email })
+        .andWhere('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLowerCase()}%`,
+        })
         .orderBy('masteruser.email')
         .offset(offset)
         .limit(take)
@@ -139,7 +141,9 @@ export class AccessUserService {
           'company.companyeesname',
         ])
         .where('accessuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.email = :email', { email })
+        .andWhere('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -176,19 +180,22 @@ export class AccessUserService {
     }
   }
 
-  async createAccessUser(accessuser: AddAccessUserDto) {
+  async createAccessUser(accessuser: AddAccessUserDto[]) {
     try {
+      const values = accessuser.map((accessuser) => ({
+        companyid: accessuser.companyid,
+        userid: accessuser.userid,
+        isdelete: 'false',
+        createdby: accessuser.createdby,
+        createdtime: new Date(),
+        sourcecreatedmodifiedtime: new Date(),
+      }));
+
       const query = await this.accessUserRepository
         .createQueryBuilder('accessuser')
         .insert()
         .into(AccessUser)
-        .values({
-          companyid: accessuser.companyid,
-          userid: accessuser.userid,
-          createdby: accessuser.createdby,
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
-        })
+        .values(values)
         .execute();
 
       return query;

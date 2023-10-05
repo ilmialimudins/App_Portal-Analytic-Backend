@@ -61,7 +61,7 @@ export class RoleUserController {
 
   @Post('/createRoleUser')
   @ApiCreatedResponse({ type: RoleUserDto })
-  async createRoleUser(@Body() roleuser: AddRoleUserDto) {
+  async createRoleUser(@Body() roleuser: AddRoleUserDto[]) {
     return this.roleUserService.createRoleUser(roleuser);
   }
 

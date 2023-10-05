@@ -105,7 +105,9 @@ export class MasterUserService {
           'companyname',
         ])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.username = :username', { username })
+        .andWhere('LOWER(masteruser.username) LIKE :username', {
+          username: `%${username.toLowerCase()}%`,
+        })
         .orderBy('username')
         .offset(offset)
         .limit(take)
@@ -123,7 +125,9 @@ export class MasterUserService {
           'companyname',
         ])
         .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.username = :username', { username })
+        .andWhere('LOWER(masteruser.username) LIKE :username', {
+          username: `%${username.toLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -167,6 +171,7 @@ export class MasterUserService {
           npk: masteruser.npk,
           username: masteruser.username,
           phonenumber: masteruser.phonenumber,
+          companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
           isdelete: 'false',
@@ -190,6 +195,7 @@ export class MasterUserService {
           npk: masteruser.npk,
           username: masteruser.username,
           phonenumber: masteruser.phonenumber,
+          companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
         })

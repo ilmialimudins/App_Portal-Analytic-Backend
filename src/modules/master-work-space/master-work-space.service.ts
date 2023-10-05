@@ -36,7 +36,7 @@ export class MasterWorkSpaceService {
           'workspacedesc',
           'workspacepowerbiid',
         ])
-        .where('masterworkspace.isdelete = :isdelete', { isdelete: 'false' })
+        .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
         .orderBy('workspacename')
         .offset(offset)
         .limit(take)
@@ -45,7 +45,7 @@ export class MasterWorkSpaceService {
       const itemCount = await this.masterWorkSpaceRepository
         .createQueryBuilder('masterworkspace')
         .select(['workspacename', 'workspacedesc', 'workspacepowerbiid'])
-        .where('masterworkspace.isdelete = :isdelete', { isdelete: 'false' })
+        .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

@@ -71,7 +71,9 @@ export class RoleUserService {
           'masterrole.rolename',
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masterrole.rolename = :rolename', { rolename })
+        .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
+          rolename: `%${rolename.toLowerCase()}%`,
+        })
         .orderBy('masteruser.email')
         .offset(offset)
         .limit(pageSize)
@@ -87,7 +89,9 @@ export class RoleUserService {
           'masterrole.rolename',
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masterrole.rolename = :rolename', { rolename })
+        .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
+          rolename: `%${rolename.toLowerCase()}%`,
+        })
         .getCount();
 
       return { data, total };
@@ -114,7 +118,9 @@ export class RoleUserService {
           'masterrole.rolename',
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.email = :email', { email })
+        .andWhere('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLowerCase()}%`,
+        })
         .orderBy('masteruser.email')
         .offset(offset)
         .limit(pageSize)
@@ -130,7 +136,9 @@ export class RoleUserService {
           'masterrole.rolename',
         ])
         .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('masteruser.email = :email', { email })
+        .andWhere('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLowerCase()}%`,
+        })
         .getCount();
 
       return { data, total };
@@ -153,19 +161,21 @@ export class RoleUserService {
     }
   }
 
-  async createRoleUser(roleuser: AddRoleUserDto) {
+  async createRoleUser(roleuser: AddRoleUserDto[]) {
     try {
+      const values = roleuser.map((roleuser) => ({
+        roleid: roleuser.roleid,
+        userid: roleuser.userid,
+        createdby: roleuser.createdby,
+        createdtime: new Date(),
+        sourcecreatedmodifiedtime: new Date(),
+      }));
+
       const query = await this.roleUserRepository
         .createQueryBuilder('roleuser')
         .insert()
         .into(RoleUser)
-        .values({
-          roleid: roleuser.roleid,
-          userid: roleuser.userid,
-          createdby: roleuser.createdby,
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
-        })
+        .values(values)
         .execute();
 
       return query;
