@@ -103,10 +103,12 @@ export class StopwordsService {
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
+        .andWhere('LOWER(company.companyeesname) LIKE :companyname', {
+          companyname: `%${companyname.toLowerCase()}%`,
         })
-        .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
+        .andWhere('LOWER(replacewordcloud.tahun_survey) LIKE :tahun_survey', {
+          tahun_survey,
+        })
         .orderBy('tahun_survey')
         .offset(offset)
         .limit(take)
@@ -123,10 +125,81 @@ export class StopwordsService {
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', {
-          companyname,
+        .andWhere('LOWER(company.companyeesname) LIKE :companyname', {
+          companyname: `%${companyname.toLowerCase()}%`,
         })
-        .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
+        .andWhere('LOWER(replacewordcloud.tahun_survey) LIKE :tahun_survey', {
+          tahun_survey,
+        })
+        .getCount();
+
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getStopwordsFilterStopwords(
+    page: number,
+    take: number,
+    stopword: string,
+  ): Promise<{
+    data: StopwordsDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    try {
+      const offset = (page - 1) * take;
+
+      const data = await this.stopwordsRepository
+        .createQueryBuilder('stopwords')
+        .leftJoin('stopwords.company', 'company')
+        .select([
+          'id',
+          'stopwords.stopwords',
+          'company.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(stopwords.stopwords) LIKE :stopword', {
+          stopword: `%${stopword.toLowerCase()}%`,
+        })
+        .orderBy('tahun_survey')
+        .offset(offset)
+        .limit(take)
+        .getRawMany();
+
+      const itemCount = await this.stopwordsRepository
+        .createQueryBuilder('stopwords')
+        .leftJoin('stopwords.company', 'company')
+        .select([
+          'id',
+          'stopwords.stopwords',
+          'company.companyeesname',
+          'stopwords.tahun_survey',
+          'stopwords.uuid',
+        ])
+        .where('stopwords.isdelete = :isdelete', { isdelete: false })
+        .andWhere('LOWER(stopwords.stopwords) LIKE :stopword', {
+          stopword: `%${stopword.toLowerCase()}%`,
+        })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

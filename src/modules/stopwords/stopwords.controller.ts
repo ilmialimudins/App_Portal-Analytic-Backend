@@ -63,6 +63,28 @@ export class StopwordsController {
     );
   }
 
+  @Get('/stopwordsFilterStopwords')
+  @ApiOkResponse({ type: StopwordsDto })
+  async getAllStopwordsFilterStopwords(
+    @Query('page') page: number,
+    @Query('take') take: number,
+    @Query('stopword') stopword: string,
+  ): Promise<{
+    data: StopwordsDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.stopwordsService.getStopwordsFilterStopwords(
+      page,
+      take,
+      stopword,
+    );
+  }
+
   @Get('/getStopwordsId')
   @ApiOkResponse({ type: StopwordsDto })
   async getStopwordsId(@Query('uuid') uuid: string) {
