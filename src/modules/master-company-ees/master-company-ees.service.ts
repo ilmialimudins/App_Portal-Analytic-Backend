@@ -45,6 +45,7 @@ export class CompanyService {
           'location.locationdesc',
           'cla.cladesc',
           'directreview.directreviewdesc',
+          'company.isdelete',
         ])
         .leftJoin('company.businessline', 'businessline')
         .leftJoin('company.surveygroup', 'surveygroup')
@@ -54,7 +55,7 @@ export class CompanyService {
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
-        .orderBy({ 'company.companyeesname': 'ASC', 'company.isdelete': 'ASC' })
+        .orderBy({ 'company.isdelete': 'ASC', 'company.companyeesname': 'ASC' })
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -76,6 +77,7 @@ export class CompanyService {
           'location.locationdesc',
           'cla.cladesc',
           'directreview.directreviewdesc',
+          'company.isdelete',
         ])
         .leftJoin('company.businessline', 'businessline')
         .leftJoin('company.surveygroup', 'surveygroup')
@@ -138,6 +140,7 @@ export class CompanyService {
           'location.locationdesc',
           'cla.cladesc',
           'directreview.directreviewdesc',
+          'company.isdelete',
         ])
         .leftJoin('company.businessline', 'businessline')
         .leftJoin('company.surveygroup', 'surveygroup')
@@ -151,7 +154,7 @@ export class CompanyService {
           'company.companyeesname LIKE :companyname OR LOWER(company.companympsname) LIKE :companyname',
           { companyname: `%${companyname}%` },
         )
-        .orderBy({ 'company.companyeesname': 'ASC', 'company.isdelete': 'ASC' })
+        .orderBy({ 'company.isdelete': 'ASC', 'company.companyeesname': 'ASC' })
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -173,6 +176,7 @@ export class CompanyService {
           'location.locationdesc',
           'cla.cladesc',
           'directreview.directreviewdesc',
+          'company.isdelete',
         ])
         .leftJoin('company.businessline', 'businessline')
         .leftJoin('company.surveygroup', 'surveygroup')
@@ -214,6 +218,20 @@ export class CompanyService {
         .getOne();
 
       return query?.toDto();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getLastCompanyCode() {
+    try {
+      const query = await this.companyRepository
+        .createQueryBuilder('company')
+        .select('company.companycode')
+        .orderBy('company.companycode', 'DESC')
+        .getOne();
+
+      return query;
     } catch (error) {
       throw error;
     }

@@ -70,6 +70,12 @@ export class CompanyController {
     return this.companyService.getCompanyId(companyid);
   }
 
+  @Get('/getLastCompanyCode')
+  @ApiCreatedResponse({ type: CompanyDto })
+  async getLastCompanyCode() {
+    return this.companyService.getLastCompanyCode();
+  }
+
   @Post('/createCompany')
   @ApiCreatedResponse({ type: CompanyDto })
   async createCompany(@Body() company: AddCompanyDto) {

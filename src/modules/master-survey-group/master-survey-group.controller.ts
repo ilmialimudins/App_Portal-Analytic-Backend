@@ -26,23 +26,35 @@ export class SurveyGroupController {
   @ApiCreatedResponse({ type: SurveyGroupDto })
   async getAllSurveyGroup(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: SurveyGroupDto[]; total: number }> {
-    return this.surveyGroupService.getAllSurveyGroup(page, pageSize);
+    @Query('take') take: number,
+  ): Promise<{
+    data: SurveyGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.surveyGroupService.getAllSurveyGroup(page, take);
   }
 
   @Get('/getSurveryGroupName')
   @ApiCreatedResponse({ type: SurveyGroupDto })
   async getSurveyGroupName(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('surveygroup') surveygroup: string,
-  ): Promise<{ data: SurveyGroupDto[]; total: number }> {
-    return this.surveyGroupService.getSurveyGroupName(
-      page,
-      pageSize,
-      surveygroup,
-    );
+  ): Promise<{
+    data: SurveyGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.surveyGroupService.getSurveyGroupName(page, take, surveygroup);
   }
 
   @Get('/getSurveyGroupId')

@@ -15,10 +15,18 @@ export class SurveyGroupService {
 
   async getAllSurveyGroup(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: SurveyGroupDto[]; total: number }> {
+    take: number,
+  ): Promise<{
+    data: SurveyGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
@@ -26,16 +34,28 @@ export class SurveyGroupService {
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .orderBy('surveygroupcode')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.surveyGroupRepository
+      const itemCount = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -43,11 +63,19 @@ export class SurveyGroupService {
 
   async getSurveyGroupName(
     page: number,
-    pageSize: number,
+    take: number,
     surveygroup: string,
-  ): Promise<{ data: SurveyGroupDto[]; total: number }> {
+  ): Promise<{
+    data: SurveyGroupDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
       const data = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
@@ -58,10 +86,10 @@ export class SurveyGroupService {
         })
         .orderBy('surveygroupcode')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.surveyGroupRepository
+      const itemCount = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
         .where('surveygroup.isdelete = :isdelete', { isdelete: false })
@@ -70,7 +98,19 @@ export class SurveyGroupService {
         })
         .getCount();
 
-      return { data, total };
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
