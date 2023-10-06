@@ -180,22 +180,20 @@ export class AccessUserService {
     }
   }
 
-  async createAccessUser(accessuser: AddAccessUserDto[]) {
+  async createAccessUser(accessuser: AddAccessUserDto) {
     try {
-      const values = accessuser.map((accessuser) => ({
-        companyid: accessuser.companyid,
-        userid: accessuser.userid,
-        isdelete: 'false',
-        createdby: accessuser.createdby,
-        createdtime: new Date(),
-        sourcecreatedmodifiedtime: new Date(),
-      }));
-
       const query = await this.accessUserRepository
         .createQueryBuilder('accessuser')
         .insert()
         .into(AccessUser)
-        .values(values)
+        .values({
+          companyid: accessuser.companyid,
+          userid: accessuser.userid,
+          isdelete: 'false',
+          createdby: accessuser.createdby,
+          createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
+        })
         .execute();
 
       return query;

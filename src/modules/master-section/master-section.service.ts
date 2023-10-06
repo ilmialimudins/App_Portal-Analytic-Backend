@@ -33,7 +33,6 @@ export class MasterSectionService {
         .leftJoin('mastersection.masterreport', 'masterreport')
         .select([
           'mastersection.sectionid',
-          'mastersection.sectionid',
           'mastersection.sectionname',
           'mastersection.sectiondesc',
           'mastersection.sectioncodepowerbiid',

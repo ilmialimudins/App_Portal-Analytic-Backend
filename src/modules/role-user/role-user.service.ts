@@ -161,21 +161,20 @@ export class RoleUserService {
     }
   }
 
-  async createRoleUser(roleuser: AddRoleUserDto[]) {
+  async createRoleUser(roleuser: AddRoleUserDto) {
     try {
-      const values = roleuser.map((roleuser) => ({
-        roleid: roleuser.roleid,
-        userid: roleuser.userid,
-        createdby: roleuser.createdby,
-        createdtime: new Date(),
-        sourcecreatedmodifiedtime: new Date(),
-      }));
-
       const query = await this.roleUserRepository
         .createQueryBuilder('roleuser')
         .insert()
         .into(RoleUser)
-        .values(values)
+        .values({
+          roleid: roleuser.roleid,
+          userid: roleuser.userid,
+          isdelete: 'false',
+          createdby: roleuser.createdby,
+          createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
+        })
         .execute();
 
       return query;

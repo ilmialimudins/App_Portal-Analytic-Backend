@@ -67,7 +67,7 @@ export class AccessUserController {
 
   @Post('/createAccessUser')
   @ApiCreatedResponse({ type: AccessUserDto })
-  async createAccessUser(@Body() accessuser: AddAccessUserDto[]) {
+  async createAccessUser(@Body() accessuser: AddAccessUserDto) {
     return this.accessUserService.createAccessUser(accessuser);
   }
 
