@@ -31,6 +31,7 @@ export class CompanyService {
       const data = await this.companyRepository
         .createQueryBuilder('company')
         .select([
+          'company.companyid',
           'company.companycode',
           'company.companyeesname',
           'company.companympsname',
@@ -63,6 +64,7 @@ export class CompanyService {
       const itemCount = await this.companyRepository
         .createQueryBuilder('company')
         .select([
+          'company.companyid',
           'company.companycode',
           'company.companyeesname',
           'company.companympsname',
@@ -126,6 +128,7 @@ export class CompanyService {
       const data = await this.companyRepository
         .createQueryBuilder('company')
         .select([
+          'company.companyid',
           'company.companycode',
           'company.companyeesname',
           'company.companympsname',
@@ -162,6 +165,7 @@ export class CompanyService {
       const itemCount = await this.companyRepository
         .createQueryBuilder('company')
         .select([
+          'company.companyid',
           'company.companycode',
           'company.companyeesname',
           'company.companympsname',
