@@ -100,6 +100,14 @@ export class ApiConfigService {
     return this.get('DUENDE_CLIENTSECRET');
   }
 
+  get powerBIClientId(): string {
+    return this.get('POWERBI_CLIENTID');
+  }
+
+  get powerBIClientSecret(): string {
+    return this.get('POWERBI_CLIENTSECRET');
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

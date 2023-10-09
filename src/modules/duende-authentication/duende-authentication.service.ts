@@ -87,4 +87,84 @@ export class DuendeAuthenticationService {
       throw error;
     }
   }
+
+  async powerBILogin(tenantid: string): Promise<superagent.Response> {
+    try {
+      const res = await superagent
+        .post(`https://login.windows.net/${tenantid}/oauth2/token`)
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send({
+          grant_type: 'client_credentials',
+          resource: 'https://analysis.windows.net/powerbi/api',
+          client_id: this.configuration.powerBIClientId,
+          client_secret: this.configuration.powerBIClientSecret,
+        });
+
+      return res;
+    } catch (error) {
+      if (error.status === 401) {
+        throw new UnauthorizedException('You are not authorize');
+      }
+      throw error;
+    }
+  }
+
+  async powerBIEmbedDetail(
+    workspaceid: string,
+    accessTokenPowerBI: string,
+  ): Promise<superagent.Response> {
+    try {
+      const res = await superagent
+        .get(
+          `https://api.powerbi.com/v1.0/myorg/groups/${workspaceid}/reports/`,
+        )
+        .set('Authorization', `Bearer ${accessTokenPowerBI}`);
+
+      return res;
+    } catch (error) {
+      if (error.status === 401) {
+        throw new UnauthorizedException('You are not authorized');
+      }
+      throw error;
+    }
+  }
+
+  async powerBIEmbedToken(
+    datasetid: string,
+    reportid: string,
+  ): Promise<superagent.Response> {
+    try {
+      const res = await superagent
+        .post('https://api.powerbi.com/v1.0/myorg/GenerateToken')
+        .set('Content-Type', 'application/json')
+        .send({
+          datasets: [
+            {
+              id: datasetid,
+            },
+          ],
+          reports: [
+            {
+              accessLevel: 'View',
+              allowEdit: 'false',
+              id: reportid,
+            },
+          ],
+          identities: [
+            {
+              username: 'haifa.amirasari@ai.astra.co.id',
+              roles: ['AIHO-CIR'],
+              datasets: [datasetid],
+            },
+          ],
+        });
+
+      return res;
+    } catch (error) {
+      if (error.status === 401) {
+        throw new UnauthorizedException('You are not authorize');
+      }
+      throw error;
+    }
+  }
 }

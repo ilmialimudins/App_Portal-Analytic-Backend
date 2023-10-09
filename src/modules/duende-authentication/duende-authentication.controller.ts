@@ -5,6 +5,7 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from './dto/userinfo.dto';
 import { TokenDto } from './dto/token.dto';
+import { PowerBIGetDetailDto } from './dto/powerbi-get-detail.dto';
 
 @ApiBearerAuth()
 @ApiTags('Authentication')
@@ -30,13 +31,7 @@ export class DuendeAuthenticationController {
   }
 
   @Post('/refreshToken')
-  async refreshToken(@Query('authcode') authcode: string) {
-    const resToken = await this.duendeAuthenticationService.getToken(authcode);
-
-    const getToken: TokenDto = resToken.body;
-
-    const refreshToken: string = getToken.refresh_token;
-
+  async refreshToken(@Query('refreshToken') refreshToken: string) {
     const resRefresh = await this.duendeAuthenticationService.refreshToken(
       refreshToken,
     );
@@ -49,5 +44,27 @@ export class DuendeAuthenticationController {
   @Post('/revokeToken')
   async revokeToken(@Query('access_token') access_token: string) {
     return this.duendeAuthenticationService.revokeToken(access_token);
+  }
+
+  @Post('/powerBILogin')
+  async powerBILogin(
+    @Query('tenantid') tenantid: string,
+    @Query('workspaceid') workspaceid: string,
+  ) {
+    const resLogin = await this.duendeAuthenticationService.powerBILogin(
+      tenantid,
+    );
+
+    const resToken = resLogin.body.access_token;
+
+    const resEmbedDetail =
+      await this.duendeAuthenticationService.powerBIEmbedDetail(
+        workspaceid,
+        resToken,
+      );
+
+    const getEmbedDetail: PowerBIGetDetailDto = resEmbedDetail.body;
+
+    return getEmbedDetail;
   }
 }
