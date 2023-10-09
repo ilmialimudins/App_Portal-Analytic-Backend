@@ -84,6 +84,22 @@ export class ApiConfigService {
     return this.get('DUENDE_AUTHORITY');
   }
 
+  get duendeClientId(): string {
+    return this.get('DUENDE_CLIENTID');
+  }
+
+  get duendeRedirectUrl(): string {
+    return this.get('DUENDE_REDIRECTURL');
+  }
+
+  get duendeCodeVerifier(): string {
+    return this.get('DUENDE_CODEVERIFIER');
+  }
+
+  get duendeClientSecret(): string {
+    return this.get('DUENDE_CLIENTSECRET');
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 
