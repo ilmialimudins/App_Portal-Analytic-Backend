@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class PowerBIGetDetailDto {
+export class PowerBIEmbedUrlDto {
   @ApiProperty()
   '@odata.context': string;
 

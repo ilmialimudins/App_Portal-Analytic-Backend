@@ -88,10 +88,12 @@ export class DuendeAuthenticationService {
     }
   }
 
-  async powerBILogin(tenantid: string): Promise<superagent.Response> {
+  async powerBILogin(): Promise<superagent.Response> {
     try {
       const res = await superagent
-        .post(`https://login.windows.net/${tenantid}/oauth2/token`)
+        .post(
+          `https://login.windows.net/${this.configuration.powerBITenantId}/oauth2/token`,
+        )
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           grant_type: 'client_credentials',
@@ -111,12 +113,13 @@ export class DuendeAuthenticationService {
 
   async powerBIEmbedDetail(
     workspaceid: string,
+    reportid: string,
     accessTokenPowerBI: string,
   ): Promise<superagent.Response> {
     try {
       const res = await superagent
         .get(
-          `https://api.powerbi.com/v1.0/myorg/groups/${workspaceid}/reports/`,
+          `https://api.powerbi.com/v1.0/myorg/groups/${workspaceid}/reports/${reportid}`,
         )
         .set('Authorization', `Bearer ${accessTokenPowerBI}`);
 
@@ -132,11 +135,13 @@ export class DuendeAuthenticationService {
   async powerBIEmbedToken(
     datasetid: string,
     reportid: string,
+    accessTokenPowerBI: string,
   ): Promise<superagent.Response> {
     try {
       const res = await superagent
         .post('https://api.powerbi.com/v1.0/myorg/GenerateToken')
         .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${accessTokenPowerBI}`)
         .send({
           datasets: [
             {

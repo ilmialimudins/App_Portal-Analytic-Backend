@@ -5,7 +5,8 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from './dto/userinfo.dto';
 import { TokenDto } from './dto/token.dto';
-import { PowerBIGetDetailDto } from './dto/powerbi-get-detail.dto';
+import { PowerBIEmbedUrlDto } from './dto/powerbi-get-embedurl.dto';
+import { PowerBIEmbedTokenDto } from './dto/powerbi-embed-token.dto';
 
 @ApiBearerAuth()
 @ApiTags('Authentication')
@@ -46,25 +47,40 @@ export class DuendeAuthenticationController {
     return this.duendeAuthenticationService.revokeToken(access_token);
   }
 
-  @Post('/powerBILogin')
-  async powerBILogin(
-    @Query('tenantid') tenantid: string,
+  @Post('/powerBIEmbed')
+  async powerBIEmbed(
     @Query('workspaceid') workspaceid: string,
+    @Query('reportid') reportid: string,
   ) {
-    const resLogin = await this.duendeAuthenticationService.powerBILogin(
-      tenantid,
-    );
+    const resLogin = await this.duendeAuthenticationService.powerBILogin();
 
     const resToken = resLogin.body.access_token;
 
-    const resEmbedDetail =
+    const resEmbedUrl =
       await this.duendeAuthenticationService.powerBIEmbedDetail(
         workspaceid,
+        reportid,
         resToken,
       );
 
-    const getEmbedDetail: PowerBIGetDetailDto = resEmbedDetail.body;
+    const getEmbedUrl: PowerBIEmbedUrlDto = resEmbedUrl.body;
 
-    return getEmbedDetail;
+    const resDatasetid = resEmbedUrl.body.datasetId;
+
+    const resEmbedToken =
+      await this.duendeAuthenticationService.powerBIEmbedToken(
+        resDatasetid,
+        reportid,
+        resToken,
+      );
+
+    const getEmbedToken: PowerBIEmbedTokenDto = resEmbedToken.body;
+
+    const response = {
+      embedUrl: getEmbedUrl,
+      embedToken: getEmbedToken,
+    };
+
+    return response;
   }
 }

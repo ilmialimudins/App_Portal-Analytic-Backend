@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MasterUser } from './master-user.entity';
 import { Repository } from 'typeorm';
@@ -157,6 +157,22 @@ export class MasterUserService {
 
       return query?.toDto();
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async getMasterUserEmail(email: string): Promise<MasterUserDto | undefined> {
+    try {
+      const query = await this.masterUserRepository
+        .createQueryBuilder('masteruser')
+        .where('masteruser.email = :email', { email })
+        .getOne();
+
+      return query?.toDto();
+    } catch (error) {
+      if (error.status === 401) {
+        throw new UnauthorizedException('You are not authorize');
+      }
       throw error;
     }
   }

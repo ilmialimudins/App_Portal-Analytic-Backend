@@ -100,12 +100,20 @@ export class ApiConfigService {
     return this.get('DUENDE_CLIENTSECRET');
   }
 
+  get powerBITenantId(): string {
+    return this.get('POWERBI_TENANTID');
+  }
+
   get powerBIClientId(): string {
     return this.get('POWERBI_CLIENTID');
   }
 
   get powerBIClientSecret(): string {
     return this.get('POWERBI_CLIENTSECRET');
+  }
+
+  get powerBIRoleName(): string {
+    return this.get('POWERBI_ROLENAME');
   }
 
   private get(key: string): string {
