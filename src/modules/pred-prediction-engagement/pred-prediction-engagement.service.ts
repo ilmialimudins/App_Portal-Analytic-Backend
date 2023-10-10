@@ -174,14 +174,12 @@ export class PredPredictionEngagementService {
             rowHeaderNum: 1,
             rowDataNum: 2,
             headerTitle: [
-              'Factor Name',
-              'Factor Shortname',
-              'Average Driver Before',
-              'Average Driver After',
+              'Driver',
+              'Average for Analytics Result',
+              'Average for Improvement',
             ],
             tableData: data.driver.map((item) => ({
               factorname: item.factor.factorname,
-              factor_shortname: item.factor.factor_shortname,
               avg_driver_before: item.avg_respondentanswer_before,
               avg_driver_after: item.avg_respondentanswer_after,
             })),
@@ -196,11 +194,7 @@ export class PredPredictionEngagementService {
             columnStart: 'F',
             rowHeaderNum: 1,
             rowDataNum: 2,
-            headerTitle: [
-              'Engagement',
-              'Prediction Before',
-              'Prediction After',
-            ],
+            headerTitle: ['Behavior', 'Analytics Result', 'Improvement'],
             tableData: engagementKeys.map((engagement) => ({
               engagement: engagement,
               prediction_before: data.prediction.prediction_before[engagement],
