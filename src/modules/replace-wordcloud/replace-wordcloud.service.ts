@@ -7,6 +7,7 @@ import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
 import * as excel from 'exceljs';
 import { addTable } from 'src/common/utils/addExcelTable';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ReplaceWordcloudService {
@@ -35,6 +36,7 @@ export class ReplaceWordcloudService {
         .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
@@ -52,6 +54,7 @@ export class ReplaceWordcloudService {
         .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
@@ -101,6 +104,7 @@ export class ReplaceWordcloudService {
         .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
@@ -124,6 +128,7 @@ export class ReplaceWordcloudService {
         .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
@@ -178,6 +183,7 @@ export class ReplaceWordcloudService {
         .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
@@ -198,6 +204,7 @@ export class ReplaceWordcloudService {
         .leftJoin('replacewordcloud.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
@@ -271,6 +278,7 @@ export class ReplaceWordcloudService {
         .insert()
         .into(ReplaceWordcloud)
         .values({
+          uuid: uuidv4(),
           companyid: replacewordcloud.companyid,
           tahun_survey: replacewordcloud.tahun_survey,
           original_text: replacewordcloud.original_text,
@@ -350,6 +358,7 @@ export class ReplaceWordcloudService {
         .createQueryBuilder()
         .update(ReplaceWordcloud)
         .set({
+          companyid: replaceWordcloud.companyid,
           original_text: replaceWordcloud.original_text,
           replace_text: replaceWordcloud.replace_text,
         })

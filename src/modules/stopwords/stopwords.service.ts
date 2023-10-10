@@ -7,6 +7,7 @@ import { AddStopwordsDto } from './dto/add-stopwords.dto';
 import { UpdateStopwordsDto } from './dto/update-stopwords.dto';
 import * as excel from 'exceljs';
 import { addTable } from 'src/common/utils/addExcelTable';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class StopwordsService {
@@ -35,6 +36,7 @@ export class StopwordsService {
         .leftJoin('stopwords.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
           'stopwords.tahun_survey',
@@ -51,6 +53,7 @@ export class StopwordsService {
         .leftJoin('stopwords.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
           'stopwords.tahun_survey',
@@ -99,6 +102,7 @@ export class StopwordsService {
         .leftJoin('stopwords.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
           'stopwords.tahun_survey',
@@ -121,6 +125,7 @@ export class StopwordsService {
         .leftJoin('stopwords.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
           'stopwords.tahun_survey',
@@ -174,6 +179,7 @@ export class StopwordsService {
         .leftJoin('stopwords.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
           'stopwords.tahun_survey',
@@ -193,6 +199,7 @@ export class StopwordsService {
         .leftJoin('stopwords.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
           'stopwords.tahun_survey',
@@ -258,6 +265,7 @@ export class StopwordsService {
         .insert()
         .into(Stopwords)
         .values({
+          uuid: uuidv4(),
           companyid: stopwords.companyid,
           stopwords: stopwords.stopwords,
           tahun_survey: stopwords.tahun_survey,
@@ -323,6 +331,7 @@ export class StopwordsService {
         .createQueryBuilder()
         .update(Stopwords)
         .set({
+          companyid: stopwords.companyid,
           stopwords: stopwords.stopwords,
         })
         .where('uuid = :uuid', { uuid })

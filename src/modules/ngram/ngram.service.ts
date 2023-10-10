@@ -30,6 +30,7 @@ export class NgramService {
       const data = await this.NgramRepository.createQueryBuilder('ngram')
         .select([
           'id',
+          'company.companyid',
           'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
@@ -45,6 +46,7 @@ export class NgramService {
       const itemCount = await this.NgramRepository.createQueryBuilder('ngram')
         .select([
           'id',
+          'company.companyid',
           'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
@@ -93,6 +95,7 @@ export class NgramService {
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
@@ -110,6 +113,7 @@ export class NgramService {
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'ngram.word',
           'company.companyeesname',
           'ngram.tahun_survey',
@@ -175,6 +179,7 @@ export class NgramService {
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'ngram.uuid',
           'company.companyeesname',
           'ngram.tahun_survey',
@@ -198,6 +203,7 @@ export class NgramService {
         .leftJoin('ngram.company', 'company')
         .select([
           'id',
+          'company.companyid',
           'ngram.uuid',
           'company.companyeesname',
           'ngram.tahun_survey',
@@ -237,6 +243,7 @@ export class NgramService {
       const query = await this.NgramRepository.createQueryBuilder()
         .update(Ngram)
         .set({
+          companyid: ngram.companyid,
           ngram: ngram.ngram,
           n: ngram.n,
           ngramfrequency: ngram.ngramfrequency,
