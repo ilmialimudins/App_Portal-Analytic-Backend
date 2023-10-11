@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm';
 
 @Entity('tbl_monitoringvalidation')
-export class MonitoingValidation {
+export class MonitoringValidation {
   @Column({ type: 'varchar', name: 'uploadby', nullable: true })
   uploadby: string;
 
