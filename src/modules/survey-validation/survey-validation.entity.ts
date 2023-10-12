@@ -1,7 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('tbl_surveyvalidation')
 export class SurveyValidation {
+  @PrimaryColumn({ type: 'uuid', insert: false, select: false, update: false })
+  id: never;
+
   @Column({ type: 'varchar', name: 'validation', nullable: false })
   validation: string;
 
