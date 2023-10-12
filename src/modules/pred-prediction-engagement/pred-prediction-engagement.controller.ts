@@ -11,6 +11,7 @@ import { GetPredictionEngagementDTO } from './dto/get-prediction-engagement.dto'
 import { SavePredictionEngagementDTO } from './dto/save-prediction-engagement.dto';
 import { DownloadPredictionBodyDTO } from './dto/download-prediction..dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { MasterCompanyService } from '../master-company/master-company.service';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -20,6 +21,7 @@ export class PredPredictionEngagementController {
   constructor(
     private readonly predPredictionEngagementService: PredPredictionEngagementService,
     private readonly predEngagementValueService: PredEngagamentValueService,
+    private readonly masterCompanyService: MasterCompanyService,
   ) {}
 
   @Post('/preview')
@@ -55,6 +57,12 @@ export class PredPredictionEngagementController {
     @Res() res: ExpressResponse,
     @Body() body: DownloadPredictionBodyDTO,
   ) {
+    const company = await this.masterCompanyService.getCompanyId(
+      body.d_companyid,
+    );
+
+    const companyName = company?.companyname.split(' ').join('_');
+
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -62,7 +70,7 @@ export class PredPredictionEngagementController {
 
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=Prediction_${body.d_companyid}_${body.demoraphyvalue}.xlsx`,
+      `attachment; filename=Prediction_${companyName}_${body.demography}.xlsx`,
     );
     const workbook =
       await this.predPredictionEngagementService.generateExcelPrediction(body);

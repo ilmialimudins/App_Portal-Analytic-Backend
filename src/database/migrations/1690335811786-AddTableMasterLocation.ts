@@ -13,11 +13,12 @@ export class AddTableMasterDataLocation1690335811786
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'locationcode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -27,6 +28,11 @@ export class AddTableMasterDataLocation1690335811786
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

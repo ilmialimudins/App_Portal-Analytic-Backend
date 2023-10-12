@@ -13,11 +13,12 @@ export class AddTableMasterModellingType1690334574513
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'modellingtypecode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -27,6 +28,11 @@ export class AddTableMasterModellingType1690334574513
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

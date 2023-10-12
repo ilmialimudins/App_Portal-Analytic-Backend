@@ -18,16 +18,21 @@ export class AddTableMasterSurveyGroup1690276667541
           },
           {
             name: 'surveygroupcode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
             name: 'surveygroupdesc',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

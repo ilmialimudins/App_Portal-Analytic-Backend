@@ -13,11 +13,12 @@ export class AddTableMasterOwnershipStatus1690336576753
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'ownershipstatuscode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -27,6 +28,11 @@ export class AddTableMasterOwnershipStatus1690336576753
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

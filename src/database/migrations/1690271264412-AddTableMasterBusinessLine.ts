@@ -18,7 +18,7 @@ export class AddTableMasterBusinessLine1690271264412
           },
           {
             name: 'businesslinecode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -28,6 +28,11 @@ export class AddTableMasterBusinessLine1690271264412
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

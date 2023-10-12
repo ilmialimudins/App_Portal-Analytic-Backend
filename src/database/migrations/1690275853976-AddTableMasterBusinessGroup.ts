@@ -18,7 +18,7 @@ export class AddTableMasterBusinessGroup1690275853976
           },
           {
             name: 'businessgroupcode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -28,6 +28,11 @@ export class AddTableMasterBusinessGroup1690275853976
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

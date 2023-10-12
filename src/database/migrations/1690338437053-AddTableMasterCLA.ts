@@ -11,11 +11,12 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'clacode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -25,6 +26,11 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

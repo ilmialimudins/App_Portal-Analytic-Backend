@@ -11,11 +11,12 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'demographycode',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: false,
           },
           {
@@ -35,6 +36,11 @@ export class AddTableDemography1690352149335 implements MigrationInterface {
           },
           {
             name: 'desc',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'isdelete',
             type: 'varchar',
             isNullable: true,
           },

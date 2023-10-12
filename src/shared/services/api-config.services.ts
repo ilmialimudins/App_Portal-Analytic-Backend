@@ -84,6 +84,38 @@ export class ApiConfigService {
     return this.get('DUENDE_AUTHORITY');
   }
 
+  get duendeClientId(): string {
+    return this.get('DUENDE_CLIENTID');
+  }
+
+  get duendeRedirectUrl(): string {
+    return this.get('DUENDE_REDIRECTURL');
+  }
+
+  get duendeCodeVerifier(): string {
+    return this.get('DUENDE_CODEVERIFIER');
+  }
+
+  get duendeClientSecret(): string {
+    return this.get('DUENDE_CLIENTSECRET');
+  }
+
+  get powerBITenantId(): string {
+    return this.get('POWERBI_TENANTID');
+  }
+
+  get powerBIClientId(): string {
+    return this.get('POWERBI_CLIENTID');
+  }
+
+  get powerBIClientSecret(): string {
+    return this.get('POWERBI_CLIENTSECRET');
+  }
+
+  get powerBIRoleName(): string {
+    return this.get('POWERBI_ROLENAME');
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 
