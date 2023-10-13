@@ -1,9 +1,13 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { UseDto } from 'src/decorators/use-dto.decorator';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { MonitoringValidationDto } from './dto/monitoring-validation.dto';
+import { AbstractEntity } from 'src/common/abstract.entity';
 
 @Entity('tbl_monitoringvalidation')
-export class MonitoringValidation {
-  @PrimaryColumn({ type: 'uuid', insert: false, select: false, update: false })
-  id: never;
+@UseDto(MonitoringValidationDto)
+export class MonitoringValidation extends AbstractEntity<MonitoringValidationDto> {
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
+  id: number;
 
   @Column({ type: 'varchar', name: 'uploadby', nullable: true })
   uploadby: string;
@@ -25,7 +29,4 @@ export class MonitoringValidation {
 
   @Column({ type: 'varchar', name: 'suvreytitle', nullable: true })
   surveytitle: string;
-
-  @Column({ type: 'datetime2', name: 'createdtime', nullable: true })
-  createdtime: Date;
 }

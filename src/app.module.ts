@@ -50,6 +50,9 @@ import { DirectReviewModule } from './modules/master-direct-review/master-direct
 import { ModellingTypeModule } from './modules/master-modelling-type/master-modelling-type.module';
 import { OwnershipStatusModule } from './modules/master-ownership-status/master-ownership-status.module';
 import { PowerBIModule } from './modules/powerbi-token-temp/powerbi-temp.module';
+import { SurveyValidationModule } from './modules/survey-validation/survey-validation.module';
+import { MonitoringValidationModule } from './modules/monitoring-validation/monitoring-validation.module';
+import { ValidateSurveyResultModule } from './modules/validate-survey-result/validate-survey-result.module';
 
 const ApiModules = [
   SharedModule,
@@ -76,6 +79,9 @@ const ApiModules = [
   MasterReportModule,
   MasterSectionModule,
   MappingMenuReportModule,
+  ValidateSurveyResultModule,
+  SurveyValidationModule,
+  MonitoringValidationModule,
   PowerBIModule,
   MasterCompanyModule,
   FactorModule,

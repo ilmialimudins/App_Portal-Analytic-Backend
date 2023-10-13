@@ -9,6 +9,14 @@ export class AddTableSurveyValidation1697009980286
         name: 'tbl_surveyvalidation',
         columns: [
           {
+            name: 'id',
+            type: 'bigint',
+            isPrimary: true,
+            isNullable: false,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
             name: 'validation',
             type: 'varchar',
             isNullable: true,
@@ -41,6 +49,35 @@ export class AddTableSurveyValidation1697009980286
           {
             name: 'validateddate',
             type: 'datetime2',
+            isNullable: true,
+          },
+          {
+            name: 'createdby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'updatedby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'createdtime',
+            type: 'datetime2',
+          },
+          {
+            name: 'createddate',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'sourcecreatedmodifiedtime',
+            type: 'datetime2',
+            isNullable: true,
+          },
+          {
+            name: 'sync_date',
+            type: 'datetime',
             isNullable: true,
           },
         ],

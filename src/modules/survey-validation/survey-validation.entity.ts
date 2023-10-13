@@ -1,9 +1,13 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { UseDto } from 'src/decorators/use-dto.decorator';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { SurveyValidationDto } from './dto/survey-validation.dto';
+import { AbstractEntity } from 'src/common/abstract.entity';
 
 @Entity('tbl_surveyvalidation')
-export class SurveyValidation {
-  @PrimaryColumn({ type: 'uuid', insert: false, select: false, update: false })
-  id: never;
+@UseDto(SurveyValidationDto)
+export class SurveyValidation extends AbstractEntity<SurveyValidationDto> {
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
+  id: number;
 
   @Column({ type: 'varchar', name: 'validation', nullable: false })
   validation: string;

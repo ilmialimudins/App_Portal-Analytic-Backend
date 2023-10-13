@@ -9,6 +9,14 @@ export class AddTableMonitoringValidation1696993500969
         name: 'tbl_monitoringvalidation',
         columns: [
           {
+            name: 'id',
+            type: 'bigint',
+            isPrimary: true,
+            isNullable: false,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
             name: 'uploadby',
             type: 'varchar',
             isNullable: true,
@@ -44,8 +52,32 @@ export class AddTableMonitoringValidation1696993500969
             isNullable: true,
           },
           {
+            name: 'createdby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'updatedby',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'createdtime',
             type: 'datetime2',
+          },
+          {
+            name: 'createddate',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'sourcecreatedmodifiedtime',
+            type: 'datetime2',
+            isNullable: true,
+          },
+          {
+            name: 'sync_date',
+            type: 'datetime',
             isNullable: true,
           },
         ],

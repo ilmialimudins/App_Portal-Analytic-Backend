@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('tbl_validatesurveyresult')
 export class ValidateSurveyResult {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'respondentid' })
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
   @Column({ type: 'varchar', name: 'uuid', nullable: false })
