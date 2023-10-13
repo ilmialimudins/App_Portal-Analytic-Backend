@@ -25,16 +25,23 @@ export class PredEngagementFavorableService {
     GetAverageFavorableAllFactorResultDTO[]
   > {
     try {
+      const excludedFactorNames = ['Enabled', 'Energized', 'Engaged'];
+
       const result = await this.engagementFavorableRepo
         .createQueryBuilder('favorable')
         .select('DISTINCT favorable.d_factorid as d_factorid')
         .addSelect('favorable.avg_per_factor as average_per_factor')
         .addSelect('factor.factorname as factor_name')
+        .addSelect('factor.factorcode as factor_code')
         .leftJoin('favorable.factor', 'factor')
         .where('favorable.d_companyid = :d_companyid', {
           d_companyid: d_companyid,
         })
         .andWhere('favorable.iscurrentsurvey = :value', { value: 'Current' })
+        .andWhere('factor.factorname NOT IN (:...excludedFactorNames)', {
+          excludedFactorNames,
+        })
+        .orderBy('factor_code')
         .getRawMany();
 
       const removeDuplicate = result.reduce((acc, val) => {
