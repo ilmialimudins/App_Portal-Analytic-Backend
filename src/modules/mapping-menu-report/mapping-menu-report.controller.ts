@@ -14,8 +14,6 @@ import { MappingMenuReportDto } from './dto/mapping-menu-report.dto';
 import { MappingMenuReportService } from './mapping-menu-report.service';
 import { AddMappingMenuReportDto } from './dto/add-mapping-menu-report.dto';
 import { UpdateMappingMenuReportDto } from './dto/update-mapping-menu-report.dto';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -27,9 +25,18 @@ export class MappingMenuReportController {
   @Get('/')
   @ApiCreatedResponse({ type: MappingMenuReportDto })
   async getMappingMenuReport(
-    @Query() pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<MappingMenuReportDto>> {
-    return this.mappingMenuReportService.getAllMappingMenuReport(pageOptions);
+    @Query('page') page: number,
+    @Query('take') take: number,
+  ): Promise<{
+    data: MappingMenuReportDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.mappingMenuReportService.getAllMappingMenuReport(page, take);
   }
 
   @Get('/getMappingMenuReportId')
