@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MappingMenuReport } from './mapping-menu-report.entity';
 import { Repository } from 'typeorm';
-import { PageOptionsDTO } from 'src/common/dto/page-options.dto';
-import { PageDto } from 'src/common/dto/page.dto';
 import { MappingMenuReportDto } from './dto/mapping-menu-report.dto';
 import { AddMappingMenuReportDto } from './dto/add-mapping-menu-report.dto';
 import { UpdateMappingMenuReportDto } from './dto/update-mapping-menu-report.dto';
@@ -16,19 +14,63 @@ export class MappingMenuReportService {
   ) {}
 
   async getAllMappingMenuReport(
-    pageOptions: PageOptionsDTO,
-  ): Promise<PageDto<MappingMenuReportDto>> {
+    page: number,
+    take: number,
+  ): Promise<{
+    data: MappingMenuReportDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const query = this.mappingMenuReportRepository
+      const offset = (page - 1) * take;
+
+      const data = await this.mappingMenuReportRepository
         .createQueryBuilder('mappingmenureport')
         .leftJoin('mappingmenureport.mastermenu', 'mastermenu')
         .leftJoin('mappingmenureport.masterreport', 'masterreport')
         .leftJoin('mappingmenureport.mastersection', 'mastersection')
-        .orderBy('mappingmenureport.menuname', pageOptions.order);
+        .select([
+          'mappingmenureport.mappingmenureportid',
+          'mastermenu.menuname',
+          'masterreport.reportname',
+          'mastersection.sectionname',
+        ])
+        .where('mappingmenureport.isdelete = :isdelete', { isdelete: false })
+        .offset(offset)
+        .limit(take)
+        .getRawMany();
 
-      const [items, pageMetaDto] = await query.paginate(pageOptions);
+      const itemCount = await this.mappingMenuReportRepository
+        .createQueryBuilder('mappingmenureport')
+        .leftJoin('mappingmenureport.mastermenu', 'mastermenu')
+        .leftJoin('mappingmenureport.masterreport', 'masterreport')
+        .leftJoin('mappingmenureport.mastersection', 'mastersection')
+        .select([
+          'mappingmenureport.mappingmenureportid',
+          'mastermenu.menuname',
+          'masterreport.reportname',
+          'mastersection.sectionname',
+        ])
+        .where('mappingmenureport.isdelete = :isdelete', { isdelete: false })
+        .getCount();
 
-      return items.toPageDto(pageMetaDto);
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }
@@ -41,7 +83,7 @@ export class MappingMenuReportService {
       const query = await this.mappingMenuReportRepository
         .createQueryBuilder('mappingmenureport')
         .where('mappingmenureport.mappingmenureportid = :mappingmenureportid', {
-          id: mappingmenureportid,
+          mappingmenureportid: mappingmenureportid,
         })
         .getOne();
 
