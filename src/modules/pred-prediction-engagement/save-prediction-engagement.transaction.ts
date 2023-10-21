@@ -70,7 +70,7 @@ export class SavePredictionEngagementTransaction extends BaseTransaction<
     const SustainableEngagement =
       this.predictionEngagementServices.calculateAverageEngagement(after);
 
-    after.Sustainable_Engagement = SustainableEngagement;
+    after['Sustainable Engagement'] = SustainableEngagement;
 
     const engagements = [
       {

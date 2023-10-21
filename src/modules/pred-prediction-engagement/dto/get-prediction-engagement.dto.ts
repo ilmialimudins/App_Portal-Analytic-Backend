@@ -23,7 +23,7 @@ export class PredictionAfterEngagementDTO {
   Enabled: number;
 
   @ApiProperty()
-  Sustainable_Engagement: number;
+  'Sustainable Engagement': number;
 }
 
 export class GetPredictionEngagementDTO {

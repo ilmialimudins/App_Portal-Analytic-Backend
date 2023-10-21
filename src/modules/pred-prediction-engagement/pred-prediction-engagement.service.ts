@@ -45,7 +45,7 @@ export class PredPredictionEngagementService {
       const after = prediction_after as PredictionAfterEngagementDTO;
 
       const averageAfter = this.calculateAverageEngagement(after);
-      after.Sustainable_Engagement = averageAfter;
+      after['Sustainable Engagement'] = averageAfter;
 
       return {
         aggregations: aggregations,
