@@ -10,7 +10,7 @@ import {
 export class DownloadPredictionBodyDTO {
   @ApiProperty()
   @IsNumber()
-  d_companyid: number;
+  companyid: number;
 
   @ApiProperty()
   @IsString()

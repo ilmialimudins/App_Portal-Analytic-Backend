@@ -7,8 +7,8 @@ import { PredEngagementFavorable } from '../pred-engagement-favorable/pred-engag
 @Entity('ms_ees_qcode')
 @UseDto(MasterQcodeDTO)
 export class MasterQcode extends AbstractEntity<MasterQcodeDTO> {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'd_qcodeid' })
-  d_qcodeid: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'qcodeid' })
+  qcodeid: number;
 
   @Column({ type: 'varchar', name: 'h_qcodehashkey', nullable: true })
   h_qcodehashkey: string;

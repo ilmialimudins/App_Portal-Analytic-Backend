@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AggregationPerFactorDTO {
   @ApiProperty()
-  d_factorid: string;
+  factorid: string;
 
   @ApiPropertyOptional()
   factor_shortname?: string;

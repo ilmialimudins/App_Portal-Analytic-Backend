@@ -9,7 +9,7 @@ import { UseDto } from 'src/decorators/use-dto.decorator';
 import { PredRelativeImportanceDto } from './dto/pred-relative-importance.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { MasterSurveygizmo } from '../master-surveygizmo/master-surveygizmo.entity';
-import { MasterEESCompany } from '../master-company/master-company.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 import { EESFactor } from '../factor/factor.entity';
 import { MasterEngagement } from '../master-engagement/master-engagement.entity';
 
@@ -20,44 +20,44 @@ export class PredRelativeImportance extends AbstractEntity<PredRelativeImportanc
   id: number;
 
   @Column({ nullable: true })
-  d_surveygizmoid: number;
+  surveygizmoid: number;
   @ManyToOne(
     () => MasterSurveygizmo,
     (surveygizmo) => surveygizmo.relativeimportance,
   )
   @JoinColumn({
-    name: 'd_surveygizmoid',
-    referencedColumnName: 'd_surveygizmoid',
+    name: 'surveygizmoid',
+    referencedColumnName: 'surveygizmoid',
   })
   surveygizmo: MasterSurveygizmo;
 
   @Column({ nullable: true })
-  d_companyid: number;
-  @ManyToOne(() => MasterEESCompany, (company) => company.relativeimportance)
+  companyid: number;
+  @ManyToOne(() => Company, (company) => company.relativeimportance)
   @JoinColumn({
-    name: 'd_companyid',
-    referencedColumnName: 'd_companyid',
+    name: 'companyid',
+    referencedColumnName: 'companyid',
   })
-  company: MasterEESCompany;
+  company: Company;
 
   @Column({ nullable: true })
-  d_factorid: number;
+  factorid: number;
   @ManyToOne(() => EESFactor, (factor) => factor.relativeimportance)
   @JoinColumn({
-    name: 'd_factorid',
-    referencedColumnName: 'd_factorid',
+    name: 'factorid',
+    referencedColumnName: 'factorid',
   })
   factor: EESFactor;
 
   @Column({ nullable: true })
-  d_engagementid: number;
+  engagementid: number;
   @ManyToOne(
     () => MasterEngagement,
     (engagement) => engagement.relativeimportance,
   )
   @JoinColumn({
-    name: 'd_engagementid',
-    referencedColumnName: 'd_engagementid',
+    name: 'engagementid',
+    referencedColumnName: 'engagementid',
   })
   engagement: MasterEngagement;
 

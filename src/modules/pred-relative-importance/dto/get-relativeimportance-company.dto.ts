@@ -8,7 +8,7 @@ export enum Order {
 export class GetRelativeImportanceQueryDTO {
   @ApiProperty()
   @IsString()
-  d_companyid: string;
+  companyid: string;
 
   @ApiPropertyOptional({ enum: Order, enumName: 'Order' })
   @IsOptional()

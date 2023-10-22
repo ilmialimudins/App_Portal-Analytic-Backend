@@ -4,7 +4,7 @@ import { AbstractDto } from 'src/common/dto/abstract.dto';
 
 export class FactorDto extends AbstractDto {
   @ApiProperty()
-  d_factorid: string;
+  factorid: string;
 
   @ApiProperty()
   h_factorhashkey: string;
@@ -27,7 +27,7 @@ export class FactorDto extends AbstractDto {
   constructor(eesFactor: EESFactor) {
     super(eesFactor, { exludeFields: true });
 
-    this.d_factorid = eesFactor.d_factorid;
+    this.factorid = eesFactor.factorid;
     this.factorcode = eesFactor.factorcode;
     this.h_factorhashkey = eesFactor.h_factorhashkey;
     this.factorname = eesFactor.factorname;

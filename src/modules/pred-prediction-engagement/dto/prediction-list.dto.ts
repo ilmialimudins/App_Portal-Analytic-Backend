@@ -1,8 +1,8 @@
 export class PredictionListDTO {
   id: number;
-  d_factorid: number;
+  factorid: number;
   factor_shortname: string;
-  d_engagementid: number;
+  engagementid: number;
   engagement: string;
   demography: string;
   coefficients: number;

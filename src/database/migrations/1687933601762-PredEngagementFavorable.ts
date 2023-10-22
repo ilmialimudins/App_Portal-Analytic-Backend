@@ -22,12 +22,12 @@ export class PredEngagementFavorable1687933601762
             generationStrategy: 'increment',
           },
           {
-            name: 'd_surveygizmoid',
+            name: 'surveygizmoid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_companyid',
+            name: 'companyid',
             type: 'bigint',
             isNullable: false,
           },
@@ -47,12 +47,12 @@ export class PredEngagementFavorable1687933601762
             isNullable: true,
           },
           {
-            name: 'd_factorid',
+            name: 'factorid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_qcodeid',
+            name: 'qcodeid',
             type: 'bigint',
             isNullable: false,
           },
@@ -136,8 +136,8 @@ export class PredEngagementFavorable1687933601762
     await queryRunner.createForeignKey(
       'tbl_pred_engagementfavorable',
       new TableForeignKey({
-        columnNames: ['d_surveygizmoid'],
-        referencedColumnNames: ['d_surveygizmoid'],
+        columnNames: ['surveygizmoid'],
+        referencedColumnNames: ['surveygizmoid'],
         referencedTableName: 'ms_ees_surveygizmo',
         onDelete: 'CASCADE',
       }),
@@ -145,17 +145,17 @@ export class PredEngagementFavorable1687933601762
     await queryRunner.createForeignKey(
       'tbl_pred_engagementfavorable',
       new TableForeignKey({
-        columnNames: ['d_companyid'],
-        referencedColumnNames: ['d_companyid'],
-        referencedTableName: 'ms_ees_company',
+        columnNames: ['companyid'],
+        referencedColumnNames: ['companyid'],
+        referencedTableName: 'ms_company',
         onDelete: 'CASCADE',
       }),
     );
     await queryRunner.createForeignKey(
       'tbl_pred_engagementfavorable',
       new TableForeignKey({
-        columnNames: ['d_factorid'],
-        referencedColumnNames: ['d_factorid'],
+        columnNames: ['factorid'],
+        referencedColumnNames: ['factorid'],
         referencedTableName: 'ms_ees_factor',
         onDelete: 'CASCADE',
       }),
@@ -163,8 +163,8 @@ export class PredEngagementFavorable1687933601762
     await queryRunner.createForeignKey(
       'tbl_pred_engagementfavorable',
       new TableForeignKey({
-        columnNames: ['d_qcodeid'],
-        referencedColumnNames: ['d_qcodeid'],
+        columnNames: ['qcodeid'],
+        referencedColumnNames: ['qcodeid'],
         referencedTableName: 'ms_ees_qcode',
         onDelete: 'CASCADE',
       }),

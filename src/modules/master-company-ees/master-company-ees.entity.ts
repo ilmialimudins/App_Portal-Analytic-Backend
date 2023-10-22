@@ -3,6 +3,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -18,6 +19,11 @@ import { Cla } from '../master-cla/master-cla.entity';
 import { DirectReview } from '../master-direct-review/master-direct-review.entity';
 import { ModellingType } from '../master-modelling-type/master-modelling-type.entity';
 import { AccessUser } from '../access-user/access-user.entity';
+
+import { PredEngagementFavorable } from '../pred-engagement-favorable/pred-engagement-favorable.entity';
+import { PredEngagementValue } from '../pred-engagement-value/pred-engagement-value.entity';
+import { PredPredictionEngagement } from '../pred-prediction-engagement/pred-prediction-engagement.entity';
+import { PredRelativeImportance } from '../pred-relative-importance/pred-relative-importance.entity';
 
 @Entity('ms_company')
 @UseDto(CompanyDto)
@@ -132,4 +138,28 @@ export class Company extends AbstractEntity<CompanyDto> {
 
   @OneToOne(() => AccessUser, (accessuser) => accessuser.companyid)
   accessuser: AccessUser[];
+
+  @OneToMany(
+    () => PredEngagementFavorable,
+    (engagementfavorable) => engagementfavorable.company,
+  )
+  engagementfavorable: PredEngagementFavorable[];
+
+  @OneToMany(
+    () => PredEngagementValue,
+    (engagementfavorable) => engagementfavorable.company,
+  )
+  engagementvalue: PredEngagementValue[];
+
+  @OneToMany(
+    () => PredPredictionEngagement,
+    (predictionengagement) => predictionengagement.company,
+  )
+  predictionengagement: PredPredictionEngagement[];
+
+  @OneToMany(
+    () => PredRelativeImportance,
+    (relativeimportance) => relativeimportance.company,
+  )
+  relativeimportance: PredRelativeImportance[];
 }

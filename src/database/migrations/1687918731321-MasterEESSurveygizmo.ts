@@ -7,7 +7,7 @@ export class MasterEESSurveygizmo1687918731321 implements MigrationInterface {
         name: 'ms_ees_surveygizmo',
         columns: [
           {
-            name: 'd_surveygizmoid',
+            name: 'surveygizmoid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,

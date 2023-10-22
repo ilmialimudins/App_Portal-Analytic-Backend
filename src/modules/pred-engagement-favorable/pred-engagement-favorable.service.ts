@@ -20,7 +20,7 @@ export class PredEngagementFavorableService {
   ) {}
 
   public async getAverageFavorableAllFactor({
-    d_companyid,
+    companyid,
   }: GetAverageFavorableAllFactorQueryDTO): Promise<
     GetAverageFavorableAllFactorResultDTO[]
   > {
@@ -29,13 +29,13 @@ export class PredEngagementFavorableService {
 
       const result = await this.engagementFavorableRepo
         .createQueryBuilder('favorable')
-        .select('DISTINCT favorable.d_factorid as d_factorid')
+        .select('DISTINCT favorable.factorid as factorid')
         .addSelect('favorable.avg_per_factor as average_per_factor')
         .addSelect('factor.factorname as factor_name')
         .addSelect('factor.factorcode as factor_code')
         .leftJoin('favorable.factor', 'factor')
-        .where('favorable.d_companyid = :d_companyid', {
-          d_companyid: d_companyid,
+        .where('favorable.companyid = :companyid', {
+          companyid: companyid,
         })
         .andWhere('favorable.iscurrentsurvey = :value', { value: 'Current' })
         .andWhere('factor.factorname NOT IN (:...excludedFactorNames)', {
@@ -55,14 +55,14 @@ export class PredEngagementFavorableService {
   }
 
   public async getFavorableDetail({
-    d_companyid,
-    d_factorid,
+    companyid,
+    factorid,
   }: GetFavorableFactorDetailQueryDTO): Promise<GetFavorableFactorDetailDTO> {
     try {
       const result = await this.engagementFavorableRepo.find({
         where: {
-          d_companyid: parseInt(d_companyid),
-          d_factorid: parseInt(d_factorid),
+          companyid: parseInt(companyid),
+          factorid: parseInt(factorid),
           iscurrentsurvey: 'Current',
         },
         relations: {

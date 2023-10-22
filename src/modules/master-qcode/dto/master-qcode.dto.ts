@@ -4,7 +4,7 @@ import type { MasterQcode } from '../master-qcode.entity';
 
 export class MasterQcodeDTO extends AbstractDto {
   @ApiProperty()
-  d_qcodeid: number;
+  qcodeid: number;
 
   @ApiPropertyOptional()
   h_qcodehashkey: string;

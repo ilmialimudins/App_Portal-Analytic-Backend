@@ -14,7 +14,7 @@ export class AddTableMasterEESCompany1687771027664
         name: 'ms_ees_company',
         columns: [
           {
-            name: 'd_companyid',
+            name: 'companyid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,

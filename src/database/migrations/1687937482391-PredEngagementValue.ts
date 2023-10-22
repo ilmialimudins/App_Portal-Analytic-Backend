@@ -20,17 +20,17 @@ export class PredEngagementValue1687937482391 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'd_surveygizmoid',
+            name: 'surveygizmoid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_companyid',
+            name: 'companyid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_factorid',
+            name: 'factorid',
             type: 'bigint',
             isNullable: false,
           },
@@ -105,8 +105,8 @@ export class PredEngagementValue1687937482391 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'tbl_pred_engagementvalue',
       new TableForeignKey({
-        columnNames: ['d_surveygizmoid'],
-        referencedColumnNames: ['d_surveygizmoid'],
+        columnNames: ['surveygizmoid'],
+        referencedColumnNames: ['surveygizmoid'],
         referencedTableName: 'ms_ees_surveygizmo',
         onDelete: 'CASCADE',
       }),
@@ -114,17 +114,17 @@ export class PredEngagementValue1687937482391 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'tbl_pred_engagementvalue',
       new TableForeignKey({
-        columnNames: ['d_companyid'],
-        referencedColumnNames: ['d_companyid'],
-        referencedTableName: 'ms_ees_company',
+        columnNames: ['companyid'],
+        referencedColumnNames: ['companyid'],
+        referencedTableName: 'ms_company',
         onDelete: 'CASCADE',
       }),
     );
     await queryRunner.createForeignKey(
       'tbl_pred_engagementvalue',
       new TableForeignKey({
-        columnNames: ['d_factorid'],
-        referencedColumnNames: ['d_factorid'],
+        columnNames: ['factorid'],
+        referencedColumnNames: ['factorid'],
         referencedTableName: 'ms_ees_factor',
         onDelete: 'CASCADE',
       }),

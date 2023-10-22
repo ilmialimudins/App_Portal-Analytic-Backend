@@ -31,12 +31,12 @@ export class PredPredictionEngagementService {
   ) {}
 
   public async previewPrediction(
-    { d_companyid, demography }: GetAgregrationPerFactorDTO,
+    { companyid, demography }: GetAgregrationPerFactorDTO,
     aggregations: AggregationPerFactorDTO[],
   ): Promise<GetPredictionEngagementDTO> {
     try {
       const getPredictionList = await this.getPredictionList(
-        { d_companyid, demography },
+        { companyid, demography },
         this.engagementValue,
       );
       const { prediction_before, prediction_after } =
@@ -68,7 +68,7 @@ export class PredPredictionEngagementService {
   }
 
   async getPredictionList(
-    { d_companyid, demography }: Partial<GetAgregrationPerFactorDTO>,
+    { companyid, demography }: Partial<GetAgregrationPerFactorDTO>,
     repo: Repository<PredPredictionEngagement>,
   ): Promise<PredictionListDTO[]> {
     try {
@@ -76,9 +76,9 @@ export class PredPredictionEngagementService {
         .createQueryBuilder('predictionengagement')
         .select([
           'predictionengagement.id as id',
-          'predictionengagement.d_factorid as d_factorid',
+          'predictionengagement.factorid as factorid',
           'factor.factor_shortname as factor_shortname',
-          'predictionengagement.d_engagementid as d_engagementid',
+          'predictionengagement.engagementid as engagementid',
           'engagement.engagement as engagement',
           'predictionengagement.demography as demography',
           'predictionengagement.coefficients as coefficients',
@@ -88,13 +88,13 @@ export class PredPredictionEngagementService {
         ])
         .leftJoin('predictionengagement.factor', 'factor')
         .leftJoin('predictionengagement.engagement', 'engagement')
-        .where('predictionengagement.d_companyid = :d_companyid', {
-          d_companyid,
+        .where('predictionengagement.companyid = :companyid', {
+          companyid,
         })
         .andWhere('predictionengagement.demography = :demography', {
           demography,
         })
-        .orderBy('factor.d_factorid')
+        .orderBy('factor.factorid')
         .getRawMany();
     } catch (error) {
       throw error;
@@ -116,7 +116,7 @@ export class PredPredictionEngagementService {
         enggagementToSum = item.coefficients;
       } else {
         const indexAggregation = aggregations.findIndex(
-          (x) => parseInt(x.d_factorid) == item.d_factorid,
+          (x) => parseInt(x.factorid) == item.factorid,
         );
         const aggregationValue =
           item.coefficients_type == 'Negative'
@@ -147,7 +147,7 @@ export class PredPredictionEngagementService {
       if (body.isAll) {
         const demographyValue =
           await this.predEngagementValueService.getDemographyValueByDemography({
-            d_companyid: body.d_companyid,
+            companyid: body.companyid,
             demography: body.demography,
           });
         body.demoraphyvalue = demographyValue.map(
@@ -158,7 +158,7 @@ export class PredPredictionEngagementService {
       const dataToGenerate = await Promise.all(
         body.demoraphyvalue.map(async (item) => {
           const data = await this.getDriverAndPrediction({
-            d_companyid: body.d_companyid,
+            companyid: body.companyid,
             demography: body.demography,
             demographyvalue: item,
           });
@@ -225,7 +225,7 @@ export class PredPredictionEngagementService {
       );
 
       const params = {
-        d_companyid: data.d_companyid,
+        companyid: data.companyid,
         demography: data.demography,
         demographyvalue: data.demographyvalue,
       };

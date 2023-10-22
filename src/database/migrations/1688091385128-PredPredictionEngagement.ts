@@ -22,22 +22,22 @@ export class PredPredictionEngagement1688091385128
             generationStrategy: 'increment',
           },
           {
-            name: 'd_surveygizmoid',
+            name: 'surveygizmoid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_companyid',
+            name: 'companyid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_factorid',
+            name: 'factorid',
             type: 'bigint',
             isNullable: false,
           },
           {
-            name: 'd_engagementid',
+            name: 'engagementid',
             type: 'bigint',
             isNullable: false,
           },
@@ -112,8 +112,8 @@ export class PredPredictionEngagement1688091385128
     await queryRunner.createForeignKey(
       'tbl_pred_predictionengagement',
       new TableForeignKey({
-        columnNames: ['d_surveygizmoid'],
-        referencedColumnNames: ['d_surveygizmoid'],
+        columnNames: ['surveygizmoid'],
+        referencedColumnNames: ['surveygizmoid'],
         referencedTableName: 'ms_ees_surveygizmo',
         onDelete: 'CASCADE',
       }),
@@ -121,8 +121,8 @@ export class PredPredictionEngagement1688091385128
     await queryRunner.createForeignKey(
       'tbl_pred_predictionengagement',
       new TableForeignKey({
-        columnNames: ['d_engagementid'],
-        referencedColumnNames: ['d_engagementid'],
+        columnNames: ['engagementid'],
+        referencedColumnNames: ['engagementid'],
         referencedTableName: 'ms_ees_engagement',
         onDelete: 'CASCADE',
       }),
@@ -130,17 +130,17 @@ export class PredPredictionEngagement1688091385128
     await queryRunner.createForeignKey(
       'tbl_pred_predictionengagement',
       new TableForeignKey({
-        columnNames: ['d_companyid'],
-        referencedColumnNames: ['d_companyid'],
-        referencedTableName: 'ms_ees_company',
+        columnNames: ['companyid'],
+        referencedColumnNames: ['companyid'],
+        referencedTableName: 'ms_company',
         onDelete: 'CASCADE',
       }),
     );
     await queryRunner.createForeignKey(
       'tbl_pred_predictionengagement',
       new TableForeignKey({
-        columnNames: ['d_factorid'],
-        referencedColumnNames: ['d_factorid'],
+        columnNames: ['factorid'],
+        referencedColumnNames: ['factorid'],
         referencedTableName: 'ms_ees_factor',
         onDelete: 'CASCADE',
       }),

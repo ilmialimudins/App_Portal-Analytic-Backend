@@ -8,8 +8,8 @@ import { PredRelativeImportance } from '../pred-relative-importance/pred-relativ
 @Entity('ms_ees_engagement')
 @UseDto(MasterEngagementDTO)
 export class MasterEngagement extends AbstractEntity<MasterEngagementDTO> {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'd_engagementid' })
-  d_engagementid: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'engagementid' })
+  engagementid: number;
 
   @Column({ type: 'varchar', name: 'h_engagementhashkey', nullable: true })
   h_engagementhashkey: string;

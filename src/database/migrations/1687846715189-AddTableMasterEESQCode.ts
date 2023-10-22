@@ -7,7 +7,7 @@ export class AddTableMasterEESQCode1687846715189 implements MigrationInterface {
         name: 'ms_ees_qcode',
         columns: [
           {
-            name: 'd_qcodeid',
+            name: 'qcodeid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,

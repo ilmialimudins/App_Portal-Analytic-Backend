@@ -38,7 +38,7 @@ export class SavePredictionEngagementTransaction extends BaseTransaction<
     const arrayPromises = await Promise.all(
       data.drivers.map(async (item) => {
         const value = await repoEngagementValue.update(
-          { d_factorid: item.d_factorid, id: item.engagementvalue_id },
+          { factorid: item.factorid, id: item.engagementvalue_id },
           { avg_respondentanswer_after: item.avg_respondentanswer_after },
         );
 
@@ -91,8 +91,8 @@ export class SavePredictionEngagementTransaction extends BaseTransaction<
       engagements.map(async (item) => {
         const value = await repoPredictionEngagement.update(
           {
-            d_companyid: data.filter.d_companyid,
-            d_engagementid: item.id,
+            companyid: data.filter.companyid,
+            engagementid: item.id,
             demography: data.filter.demography,
           },
           {

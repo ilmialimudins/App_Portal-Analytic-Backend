@@ -4,7 +4,7 @@ import { IsString } from 'class-validator';
 export class GetAverageFavorableAllFactorQueryDTO {
   @ApiProperty()
   @IsString()
-  d_companyid: string;
+  companyid: string;
 }
 
 export class GetAverageFavorableAllFactorResultDTO {
@@ -15,5 +15,5 @@ export class GetAverageFavorableAllFactorResultDTO {
   average_per_factor: number;
 
   @ApiProperty()
-  d_factorid: number;
+  factorid: number;
 }

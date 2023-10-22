@@ -12,9 +12,9 @@ import { PredRelativeImportance } from '../pred-relative-importance/pred-relativ
 export class EESFactor extends AbstractEntity<FactorDto> {
   @PrimaryGeneratedColumn({
     type: 'bigint',
-    name: 'd_factorid',
+    name: 'factorid',
   })
-  d_factorid: string;
+  factorid: string;
 
   @Column({ type: 'varchar', name: 'h_factorhashkey', nullable: true })
   h_factorhashkey: string;

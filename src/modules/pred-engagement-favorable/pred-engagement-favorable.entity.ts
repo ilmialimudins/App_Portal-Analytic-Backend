@@ -9,7 +9,7 @@ import {
 import { PredEngagementFavorableDTO } from './dto/pred-engagement-favorable.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { MasterSurveygizmo } from '../master-surveygizmo/master-surveygizmo.entity';
-import { MasterEESCompany } from '../master-company/master-company.entity';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 import { EESFactor } from '../factor/factor.entity';
 import { MasterQcode } from '../master-qcode/master-qcode.entity';
 
@@ -20,25 +20,25 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   id: number;
 
   @Column({ nullable: true })
-  d_surveygizmoid: number;
+  surveygizmoid: number;
   @ManyToOne(
     () => MasterSurveygizmo,
     (surveygizmo) => surveygizmo.engagementfavorable,
   )
   @JoinColumn({
-    name: 'd_surveygizmoid',
-    referencedColumnName: 'd_surveygizmoid',
+    name: 'surveygizmoid',
+    referencedColumnName: 'surveygizmoid',
   })
   surveygizmo: MasterSurveygizmo;
 
   @Column({ nullable: true })
-  d_companyid: number;
-  @ManyToOne(() => MasterEESCompany, (company) => company.engagementfavorable)
+  companyid: number;
+  @ManyToOne(() => Company, (company) => company.engagementfavorable)
   @JoinColumn({
-    name: 'd_companyid',
-    referencedColumnName: 'd_companyid',
+    name: 'companyid',
+    referencedColumnName: 'companyid',
   })
-  company: MasterEESCompany;
+  company: Company;
 
   @Column({ type: 'varchar', name: 'iscurrentsurvey', nullable: true })
   iscurrentsurvey: string;
@@ -50,20 +50,20 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   totalcompletedrespondent: number;
 
   @Column({ nullable: true })
-  d_factorid: number;
+  factorid: number;
   @ManyToOne(() => EESFactor, (factor) => factor.engagementfavorable)
   @JoinColumn({
-    name: 'd_factorid',
-    referencedColumnName: 'd_factorid',
+    name: 'factorid',
+    referencedColumnName: 'factorid',
   })
   factor: EESFactor;
 
   @Column({ nullable: true })
-  d_qcodeid: number;
+  qcodeid: number;
   @ManyToOne(() => MasterQcode, (factor) => factor.engagementfavorable)
   @JoinColumn({
-    name: 'd_qcodeid',
-    referencedColumnName: 'd_qcodeid',
+    name: 'qcodeid',
+    referencedColumnName: 'qcodeid',
   })
   qcode: MasterQcode;
 

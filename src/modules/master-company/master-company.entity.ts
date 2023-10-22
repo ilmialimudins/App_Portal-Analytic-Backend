@@ -1,17 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UseDto } from 'src/decorators/use-dto.decorator';
 import { MasterCompanyDto } from './dto/master-company.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
-import { PredEngagementFavorable } from '../pred-engagement-favorable/pred-engagement-favorable.entity';
-import { PredEngagementValue } from '../pred-engagement-value/pred-engagement-value.entity';
-import { PredPredictionEngagement } from '../pred-prediction-engagement/pred-prediction-engagement.entity';
-import { PredRelativeImportance } from '../pred-relative-importance/pred-relative-importance.entity';
 
 @Entity('ms_ees_company')
 @UseDto(MasterCompanyDto)
 export class MasterEESCompany extends AbstractEntity<MasterCompanyDto> {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'd_companyid' })
-  d_companyid: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'companyid' })
+  companyid: number;
 
   @Column({ type: 'varchar', name: 'h_companyhashkey', nullable: true })
   h_companyhashkey: string;
@@ -33,28 +29,4 @@ export class MasterEESCompany extends AbstractEntity<MasterCompanyDto> {
 
   @Column({ type: 'datetime', name: 'loadenddate', nullable: true })
   loadenddate: Date;
-
-  @OneToMany(
-    () => PredEngagementFavorable,
-    (engagementfavorable) => engagementfavorable.company,
-  )
-  engagementfavorable: PredEngagementFavorable[];
-
-  @OneToMany(
-    () => PredEngagementValue,
-    (engagementfavorable) => engagementfavorable.company,
-  )
-  engagementvalue: PredEngagementValue[];
-
-  @OneToMany(
-    () => PredPredictionEngagement,
-    (predictionengagement) => predictionengagement.company,
-  )
-  predictionengagement: PredPredictionEngagement[];
-
-  @OneToMany(
-    () => PredRelativeImportance,
-    (relativeimportance) => relativeimportance.company,
-  )
-  relativeimportance: PredRelativeImportance[];
 }

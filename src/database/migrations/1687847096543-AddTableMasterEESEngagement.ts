@@ -9,7 +9,7 @@ export class AddTableMasterEESEngagement1687847096543
         name: 'ms_ees_engagement',
         columns: [
           {
-            name: 'd_engagementid',
+            name: 'engagementid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,

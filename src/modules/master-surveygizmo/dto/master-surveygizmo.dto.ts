@@ -4,7 +4,7 @@ import { MasterSurveygizmo } from '../master-surveygizmo.entity';
 
 export class MasterSurveyGizmoDTO extends AbstractDto {
   @ApiProperty()
-  d_surveygizmoid: number;
+  surveygizmoid: number;
 
   @ApiPropertyOptional()
   h_surveygizmohashkey: string;
