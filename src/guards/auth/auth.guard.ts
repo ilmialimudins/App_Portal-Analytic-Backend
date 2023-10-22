@@ -30,23 +30,23 @@ export class AuthGuard implements CanActivate {
       }
       console.log('getting here');
 
-      // const res = await this.apiService.getUserInfo(headerAuth.split(' ')[1]);
+      const res = await this.apiService.getUserInfo(headerAuth.split(' ')[1]);
 
-      // if (res.statusCode === 401) {
-      //   throw new UnauthorizedException('You are not authorized');
-      // }
+      if (res.statusCode === 401) {
+        throw new UnauthorizedException('You are not authorized');
+      }
 
-      // request.userinfo = res.body;
+      request.userinfo = res.body;
 
-      // const userInfoEmail = res.body.email;
+      const userInfoEmail = res.body.email;
 
-      // const emailUser = await this.userService.getMasterUserEmail(
-      //   userInfoEmail,
-      // );
+      const emailUser = await this.userService.getMasterUserEmail(
+        userInfoEmail,
+      );
 
-      // if (!emailUser) {
-      //   throw new UnauthorizedException('You are not authorized');
-      // }
+      if (!emailUser) {
+        throw new UnauthorizedException('You are not authorized');
+      }
 
       return true;
     } catch (error) {
