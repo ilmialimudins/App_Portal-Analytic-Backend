@@ -6,7 +6,7 @@ export class GetDemographyByCompanyDTO {
   @ApiProperty()
   @IsInt()
   @Type(() => Number)
-  readonly d_companyid: number;
+  readonly companyid: number;
 }
 
 export class ListDemographyDTO {
@@ -18,7 +18,7 @@ export class GetDemographyValueByCompanyDTO {
   @ApiProperty()
   @IsInt()
   @Type(() => Number)
-  readonly d_companyid: number;
+  readonly companyid: number;
 
   @ApiProperty()
   @IsString()

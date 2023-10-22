@@ -15,7 +15,7 @@ export class PredRelativeImportanceService {
   ) {}
 
   async getRelativeImportanceByCompany({
-    d_companyid,
+    companyid,
     order,
   }: GetRelativeImportanceQueryDTO): Promise<
     RelativeImportancePerCompanyDTO[]
@@ -23,7 +23,7 @@ export class PredRelativeImportanceService {
     try {
       const relativeimportance = await this.relativeImportanceRepo.find({
         where: {
-          d_companyid: parseInt(d_companyid),
+          companyid: parseInt(companyid),
           relativeimportance: Not(IsNull()),
         },
         relations: {
@@ -32,7 +32,7 @@ export class PredRelativeImportanceService {
         },
         select: {
           engagement: {
-            d_engagementid: true,
+            engagementid: true,
             engagement: true,
           },
           factor: {
@@ -41,21 +41,21 @@ export class PredRelativeImportanceService {
           relativeimportance: true,
         },
         order: {
-          d_engagementid: 'ASC',
+          engagementid: 'ASC',
           relativeimportance: order || 'DESC',
         },
       });
 
       const data = relativeimportance.reduce((acc, val) => {
-        if (!acc[val.engagement.d_engagementid]) {
-          acc[val.engagement.d_engagementid] = {
+        if (!acc[val.engagement.engagementid]) {
+          acc[val.engagement.engagementid] = {
             engagement: val.engagement.engagement,
-            engagementid: val.engagement.d_engagementid,
+            engagementid: val.engagement.engagementid,
             relativesimportance: [],
           };
         }
 
-        acc[val.engagement.d_engagementid].relativesimportance.push({
+        acc[val.engagement.engagementid].relativesimportance.push({
           factor_shortname: val.factor.factor_shortname,
           relativeimportance: val.relativeimportance,
         });

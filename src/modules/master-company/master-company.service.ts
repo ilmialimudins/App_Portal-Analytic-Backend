@@ -46,7 +46,7 @@ export class MasterCompanyService {
     try {
       const query = await this.masterCompanyRepository
         .createQueryBuilder('mastercompany')
-        .where('mastercompany.d_companyid = :id', { id: id })
+        .where('mastercompany.companyid = :id', { id: id })
         .getOne();
 
       return query?.toDto();

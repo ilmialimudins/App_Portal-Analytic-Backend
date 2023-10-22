@@ -24,22 +24,22 @@ export class PredEngagementFavorableController {
   @Get('/favorable-all-factor')
   @ApiOkResponse({ type: [GetAverageFavorableAllFactorResultDTO] })
   async getAllAverageFactor(
-    @Query() { d_companyid }: GetAverageFavorableAllFactorQueryDTO,
+    @Query() { companyid }: GetAverageFavorableAllFactorQueryDTO,
   ): Promise<GetAverageFavorableAllFactorResultDTO[]> {
     return await this.predEngagementFavorableService.getAverageFavorableAllFactor(
       {
-        d_companyid,
+        companyid,
       },
     );
   }
 
   @Get('/favorable-detail')
   async getFavorableDetail(
-    @Query() { d_companyid, d_factorid }: GetFavorableFactorDetailQueryDTO,
+    @Query() { companyid, factorid }: GetFavorableFactorDetailQueryDTO,
   ): Promise<GetFavorableFactorDetailDTO> {
     return await this.predEngagementFavorableService.getFavorableDetail({
-      d_companyid,
-      d_factorid,
+      companyid,
+      factorid,
     });
   }
 }

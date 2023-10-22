@@ -5,11 +5,11 @@ import { IsString } from 'class-validator';
 export class GetFavorableFactorDetailQueryDTO {
   @ApiProperty()
   @IsString()
-  d_companyid: string;
+  companyid: string;
 
   @ApiProperty()
   @IsString()
-  d_factorid: string;
+  factorid: string;
 }
 
 export class QcodeDataDTO {

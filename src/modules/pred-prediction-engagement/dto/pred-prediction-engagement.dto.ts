@@ -7,16 +7,16 @@ export class PredPredictionEngagementDto extends AbstractDto {
   id: number;
 
   @ApiProperty()
-  d_surveygizmoid: number;
+  surveygizmoid: number;
 
   @ApiProperty()
-  d_companyid: number;
+  companyid: number;
 
   @ApiProperty()
-  d_factorid: number;
+  factorid: number;
 
   @ApiProperty()
-  d_engagementid: number;
+  engagementid: number;
 
   @ApiProperty()
   demography: string;

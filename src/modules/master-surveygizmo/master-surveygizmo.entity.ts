@@ -10,8 +10,8 @@ import { PredRelativeImportance } from '../pred-relative-importance/pred-relativ
 @Entity('ms_ees_surveygizmo')
 @UseDto(MasterSurveyGizmoDTO)
 export class MasterSurveygizmo extends AbstractEntity<MasterSurveyGizmoDTO> {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'd_surveygizmoid' })
-  d_surveygizmoid: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'surveygizmoid' })
+  surveygizmoid: number;
 
   @Column({ type: 'varchar', name: 'h_surveygizmohashkey', nullable: true })
   h_surveygizmohashkey: string;

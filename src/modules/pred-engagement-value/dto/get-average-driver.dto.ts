@@ -6,7 +6,7 @@ export class GetAverageDriverDTO {
   @ApiProperty()
   @IsInt()
   @Type(() => Number)
-  d_companyid: number;
+  companyid: number;
 
   @ApiProperty()
   @IsString()

@@ -9,7 +9,7 @@ export class AddTableMasterESSFactor1687834346813
         name: 'ms_ees_factor',
         columns: [
           {
-            name: 'd_factorid',
+            name: 'factorid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,

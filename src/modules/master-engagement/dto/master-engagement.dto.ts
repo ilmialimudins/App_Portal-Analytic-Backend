@@ -4,7 +4,7 @@ import type { MasterEngagement } from '../master-engagement.entity';
 
 export class MasterEngagementDTO extends AbstractDto {
   @ApiProperty()
-  d_engagementid: number;
+  engagementid: number;
 
   @ApiPropertyOptional()
   h_engagementhashkey: string;
@@ -18,7 +18,7 @@ export class MasterEngagementDTO extends AbstractDto {
   constructor(masterEngagement: MasterEngagement) {
     super(masterEngagement, { exludeFields: true });
 
-    this.d_engagementid = masterEngagement.d_engagementid;
+    this.engagementid = masterEngagement.engagementid;
     this.engagement = masterEngagement.engagement;
     this.engagement_shortname = masterEngagement.engagement_shortname;
   }

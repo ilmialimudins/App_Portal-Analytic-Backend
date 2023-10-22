@@ -49,8 +49,8 @@ export class PredEngagamentValueService {
       const query = await this.engagementValue
         .createQueryBuilder('predengagementvalue')
         .select('DISTINCT predengagementvalue.demography')
-        .where('predengagementvalue.d_companyid = :d_companyid', {
-          d_companyid: company.d_companyid,
+        .where('predengagementvalue.companyid = :companyid', {
+          companyid: company.companyid,
         })
         .getRawMany();
 
@@ -61,15 +61,15 @@ export class PredEngagamentValueService {
   }
 
   async getDemographyValueByDemography({
-    d_companyid,
+    companyid,
     demography,
   }: GetDemographyValueByCompanyDTO): Promise<ListDemographyValueDTO[]> {
     try {
       const result = await this.engagementValue
         .createQueryBuilder('predengagementvalue')
         .select('DISTINCT predengagementvalue.demographyvalue')
-        .where('predengagementvalue.d_companyid = :d_companyid', {
-          d_companyid: d_companyid,
+        .where('predengagementvalue.companyid = :companyid', {
+          companyid: companyid,
         })
         .andWhere('predengagementvalue.demography = :demography', {
           demography,
@@ -83,7 +83,7 @@ export class PredEngagamentValueService {
   }
 
   async getAverageDriver({
-    d_companyid,
+    companyid,
     demography,
     demographyvalue,
   }: GetAverageDriverDTO) {
@@ -91,7 +91,7 @@ export class PredEngagamentValueService {
       const result = await this.engagementValue.find({
         select: {
           id: true,
-          d_factorid: true,
+          factorid: true,
           factor: {
             factor_shortname: true,
             factorname: true,
@@ -103,12 +103,12 @@ export class PredEngagamentValueService {
           factor: true,
         },
         where: {
-          d_companyid: d_companyid,
+          companyid: companyid,
           demography: demography,
           demographyvalue: demographyvalue,
         },
         order: {
-          d_factorid: 'ASC',
+          factorid: 'ASC',
         },
       });
 
@@ -119,14 +119,14 @@ export class PredEngagamentValueService {
   }
 
   async calculateAverageDriver(
-    { d_companyid, demography }: GetAgregrationPerFactorDTO,
+    { companyid, demography }: GetAgregrationPerFactorDTO,
     drivers: AdjustmentDriverDTO[],
   ): Promise<AggregationPerFactorDTO[]> {
     try {
       // Do this for initial fetch, not changes for preview data;
       const getAggregationAfterAndBefore =
         await this.getAggregationBeforeAndAfter(
-          { d_companyid, demography },
+          { companyid, demography },
           this.engagementValue,
         );
       if (drivers.length) {
@@ -138,9 +138,9 @@ export class PredEngagamentValueService {
           )
           .addSelect('a.count_respondent * 15', 'count_respondent')
           .addSelect('CAST(a.avg_respondentanswer_after AS FLOAT)', 'avg_after')
-          .addSelect('a.d_factorid', 'd_factorid')
+          .addSelect('a.factorid', 'factorid')
           .addSelect('a.id', 'engagementvalue_id')
-          .where('a.d_companyid = :companyId', { companyId: d_companyid })
+          .where('a.companyid = :companyId', { companyId: companyid })
           .andWhere('a.demography = :demography', { demography: demography })
           .getRawMany();
 
@@ -158,18 +158,18 @@ export class PredEngagamentValueService {
         });
 
         getListAverageRespondentByDemography.forEach((item) => {
-          const { d_factorid, avg_after, count_respondent } = item;
-          if (sumByFactorId[d_factorid]) {
-            sumByFactorId[d_factorid] = {
+          const { factorid, avg_after, count_respondent } = item;
+          if (sumByFactorId[factorid]) {
+            sumByFactorId[factorid] = {
               average_factor:
-                sumByFactorId[d_factorid].average_factor +
+                sumByFactorId[factorid].average_factor +
                 avg_after * count_respondent,
               count_respondent:
-                sumByFactorId[d_factorid].count_respondent +
+                sumByFactorId[factorid].count_respondent +
                 parseInt(count_respondent),
             };
           } else {
-            sumByFactorId[d_factorid] = {
+            sumByFactorId[factorid] = {
               average_factor: avg_after * count_respondent,
               count_respondent: parseInt(count_respondent),
             };
@@ -177,13 +177,13 @@ export class PredEngagamentValueService {
         });
 
         const listAggregationPerFactorAfter: {
-          d_factorid: string;
+          factorid: string;
           aggregationAfter: number;
         }[] = [];
 
         for (const key in sumByFactorId) {
           listAggregationPerFactorAfter.push({
-            d_factorid: key,
+            factorid: key,
             aggregationAfter:
               sumByFactorId[key].average_factor /
               sumByFactorId[key].count_respondent,
@@ -193,7 +193,7 @@ export class PredEngagamentValueService {
         // assign to actual obj
         listAggregationPerFactorAfter.forEach((after) => {
           const index = getAggregationAfterAndBefore.findIndex(
-            (item) => item.d_factorid === after.d_factorid,
+            (item) => item.factorid === after.factorid,
           );
 
           if (index !== -1) {
@@ -210,13 +210,13 @@ export class PredEngagamentValueService {
   }
 
   async getAggregationBeforeAndAfter(
-    { d_companyid, demography }: Partial<GetAgregrationPerFactorDTO>,
+    { companyid, demography }: Partial<GetAgregrationPerFactorDTO>,
     repo: Repository<PredEngagementValue>,
   ) {
     try {
       const data = await repo
         .createQueryBuilder('engagementvalue')
-        .select('engagementvalue.d_factorid as d_factorid')
+        .select('engagementvalue.factorid as factorid')
         .addSelect('factor.factor_shortname as factor_shortname')
         .addSelect(
           `SUM(engagementvalue.count_respondent * 15 * engagementvalue.avg_respondentanswer_after) / (SUM(engagementvalue.count_respondent * 1) * 15)`,
@@ -231,14 +231,14 @@ export class PredEngagamentValueService {
           'count_respondent',
         )
         .leftJoin('engagementvalue.factor', 'factor')
-        .where('engagementvalue.d_companyid = :d_companyid', {
-          d_companyid,
+        .where('engagementvalue.companyid = :companyid', {
+          companyid,
         })
         .andWhere('engagementvalue.demography = :demography', {
           demography,
         })
-        .groupBy('engagementvalue.d_factorid, factor.factor_shortname')
-        .orderBy('engagementvalue.d_factorid', 'ASC')
+        .groupBy('engagementvalue.factorid, factor.factor_shortname')
+        .orderBy('engagementvalue.factorid', 'ASC')
         .getRawMany();
 
       return data;

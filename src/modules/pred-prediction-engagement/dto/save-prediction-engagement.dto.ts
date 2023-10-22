@@ -16,7 +16,7 @@ import { AdjustmentDriverDTO } from 'src/modules/pred-engagement-value/dto/get-a
 export class FilterSavePredictionDTO {
   @ApiProperty()
   @IsNumber()
-  readonly d_companyid: number;
+  readonly companyid: number;
 
   @ApiProperty()
   @IsString()

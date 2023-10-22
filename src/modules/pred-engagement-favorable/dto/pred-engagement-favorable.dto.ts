@@ -7,10 +7,10 @@ export class PredEngagementFavorableDTO extends AbstractDto {
   id: number;
 
   @ApiProperty()
-  d_surveygizmoid: number;
+  surveygizmoid: number;
 
   @ApiProperty()
-  d_companyid: number;
+  companyid: number;
 
   @ApiProperty()
   iscurrentsurvey: number;
@@ -22,10 +22,10 @@ export class PredEngagementFavorableDTO extends AbstractDto {
   totalcompletedrespondent: number;
 
   @ApiProperty()
-  d_factorid: number;
+  factorid: number;
 
   @ApiProperty()
-  d_qcodeid: number;
+  qcodeid: number;
 
   @ApiProperty()
   count_all_favorabletype: number;
