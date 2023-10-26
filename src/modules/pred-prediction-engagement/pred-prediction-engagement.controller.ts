@@ -11,7 +11,7 @@ import { GetPredictionEngagementDTO } from './dto/get-prediction-engagement.dto'
 import { SavePredictionEngagementDTO } from './dto/save-prediction-engagement.dto';
 import { DownloadPredictionBodyDTO } from './dto/download-prediction..dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
-import { MasterCompanyService } from '../master-company/master-company.service';
+import { CompanyService } from '../master-company-ees/master-company-ees.service';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -21,7 +21,7 @@ export class PredPredictionEngagementController {
   constructor(
     private readonly predPredictionEngagementService: PredPredictionEngagementService,
     private readonly predEngagementValueService: PredEngagamentValueService,
-    private readonly masterCompanyService: MasterCompanyService,
+    private readonly masterCompanyService: CompanyService,
   ) {}
 
   @Post('/preview')
@@ -35,8 +35,6 @@ export class PredPredictionEngagementController {
         query,
         body.drivers,
       );
-
-    console.log(aggregationBeforeAndAfter);
 
     const prediction =
       await this.predPredictionEngagementService.previewPrediction(
@@ -61,7 +59,7 @@ export class PredPredictionEngagementController {
       body.companyid,
     );
 
-    const companyName = company?.companyname.split(' ').join('_');
+    const companyName = company?.companyeesname.split(' ').join('_');
 
     res.setHeader(
       'Content-Type',
