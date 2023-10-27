@@ -37,6 +37,7 @@ export class PredRelativeImportanceService {
           },
           factor: {
             factor_shortname: true,
+            factorname: true,
           },
           relativeimportance: true,
         },
