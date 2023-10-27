@@ -1,15 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  ArrayMinSize,
-  IsArray,
-  IsBoolean,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsString } from 'class-validator';
 
 export class DownloadPredictionBodyDTO {
   @ApiProperty()
-  @IsNumber()
   companyid: number;
 
   @ApiProperty()
