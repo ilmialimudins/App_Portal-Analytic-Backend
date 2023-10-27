@@ -108,7 +108,9 @@ export class PredEngagamentValueService {
           demographyvalue: demographyvalue,
         },
         order: {
-          factorid: 'ASC',
+          factor: {
+            factorcode: 'ASC',
+          },
         },
       });
 
