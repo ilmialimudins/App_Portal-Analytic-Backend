@@ -147,9 +147,10 @@ export class PredPredictionEngagementService {
       if (body.isAll) {
         const demographyValue =
           await this.predEngagementValueService.getDemographyValueByDemography({
-            companyid: body.companyid,
+            companyid: parseInt(body.companyid),
             demography: body.demography,
           });
+
         body.demoraphyvalue = demographyValue.map(
           (item) => item.demographyvalue,
         );
@@ -158,7 +159,7 @@ export class PredPredictionEngagementService {
       const dataToGenerate = await Promise.all(
         body.demoraphyvalue.map(async (item) => {
           const data = await this.getDriverAndPrediction({
-            companyid: body.companyid,
+            companyid: parseInt(body.companyid),
             demography: body.demography,
             demographyvalue: item,
           });
@@ -170,9 +171,11 @@ export class PredPredictionEngagementService {
       const workbook: excel.Workbook = new excel.Workbook();
 
       // // Generate Excel Sheet
-      dataToGenerate.map((data) => {
+      dataToGenerate.forEach((data) => {
         const sheet: excel.Worksheet = workbook.addWorksheet(
-          data.demographyvalue.replace(/([^\w ]|_)/g, ''),
+          data.demographyvalue.trim() === ''
+            ? 'Empty'
+            : data.demographyvalue.replace(/([^\w ]|_)/g, ''),
         );
 
         addTable(
