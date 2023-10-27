@@ -41,7 +41,7 @@ export class PredEngagementFavorableService {
         .andWhere('factor.factorname NOT IN (:...excludedFactorNames)', {
           excludedFactorNames,
         })
-        .orderBy('factorid', 'ASC')
+        .orderBy('factor.factorcode', 'ASC')
         .getRawMany();
 
       const removeDuplicate = result.reduce((acc, val) => {
