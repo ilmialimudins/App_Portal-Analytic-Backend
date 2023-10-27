@@ -216,10 +216,9 @@ export class CompanyService {
 
   async getCompanyId(companyid: number): Promise<CompanyDto | undefined> {
     try {
-      const query = await this.companyRepository
-        .createQueryBuilder('company')
-        .where('company.companyid = :companyid', { companyid })
-        .getOne();
+      const query = await this.companyRepository.findOne({
+        where: { companyid: companyid },
+      });
 
       return query?.toDto();
     } catch (error) {

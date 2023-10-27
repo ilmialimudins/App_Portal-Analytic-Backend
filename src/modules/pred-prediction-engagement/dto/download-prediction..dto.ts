@@ -3,7 +3,8 @@ import { ArrayMinSize, IsArray, IsBoolean, IsString } from 'class-validator';
 
 export class DownloadPredictionBodyDTO {
   @ApiProperty()
-  companyid: number;
+  @IsString()
+  companyid: string;
 
   @ApiProperty()
   @IsString()
