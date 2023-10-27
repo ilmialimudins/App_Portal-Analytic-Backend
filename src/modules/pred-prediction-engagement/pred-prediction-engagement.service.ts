@@ -35,6 +35,7 @@ export class PredPredictionEngagementService {
     aggregations: AggregationPerFactorDTO[],
   ): Promise<GetPredictionEngagementDTO> {
     try {
+      console.log(' getting previewPrediction');
       const getPredictionList = await this.getPredictionList(
         { companyid, demography },
         this.engagementValue,
