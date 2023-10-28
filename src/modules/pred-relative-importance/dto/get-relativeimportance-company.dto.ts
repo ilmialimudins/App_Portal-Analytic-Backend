@@ -21,6 +21,9 @@ export class RelativeImportanceDTO {
   factor_shortname: string;
 
   @ApiProperty()
+  factorname: string;
+
+  @ApiProperty()
   relativeimportance: number;
 }
 
