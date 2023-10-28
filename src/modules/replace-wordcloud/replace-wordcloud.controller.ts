@@ -93,6 +93,22 @@ export class ReplaceWordcloudController {
     return this.replaceWordcloudService.getReplaceWordcloudId(uuid);
   }
 
+  @Post('/validatewordcloud')
+  @ApiOkResponse({ type: ReplaceWordcloudDto })
+  async validateStopwords(@Body() replacewordcloud: AddReplaceWordcloudDto) {
+    const checkOne =
+      await this.replaceWordcloudService.checkOneReplaceWordcloud(
+        replacewordcloud,
+      );
+
+    let isExist = false;
+    if (checkOne) {
+      isExist = true;
+    }
+
+    return { isExist };
+  }
+
   @Post('/createReplaceWordcloud')
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async createReplaceWordcloud(
