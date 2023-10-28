@@ -3,6 +3,7 @@ import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { SurveyGroupDto } from './dto/master-survey-group.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { InvitedRespondents } from '../spm-invited-respondents/spm-invited-respondents.entity';
 
 @Entity('ms_surveygroup')
 @UseDto(SurveyGroupDto)
@@ -24,4 +25,7 @@ export class SurveyGroup extends AbstractEntity<SurveyGroupDto> {
 
   @OneToMany(() => Company, (company) => company.surveygroupid)
   company: Company[];
+
+  @OneToMany(() => InvitedRespondents, (spm) => spm.surveygroupid)
+  invitedrespondent: InvitedRespondents[];
 }

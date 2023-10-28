@@ -34,25 +34,27 @@ export class SpmInvitedRespondentsController {
     private readonly spmInvitedRespondentsService: SpmInvitedRespondentsService,
   ) {}
 
-  @Get('')
+  @Get('/')
   @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
   async getInvitedRespondents(
-    @Query() { companyid, surveyid }: GetInvitedRespondentsQueryDTO,
+    @Query()
+    { companyid, surveyid, surveygroupid }: GetInvitedRespondentsQueryDTO,
   ): Promise<GetOneInvitedRespondentsQueryDTO[]> {
     return await this.spmInvitedRespondentsService.getManyService({
       companyid,
       surveyid,
+      surveygroupid,
     });
   }
 
-  @Post('')
+  @Post('/')
   async creteRespondents(
     @Body() body: PostInvitedRespondentsBodyDTO,
   ): Promise<PostInvitedRespondentsResultsDTO | undefined> {
     return await this.spmInvitedRespondentsService.createRespondent(body);
   }
 
-  @Delete('')
+  @Delete('/')
   async deleteRespondents(
     @Query()
     {
@@ -61,6 +63,7 @@ export class SpmInvitedRespondentsController {
       valuedemography,
       demography,
       tahun_survey,
+      surveygroupid,
     }: DelInvitedRespondentsQueryDTO,
   ) {
     const result = await this.spmInvitedRespondentsService.removeRespondents({
@@ -69,6 +72,7 @@ export class SpmInvitedRespondentsController {
       valuedemography,
       demography,
       tahun_survey,
+      surveygroupid,
     });
 
     const { raw, affected } = result;
@@ -82,48 +86,56 @@ export class SpmInvitedRespondentsController {
     return { message: 'Success', data: raw };
   }
 
-  @Get('/get-one')
-  @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })
-  async getOneInvitedRepondents(
-    @Query()
-    {
-      companyid,
-      surveyid,
-      valuedemography,
-      demography,
-      tahun_survey,
-    }: GetOneInvitedRespondentsQueryDTO,
-  ): Promise<GetInvitedRespondentsResultDTO | undefined> {
-    return await this.spmInvitedRespondentsService.getOneService({
-      companyid,
-      surveyid,
-      valuedemography,
-      demography,
-      tahun_survey,
-    });
-  }
+  // @Get('/get-one')
+  // @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })
+  // async getOneInvitedRepondents(
+  //   @Query()
+  //   {
+  //     companyid,
+  //     surveyid,
+  //     valuedemography,
+  //     demography,
+  //     tahun_survey,
+  //   }: GetOneInvitedRespondentsQueryDTO,
+  // ): Promise<GetInvitedRespondentsResultDTO | undefined> {
+  //   return await this.spmInvitedRespondentsService.getOneService({
+  //     companyid,
+  //     surveyid,
+  //     valuedemography,
+  //     demography,
+  //     tahun_survey,
+  //   });
+  // }
 
-  @Get('/get-companylist')
-  @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
-  async getInvitedCompany(): Promise<GetInvitedRespondentsResultDTO[]> {
-    return await this.spmInvitedRespondentsService.getCompanyList();
-  }
+  // @Get('/get-companylist')
+  // @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
+  // async getInvitedCompany(): Promise<GetInvitedRespondentsResultDTO[]> {
+  //   return await this.spmInvitedRespondentsService.getCompanyList();
+  // }
 
   @Get('/get-surveyid')
   @ApiOkResponse({ type: [GetSurveyInvitedRespondentsResultsDTO] })
   async getSurveyId(
-    @Query() { companyid }: GetSurveyInvitedRespondentsQueryDTO,
+    @Query() { companyid, surveygroupid }: GetSurveyInvitedRespondentsQueryDTO,
   ): Promise<GetSurveyInvitedRespondentsResultsDTO[]> {
     if (!companyid)
       throw new HttpException('No Company Params Found', HttpStatus.NOT_FOUND);
-    return await this.spmInvitedRespondentsService.getSurveyId({ companyid });
+    return await this.spmInvitedRespondentsService.getSurveyId({
+      companyid,
+      surveygroupid,
+    });
   }
 
   @Get('download-invitedRespondent')
   async getDownloadInvitedRespondent(
     @Res() res: ExpressResponse,
     @Query()
-    { companyid, surveyid, tahun_survey }: GetManyInvitedRespondentsQueryDTO,
+    {
+      companyid,
+      surveyid,
+      tahun_survey,
+      surveygroupid,
+    }: GetManyInvitedRespondentsQueryDTO,
   ) {
     res.setHeader(
       'Content-Type',
@@ -140,6 +152,7 @@ export class SpmInvitedRespondentsController {
         companyid,
         surveyid,
         tahun_survey,
+        surveygroupid,
       });
     await workbook.xlsx.write(res);
     res.send('File send');
