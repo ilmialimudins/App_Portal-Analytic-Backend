@@ -37,6 +37,7 @@ export class SpmInvitedRespondentsService {
     valuedemography,
     demography,
     tahun_survey,
+    surveygroupid,
   }: GetOneInvitedRespondentsQueryDTO): Promise<GetInvitedRespondentsResultDTO> {
     try {
       const query = await this.invitedRespondentsRepo
@@ -46,6 +47,9 @@ export class SpmInvitedRespondentsService {
         })
         .andWhere('tbl_spm_invitedrespondents.surveyid = :surveyid', {
           surveyid,
+        })
+        .andWhere('tbl_spm_invitedrespondents.surveygroupid = :surveygroupid', {
+          surveygroupid,
         })
         .andWhere('tbl_spm_invitedrespondents.tahun_survey = :tahun_survey', {
           tahun_survey,
@@ -89,14 +93,21 @@ export class SpmInvitedRespondentsService {
 
   public async getSurveyId({
     companyid,
+    surveygroupid,
   }: GetSurveyInvitedRespondentsQueryDTO): Promise<
     GetSurveyInvitedRespondentsResultsDTO[]
   > {
     try {
       return await this.invitedRespondentsRepo
         .createQueryBuilder()
-        .select(['DISTINCT surveyid', 'companyid', 'tahun_survey'])
+        .select([
+          'DISTINCT surveyid',
+          'companyid',
+          'tahun_survey',
+          'surveygroupid',
+        ])
         .where('companyid = :companyid', { companyid })
+        .andWhere('surveygroupid = :surveygroupid', { surveygroupid })
         .andWhere('tahun_survey IS NOT NULL')
         .getRawMany();
     } catch (error) {
@@ -108,6 +119,7 @@ export class SpmInvitedRespondentsService {
     companyid,
     surveyid,
     tahun_survey,
+    surveygroupid,
   }: GetManyInvitedRespondentsQueryDTO): Promise<
     GetInvitedRespondentsResultDTO[]
   > {
@@ -119,7 +131,8 @@ export class SpmInvitedRespondentsService {
         })
         .andWhere('surveyid = :surveyid', {
           surveyid,
-        });
+        })
+        .andWhere('surveygroupid = :surveygroupid', { surveygroupid });
 
       if (tahun_survey) {
         query = query.andWhere('tahun_survey = :tahun_survey', {
@@ -144,12 +157,14 @@ export class SpmInvitedRespondentsService {
     companyid,
     surveyid,
     tahun_survey,
+    surveygroupid,
   }: GetManyInvitedRespondentsQueryDTO): Promise<excel.Workbook> {
     try {
       const data: GetInvitedRespondentsResultDTO[] = await this.getManyService({
         companyid,
         surveyid,
         tahun_survey,
+        surveygroupid,
       }).then((response) => {
         console.log(response);
         // permisalan untuk data kosong
@@ -237,6 +252,7 @@ export class SpmInvitedRespondentsService {
         valuedemography: body.valuedemography,
         demography: body.demography,
         tahun_survey: body.tahun_survey,
+        surveygroupid: body.surveygroupid,
       })
         .then(async (res) => {
           return await this.invitedRespondentsRepo.save({
@@ -258,6 +274,7 @@ export class SpmInvitedRespondentsService {
           valuedemography: body.valuedemography,
           demography: body.demography,
           tahun_survey: body.tahun_survey,
+          surveygroupid: body.surveygroupid,
         })
           .then(() => {
             throw new BadRequestException(
@@ -290,6 +307,7 @@ export class SpmInvitedRespondentsService {
     valuedemography,
     demography,
     tahun_survey,
+    surveygroupid,
   }: DelInvitedRespondentsQueryDTO): Promise<DeleteResult> {
     try {
       const currentDate = new Date();
@@ -301,6 +319,7 @@ export class SpmInvitedRespondentsService {
         valuedemography,
         demography,
         tahun_survey,
+        surveygroupid,
       });
 
       return await this.invitedRespondentsRepo.update(updateDelete.id, {

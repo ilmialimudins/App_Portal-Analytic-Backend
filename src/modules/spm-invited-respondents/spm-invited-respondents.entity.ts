@@ -9,6 +9,7 @@ import {
 import { SpmInvitedRespondentsDTO } from './dto/spm-invited-respondents.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { SurveyGroup } from '../master-survey-group/master-survey-group.entity';
 
 @Entity('tbl_spm_invitedrespondents')
 @UseDto(SpmInvitedRespondentsDTO)
@@ -26,7 +27,19 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
     name: 'companyid',
     referencedColumnName: 'companyid',
   })
-  company: 'companyid';
+  company: Company;
+
+  @Column()
+  surveygroupid: number;
+  @ManyToOne(
+    () => SurveyGroup,
+    (masterSurveyGroup) => masterSurveyGroup.invitedrespondent,
+  )
+  @JoinColumn({
+    name: 'surveygroupid',
+    referencedColumnName: 'surveygroupid',
+  })
+  surveygroup: SurveyGroup;
 
   @Column({ type: 'datetime', name: 'startsurvey' })
   startsurvey: Date;

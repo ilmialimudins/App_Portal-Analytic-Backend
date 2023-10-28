@@ -11,6 +11,10 @@ export class PostInvitedRespondentsBodyDTO {
   readonly surveyid: number;
 
   @ApiProperty()
+  @IsNumber()
+  readonly surveygroupid: number;
+
+  @ApiProperty()
   @IsString()
   readonly valuedemography: string;
 

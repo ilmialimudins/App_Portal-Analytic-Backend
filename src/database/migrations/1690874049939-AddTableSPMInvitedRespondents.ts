@@ -32,6 +32,11 @@ export class AddTableSPMInvitedRespondents1690874049939
             isNullable: false,
           },
           {
+            name: 'surveygroupid',
+            type: 'bigint',
+            isNullable: false,
+          },
+          {
             name: 'startsurvey',
             type: 'datetime',
             isNullable: true,
@@ -124,6 +129,13 @@ export class AddTableSPMInvitedRespondents1690874049939
         referencedColumnNames: ['companyid'],
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+      }),
+      new TableForeignKey({
+        columnNames: ['surveygroupid'],
+        referencedTableName: 'ms_surveygroup',
+        referencedColumnNames: ['surveygroupid'],
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
       }),
     ]);
   }

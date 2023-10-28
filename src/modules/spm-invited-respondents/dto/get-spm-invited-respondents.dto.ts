@@ -14,6 +14,11 @@ export class GetOneInvitedRespondentsQueryDTO {
   surveyid: number;
 
   @ApiProperty()
+  @IsInt()
+  @Type(() => Number)
+  surveygroupid: number;
+
+  @ApiProperty()
   @IsString()
   valuedemography: string;
 
@@ -36,6 +41,9 @@ export class GetInvitedRespondentsResultDTO {
   @IsInt()
   @Type(() => Number)
   companyid: number;
+
+  @ApiProperty()
+  surveygroupid: number;
 
   @ApiProperty()
   startsurvey: Date;
@@ -85,6 +93,11 @@ export class GetSurveyInvitedRespondentsQueryDTO {
   @IsInt()
   @Type(() => Number)
   companyid: number;
+
+  @ApiProperty()
+  @IsInt()
+  @Type(() => Number)
+  surveygroupid: number;
 }
 
 export class GetSurveyInvitedRespondentsResultsDTO {
@@ -109,6 +122,11 @@ export class GetInvitedRespondentsQueryDTO {
   @IsInt()
   @Type(() => Number)
   companyid: number;
+
+  @ApiProperty()
+  @IsInt()
+  @Type(() => Number)
+  surveygroupid: number;
 }
 
 export class GetManyInvitedRespondentsQueryDTO extends GetInvitedRespondentsQueryDTO {
