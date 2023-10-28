@@ -93,6 +93,19 @@ export class StopwordsController {
     return this.stopwordsService.getStopwordsId(uuid);
   }
 
+  @Post('/validatestopwords')
+  @ApiOkResponse({ type: StopwordsDto })
+  async validateStopwords(@Body() stopwords: AddStopwordsDto) {
+    const checkOne = await this.stopwordsService.checkOneStopwords(stopwords);
+
+    let isExist = false;
+    if (checkOne) {
+      isExist = true;
+    }
+
+    return { isExist };
+  }
+
   @Post('/createStopwords')
   @ApiOkResponse({ type: StopwordsDto })
   async createStopwords(@Body() stopwords: AddStopwordsDto) {
