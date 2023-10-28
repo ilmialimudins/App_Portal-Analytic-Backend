@@ -181,7 +181,9 @@ export class SpmInvitedRespondentsService {
 
       data.map((item) => {
         const sheet: excel.Worksheet = workbook.addWorksheet(
-          item.valuedemography,
+          item.valuedemography.trim() === ''
+            ? 'Empty'
+            : item.valuedemography.replace(/([^\w ]|_)/g, ''),
         );
 
         addTableInvitedTable(
