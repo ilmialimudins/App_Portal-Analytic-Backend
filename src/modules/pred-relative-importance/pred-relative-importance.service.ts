@@ -58,6 +58,7 @@ export class PredRelativeImportanceService {
 
         acc[val.engagement.engagementid].relativesimportance.push({
           factor_shortname: val.factor.factor_shortname,
+          factorname: val.factor.factorname,
           relativeimportance: val.relativeimportance,
         });
 
