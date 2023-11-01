@@ -16,6 +16,7 @@ export class BusinessLineService {
   async getAllBusinessLine(
     page: number,
     take: number,
+    businessline?: string,
   ): Promise<{
     data: BusinessLineDto[];
     page: number;
@@ -28,74 +29,28 @@ export class BusinessLineService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.businessLineRepository
+      let query = this.businessLineRepository
         .createQueryBuilder('businessline')
-        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
-        .where('businessline.isdelete = :isdelete', { isdelete: false })
+        .select(['businesslineid', 'businesslinecode', 'businesslinedesc']);
+
+      if (businessline) {
+        query = query.where(
+          'LOWER(businessline.businesslinedesc) LIKE :businessline',
+          {
+            businessline: `%${businessline.toLowerCase()}%`,
+          },
+        );
+      }
+
+      const data = await query
+        .andWhere('businessline.isdelete = :isdelete', { isdelete: false })
         .orderBy('businesslinecode')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.businessLineRepository
-        .createQueryBuilder('businessline')
-        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
-        .where('businessline.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getBusinessLineName(
-    page: number,
-    take: number,
-    businessline: string,
-  ): Promise<{
-    data: BusinessLineDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.businessLineRepository
-        .createQueryBuilder('businessline')
-        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
-        .where('businessline.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(businessline.businesslinedesc) LIKE :businessline', {
-          businessline: `%${businessline.toLowerCase()}%`,
-        })
-        .orderBy('businesslinecode')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.businessLineRepository
-        .createQueryBuilder('businessline')
-        .select(['businesslineid', 'businesslinecode', 'businesslinedesc'])
-        .where('businessline.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(businessline.businesslinedesc) LIKE :businessline', {
-          businessline: `%${businessline.toLowerCase()}%`,
-        })
+      const itemCount = await query
+        .andWhere('businessline.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

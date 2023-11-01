@@ -24,19 +24,8 @@ export class MasterWorkSpaceController {
 
   @Get('/')
   @ApiCreatedResponse({ type: MasterWorkSpaceDto })
-  async getMasterWorkSpace(
-    @Query('page') page: number,
-    @Query('take') take: number,
-  ): Promise<{
-    data: MasterWorkSpaceDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.masterWorkSpaceService.getAllMasterWorkSpace(page, take);
+  async getMasterWorkSpace() {
+    return this.masterWorkSpaceService.getAllMasterWorkSpace();
   }
 
   @Get('/getMasterWorkSpaceId')

@@ -27,23 +27,6 @@ export class LocationController {
   async getLocation(
     @Query('page') page: number,
     @Query('take') take: number,
-  ): Promise<{
-    data: LocationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.locationService.getAllLocation(page, take);
-  }
-
-  @Get('/getLocationName')
-  @ApiCreatedResponse({ type: LocationDto })
-  async getLocationName(
-    @Query('page') page: number,
-    @Query('take') take: number,
     @Query('location') location: string,
   ): Promise<{
     data: LocationDto[];
@@ -54,7 +37,7 @@ export class LocationController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.locationService.getLocationName(page, take, location);
+    return this.locationService.getAllLocation(page, take, location);
   }
 
   @Get('/getLocationId')

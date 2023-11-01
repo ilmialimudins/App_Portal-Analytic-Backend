@@ -13,21 +13,8 @@ export class MasterSectionService {
     private masterSectionRepository: Repository<MasterSection>,
   ) {}
 
-  async getAllMasterSection(
-    page: number,
-    take: number,
-  ): Promise<{
-    data: MasterSectionDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
+  async getAllMasterSection() {
     try {
-      const offset = (page - 1) * take;
-
       const data = await this.masterSectionRepository
         .createQueryBuilder('mastersection')
         .leftJoin('mastersection.masterreport', 'masterreport')
@@ -42,38 +29,9 @@ export class MasterSectionService {
         ])
         .where('mastersection.isdelete = :isdelete', { isdelete: false })
         .orderBy('masterreport.reportname')
-        .offset(offset)
-        .limit(take)
         .getRawMany();
 
-      const itemCount = await this.masterSectionRepository
-        .createQueryBuilder('mastersection')
-        .leftJoin('mastersection.masterreport', 'masterreport')
-        .select([
-          'mastersection.sectionid',
-          'mastersection.sectionname',
-          'mastersection.sectiondesc',
-          'mastersection.sectioncodepowerbiid',
-          'masterreport.reportname',
-          'masterreport.reportpowerbiid',
-          'masterreport.datasetpowerbiid',
-        ])
-        .where('mastersection.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
+      return data;
     } catch (error) {
       throw error;
     }

@@ -24,19 +24,14 @@ export class MasterMenuController {
 
   @Get('/')
   @ApiCreatedResponse({ type: MasterMenuDto })
-  async getMasterMenu(
-    @Query('page') page: number,
-    @Query('take') take: number,
-  ): Promise<{
-    data: MasterMenuDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.masterMenuService.getAllMasterMenu(page, take);
+  async getMasterMenu() {
+    return this.masterMenuService.getAllMasterMenu();
+  }
+
+  @Get('/getMasterMenuParent')
+  @ApiCreatedResponse({ type: MasterMenuDto })
+  async getMasterMenuParent() {
+    return this.masterMenuService.getAllMasterMenuParent();
   }
 
   @Get('getLastMasterMenuCode')

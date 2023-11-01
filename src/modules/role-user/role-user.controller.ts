@@ -26,29 +26,19 @@ export class RoleUserController {
   @ApiCreatedResponse({ type: RoleUserDto })
   async getRoleUser(
     @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: RoleUserDto[]; total: number }> {
-    return this.roleUserService.getAllRoleUser(page, pageSize);
-  }
-
-  @Get('/getRoleUserRolename')
-  @ApiCreatedResponse({ type: RoleUserDto })
-  async getRoleUserRole(
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query('take') take: number,
     @Query('rolename') rolename: string,
-  ): Promise<{ data: RoleUserDto[]; total: number }> {
-    return this.roleUserService.getRoleUserRolename(page, pageSize, rolename);
-  }
-
-  @Get('/getRoleUserEmail')
-  @ApiCreatedResponse({ type: RoleUserDto })
-  async getRoleUserEmail(
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
     @Query('email') email: string,
-  ): Promise<{ data: RoleUserDto[]; total: number }> {
-    return this.roleUserService.getRoleUserEmail(page, pageSize, email);
+  ): Promise<{
+    data: RoleUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.roleUserService.getAllRoleUser(page, take, rolename, email);
   }
 
   @Get('/getRoleUserId')

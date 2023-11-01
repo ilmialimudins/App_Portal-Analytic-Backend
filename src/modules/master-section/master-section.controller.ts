@@ -24,19 +24,8 @@ export class MasterSectionController {
 
   @Get('/')
   @ApiCreatedResponse({ type: MasterSectionDto })
-  async getMasterSection(
-    @Query('page') page: number,
-    @Query('take') take: number,
-  ): Promise<{
-    data: MasterSectionDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.masterSectionService.getAllMasterSection(page, take);
+  async getMasterSection() {
+    return this.masterSectionService.getAllMasterSection();
   }
 
   @Get('/getMasterSectionId')

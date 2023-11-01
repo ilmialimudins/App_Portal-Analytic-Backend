@@ -16,6 +16,7 @@ export class SurveyGroupService {
   async getAllSurveyGroup(
     page: number,
     take: number,
+    surveygroup?: string,
   ): Promise<{
     data: SurveyGroupDto[];
     page: number;
@@ -28,74 +29,28 @@ export class SurveyGroupService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.surveyGroupRepository
+      let query = this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
-        .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
+        .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc']);
+
+      if (surveygroup) {
+        query = query.where(
+          'LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup',
+          {
+            surveygroup: `%${surveygroup.toLowerCase()}%`,
+          },
+        );
+      }
+
+      const data = await query
+        .andWhere('surveygroup.isdelete = :isdelete', { isdelete: false })
         .orderBy('surveygroupcode')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.surveyGroupRepository
-        .createQueryBuilder('surveygroup')
-        .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyGroupName(
-    page: number,
-    take: number,
-    surveygroup: string,
-  ): Promise<{
-    data: SurveyGroupDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyGroupRepository
-        .createQueryBuilder('surveygroup')
-        .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
-          surveygroup: `%${surveygroup.toLowerCase()}%`,
-        })
-        .orderBy('surveygroupcode')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyGroupRepository
-        .createQueryBuilder('surveygroup')
-        .select(['surveygroupid', 'surveygroupcode', 'surveygroupdesc'])
-        .where('surveygroup.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(surveygroup.surveygroupdesc) LIKE :surveygroup', {
-          surveygroup: `%${surveygroup.toLowerCase()}%`,
-        })
+      const itemCount = await query
+        .andWhere('surveygroup.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

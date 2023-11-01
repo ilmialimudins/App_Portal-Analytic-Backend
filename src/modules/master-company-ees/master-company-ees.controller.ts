@@ -32,23 +32,6 @@ export class CompanyController {
   async getAllCompany(
     @Query('page') page: number,
     @Query('take') take: number,
-  ): Promise<{
-    data: CompanyDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.companyService.getAllCompany(page, take);
-  }
-
-  @Get('/getCompanyName')
-  @ApiOkResponse({ type: CompanyDto })
-  async getCompanyName(
-    @Query('page') page: number,
-    @Query('take') take: number,
     @Query('Companyname') companyname: string,
   ): Promise<{
     data: CompanyDto[];
@@ -59,7 +42,7 @@ export class CompanyController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.companyService.getCompanyName(page, take, companyname);
+    return this.companyService.getAllCompany(page, take, companyname);
   }
 
   @Get('/getCompanyId')

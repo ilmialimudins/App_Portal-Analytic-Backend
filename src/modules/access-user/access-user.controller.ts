@@ -27,23 +27,6 @@ export class AccessUserController {
   async getAccessUser(
     @Query('page') page: number,
     @Query('take') take: number,
-  ): Promise<{
-    data: AccessUserDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.accessUserService.getAllAccessUser(page, take);
-  }
-
-  @Get('/getAccessUserEmail')
-  @ApiCreatedResponse({ type: AccessUserDto })
-  async getAccessUserEmail(
-    @Query('page') page: number,
-    @Query('take') take: number,
     @Query('email') email: string,
   ): Promise<{
     data: AccessUserDto[];
@@ -54,7 +37,7 @@ export class AccessUserController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.accessUserService.getAccessUserEmail(page, take, email);
+    return this.accessUserService.getAllAccessUser(page, take, email);
   }
 
   @Get('/getAccessUserId')

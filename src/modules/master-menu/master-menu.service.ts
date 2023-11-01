@@ -13,21 +13,8 @@ export class MasterMenuService {
     private masterMenuRepository: Repository<MasterMenu>,
   ) {}
 
-  async getAllMasterMenu(
-    page: number,
-    take: number,
-  ): Promise<{
-    data: MasterMenuDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
+  async getAllMasterMenu() {
     try {
-      const offset = (page - 1) * take;
-
       const data = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
         .select([
@@ -40,29 +27,25 @@ export class MasterMenuService {
         ])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .orderBy('parentid')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
+        .getMany();
 
-      const itemCount = await this.masterMenuRepository
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllMasterMenuParent() {
+    try {
+      const data = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
-        .select(['menuname', 'parentid', 'sequence', 'url', 'issection'])
+        .select(['menuid', 'menuname', 'parentid'])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
-        .getCount();
+        .andWhere('mastermenu.parentid = :parentid', { parentid: 0 })
+        .orderBy('parentid')
+        .getMany();
 
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
+      return data;
     } catch (error) {
       throw error;
     }
@@ -126,10 +109,7 @@ export class MasterMenuService {
         .update(MasterMenu)
         .set({
           menuname: mastermenu.menuname,
-          parentid: mastermenu.parentid,
-          sequence: mastermenu.sequence,
           url: mastermenu.url,
-          issection: mastermenu.issection,
         })
         .where('menuid = :menuid', { menuid })
         .execute();

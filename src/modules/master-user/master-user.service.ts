@@ -16,6 +16,7 @@ export class MasterUserService {
   async getAllMasterUser(
     page: number,
     take: number,
+    username?: string,
   ): Promise<{
     data: MasterUserDto[];
     page: number;
@@ -28,7 +29,7 @@ export class MasterUserService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.masterUserRepository
+      let query = this.masterUserRepository
         .createQueryBuilder('masteruser')
         .select([
           'userid',
@@ -38,96 +39,23 @@ export class MasterUserService {
           'npk',
           'phonenumber',
           'companyname',
-        ])
-        .where('masteruser.isdelete = :isdelete', { isdelete: false })
+        ]);
+
+      if (username) {
+        query = query.where('LOWER(masteruser.username) LIKE :username', {
+          username: `%${username.toLowerCase()}%`,
+        });
+      }
+
+      const data = await query
+        .andWhere('masteruser.isdelete = :isdelete', { isdelete: false })
         .orderBy('username')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.masterUserRepository
-        .createQueryBuilder('masteruser')
-        .select([
-          'userid',
-          'companycode',
-          'username',
-          'email',
-          'npk',
-          'phonenumber',
-          'companyname',
-        ])
-        .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getMasterUserUsername(
-    page: number,
-    take: number,
-    username: string,
-  ): Promise<{
-    data: MasterUserDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.masterUserRepository
-        .createQueryBuilder('masteruser')
-        .select([
-          'userid',
-          'companycode',
-          'username',
-          'email',
-          'npk',
-          'phonenumber',
-          'companyname',
-        ])
-        .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(masteruser.username) LIKE :username', {
-          username: `%${username.toLowerCase()}%`,
-        })
-        .orderBy('username')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.masterUserRepository
-        .createQueryBuilder('masteruser')
-        .select([
-          'userid',
-          'companycode',
-          'username',
-          'email',
-          'npk',
-          'phonenumber',
-          'companyname',
-        ])
-        .where('masteruser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(masteruser.username) LIKE :username', {
-          username: `%${username.toLowerCase()}%`,
-        })
+      const itemCount = await query
+        .andWhere('masteruser.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

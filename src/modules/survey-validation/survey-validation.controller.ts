@@ -16,6 +16,9 @@ export class SurveyValidationController {
   async getSurveyValidationNeedValidate(
     @Query('page') page: number,
     @Query('take') take: number,
+    @Query('company') company: string,
+    @Query('date') date: string,
+    @Query('username') username: string,
   ): Promise<{
     data: SurveyValidationDto[];
     page: number;
@@ -28,71 +31,8 @@ export class SurveyValidationController {
     return this.surveyValidationService.getAllSurveyValidationNeedValidate(
       page,
       take,
-    );
-  }
-
-  @Get('/getSurveyValidationCompanyNeedValidate')
-  @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getSurveyValidationCompanyNeedValidate(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('company') company: string,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyValidationService.getSurveyValidationCompanyNeedValidate(
-      page,
-      take,
       company,
-    );
-  }
-
-  @Get('/getSurveyValidationValidationNeedValidate')
-  @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getSurveyValidationValidationNeedValidate(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('date') date: Date,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyValidationService.getSurveyValidationValidationNeedValidate(
-      page,
-      take,
       date,
-    );
-  }
-
-  @Get('/getSurveyValidationUsernameNeedValidate')
-  @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getSurveyValidationUsernameNeedValidate(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('username') username: string,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyValidationService.getSurveyValidationUsernameNeedValidate(
-      page,
-      take,
       username,
     );
   }
@@ -102,6 +42,9 @@ export class SurveyValidationController {
   async getSurveyValidationValidate(
     @Query('page') page: number,
     @Query('take') take: number,
+    @Query('company') company: string,
+    @Query('date') date: string,
+    @Query('username') username: string,
   ): Promise<{
     data: SurveyValidationDto[];
     page: number;
@@ -114,71 +57,8 @@ export class SurveyValidationController {
     return this.surveyValidationService.getAllSurveyValidationValidate(
       page,
       take,
-    );
-  }
-
-  @Get('/getSurveyValidationCompanyValidate')
-  @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getSurveyValidationCompanyValidate(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('company') company: string,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyValidationService.getSurveyValidationCompanyValidate(
-      page,
-      take,
       company,
-    );
-  }
-
-  @Get('/getSurveyValidationValidationValidate')
-  @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getSurveyValidationValidationValidate(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('date') date: Date,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyValidationService.getSurveyValidationValidationValidate(
-      page,
-      take,
       date,
-    );
-  }
-
-  @Get('/getSurveyValidationUsernameValidate')
-  @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getSurveyValidationUsernameValidate(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('username') username: string,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyValidationService.getSurveyValidationUsernameValidate(
-      page,
-      take,
       username,
     );
   }
