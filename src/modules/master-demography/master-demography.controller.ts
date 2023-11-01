@@ -27,6 +27,7 @@ export class DemographyController {
   async getDemography(
     @Query('page') page: number,
     @Query('take') take: number,
+    @Query('demography') demography: string,
   ): Promise<{
     data: DemographyDto[];
     page: number;
@@ -36,25 +37,7 @@ export class DemographyController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.demographyService.getAllDemography(page, take);
-  }
-
-  @Get('/getDemographyName')
-  @ApiCreatedResponse({ type: DemographyDto })
-  async getDemographyName(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('Demography') demography: string,
-  ): Promise<{
-    data: DemographyDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.demographyService.getDemographyName(page, take, demography);
+    return this.demographyService.getAllDemography(page, take, demography);
   }
 
   @Get('/getDemographyId')

@@ -24,19 +24,8 @@ export class MappingMenuReportController {
 
   @Get('/')
   @ApiCreatedResponse({ type: MappingMenuReportDto })
-  async getMappingMenuReport(
-    @Query('page') page: number,
-    @Query('take') take: number,
-  ): Promise<{
-    data: MappingMenuReportDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.mappingMenuReportService.getAllMappingMenuReport(page, take);
+  async getMappingMenuReport() {
+    return this.mappingMenuReportService.getAllMappingMenuReport();
   }
 
   @Get('/getMappingMenuReportId')

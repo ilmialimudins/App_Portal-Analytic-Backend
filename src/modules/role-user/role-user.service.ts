@@ -15,12 +15,22 @@ export class RoleUserService {
 
   async getAllRoleUser(
     page: number,
-    pageSize: number,
-  ): Promise<{ data: RoleUserDto[]; total: number }> {
+    take: number,
+    rolename?: string,
+    email?: string,
+  ): Promise<{
+    data: RoleUserDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
     try {
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * take;
 
-      const data = await this.roleUserRepository
+      let query = this.roleUserRepository
         .createQueryBuilder('roleuser')
         .leftJoin('roleuser.masteruser', 'masteruser')
         .leftJoin('roleuser.masterrole', 'masterrole')
@@ -28,120 +38,50 @@ export class RoleUserService {
           'roleuser.roleuserid',
           'masteruser.email',
           'masterrole.rolename',
-        ])
-        .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .orderBy('masteruser.email')
-        .offset(offset)
-        .limit(pageSize)
-        .getRawMany();
+        ]);
 
-      const total = await this.roleUserRepository
-        .createQueryBuilder('roleuser')
-        .leftJoin('roleuser.masteruser', 'masteruser')
-        .leftJoin('roleuser.masterrole', 'masterrole')
-        .select([
-          'roleuser.roleuserid',
-          'masteruser.email',
-          'masterrole.rolename',
-        ])
-        .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      return { data, total };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getRoleUserRolename(
-    page: number,
-    pageSize: number,
-    rolename: string,
-  ): Promise<{ data: RoleUserDto[]; total: number }> {
-    try {
-      const offset = (page - 1) * pageSize;
-
-      const data = await this.roleUserRepository
-        .createQueryBuilder('roleuser')
-        .leftJoin('roleuser.masteruser', 'masteruser')
-        .leftJoin('roleuser.masterrole', 'masterrole')
-        .select([
-          'roleuser.roleuserid',
-          'masteruser.email',
-          'masterrole.rolename',
-        ])
-        .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
+      if (rolename && email) {
+        query = query
+          .where('LOWER(masterrole.rolename) LIKE :rolename', {
+            rolename: `%${rolename.toLowerCase()}%`,
+          })
+          .andWhere('LOWER(masteruser.email) LIKE :email', {
+            email: `%${email.toLowerCase()}%`,
+          });
+      } else if (rolename) {
+        query = query.where('LOWER(masterrole.rolename) LIKE :rolename', {
           rolename: `%${rolename.toLowerCase()}%`,
-        })
+        });
+      } else if (email) {
+        query = query.where('LOWER(masteruser.email) LIKE :email', {
+          email: `%${email.toLowerCase()}%`,
+        });
+      }
+
+      const data = await query
+        .andWhere('roleuser.isdelete = :isdelete', { isdelete: false })
         .orderBy('masteruser.email')
         .offset(offset)
-        .limit(pageSize)
+        .limit(take)
         .getRawMany();
 
-      const total = await this.roleUserRepository
-        .createQueryBuilder('roleuser')
-        .leftJoin('roleuser.masteruser', 'masteruser')
-        .leftJoin('roleuser.masterrole', 'masterrole')
-        .select([
-          'roleuser.roleuserid',
-          'masteruser.email',
-          'masterrole.rolename',
-        ])
-        .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(masterrole.rolename) LIKE :rolename', {
-          rolename: `%${rolename.toLowerCase()}%`,
-        })
+      const itemCount = await query
+        .andWhere('roleuser.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
-      return { data, total };
-    } catch (error) {
-      throw error;
-    }
-  }
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
 
-  async getRoleUserEmail(
-    page: number,
-    pageSize: number,
-    email: string,
-  ): Promise<{ data: RoleUserDto[]; total: number }> {
-    try {
-      const offset = (page - 1) * pageSize;
-
-      const data = await this.roleUserRepository
-        .createQueryBuilder('roleuser')
-        .leftJoin('roleuser.masteruser', 'masteruser')
-        .leftJoin('roleuser.masterrole', 'masterrole')
-        .select([
-          'roleuser.roleuserid',
-          'masteruser.email',
-          'masterrole.rolename',
-        ])
-        .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(masteruser.email) LIKE :email', {
-          email: `%${email.toLowerCase()}%`,
-        })
-        .orderBy('masteruser.email')
-        .offset(offset)
-        .limit(pageSize)
-        .getRawMany();
-
-      const total = await this.roleUserRepository
-        .createQueryBuilder('roleuser')
-        .leftJoin('roleuser.masteruser', 'masteruser')
-        .leftJoin('roleuser.masterrole', 'masterrole')
-        .select([
-          'roleuser.roleuserid',
-          'masteruser.email',
-          'masterrole.rolename',
-        ])
-        .where('roleuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(masteruser.email) LIKE :email', {
-          email: `%${email.toLowerCase()}%`,
-        })
-        .getCount();
-
-      return { data, total };
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
     } catch (error) {
       throw error;
     }

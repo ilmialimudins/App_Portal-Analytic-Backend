@@ -13,21 +13,8 @@ export class MasterWorkSpaceService {
     private masterWorkSpaceRepository: Repository<MasterWorkSpace>,
   ) {}
 
-  async getAllMasterWorkSpace(
-    page: number,
-    take: number,
-  ): Promise<{
-    data: MasterWorkSpaceDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
+  async getAllMasterWorkSpace() {
     try {
-      const offset = (page - 1) * take;
-
       const data = await this.masterWorkSpaceRepository
         .createQueryBuilder('masterworkspace')
         .select([
@@ -38,29 +25,9 @@ export class MasterWorkSpaceService {
         ])
         .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
         .orderBy('workspacename')
-        .offset(offset)
-        .limit(take)
         .getRawMany();
 
-      const itemCount = await this.masterWorkSpaceRepository
-        .createQueryBuilder('masterworkspace')
-        .select(['workspacename', 'workspacedesc', 'workspacepowerbiid'])
-        .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
+      return data;
     } catch (error) {
       throw error;
     }

@@ -27,23 +27,6 @@ export class MasterUserController {
   async getMasterUser(
     @Query('page') page: number,
     @Query('take') take: number,
-  ): Promise<{
-    data: MasterUserDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.masteruserService.getAllMasterUser(page, take);
-  }
-
-  @Get('/getMasterUserUsername')
-  @ApiCreatedResponse({ type: MasterUserDto })
-  async getMasterUserUsername(
-    @Query('page') page: number,
-    @Query('take') take: number,
     @Query('username') username: string,
   ): Promise<{
     data: MasterUserDto[];
@@ -54,7 +37,7 @@ export class MasterUserController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.masteruserService.getMasterUserUsername(page, take, username);
+    return this.masteruserService.getAllMasterUser(page, take, username);
   }
 
   @Get('/getMasterUserId')

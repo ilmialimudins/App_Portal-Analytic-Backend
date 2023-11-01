@@ -16,6 +16,7 @@ export class LocationService {
   async getAllLocation(
     page: number,
     take: number,
+    location?: string,
   ): Promise<{
     data: LocationDto[];
     page: number;
@@ -28,74 +29,25 @@ export class LocationService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.locationRepository
+      let query = this.locationRepository
         .createQueryBuilder('location')
-        .select(['locationid', 'locationcode', 'locationdesc'])
-        .where('location.isdelete = :isdelete', { isdelete: false })
+        .select(['locationid', 'locationcode', 'locationdesc']);
+
+      if (location) {
+        query = query.where('LOWER(location.locationdesc) LIKE :location', {
+          location: `%${location.toLowerCase()}%`,
+        });
+      }
+
+      const data = await query
+        .andWhere('location.isdelete = :isdelete', { isdelete: false })
         .orderBy('locationcode')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.locationRepository
-        .createQueryBuilder('location')
-        .select(['locationid', 'locationcode', 'locationdesc'])
-        .where('location.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getLocationName(
-    page: number,
-    take: number,
-    location: string,
-  ): Promise<{
-    data: LocationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.locationRepository
-        .createQueryBuilder('location')
-        .select(['locationid', 'locationcode', 'locationdesc'])
-        .where('location.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(location.locationdesc) LIKE :location', {
-          location: `%${location.toLowerCase()}%`,
-        })
-        .orderBy('locationcode')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.locationRepository
-        .createQueryBuilder('location')
-        .select(['locationid', 'locationcode', 'locationdesc'])
-        .where('location.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(location.locationdesc) LIKE :location', {
-          location: `%${location.toLowerCase()}%`,
-        })
+      const itemCount = await query
+        .andWhere('location.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);

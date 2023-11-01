@@ -16,6 +16,7 @@ export class CompanyService {
   async getAllCompany(
     page: number,
     take: number,
+    companyname?: string,
   ): Promise<{
     data: CompanyDto[];
     page: number;
@@ -28,7 +29,7 @@ export class CompanyService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.companyRepository
+      let query = this.companyRepository
         .createQueryBuilder('company')
         .select([
           'company.companyid',
@@ -55,146 +56,22 @@ export class CompanyService {
         .leftJoin('company.ownershipstatus', 'ownershipstatus')
         .leftJoin('company.location', 'location')
         .leftJoin('company.cla', 'cla')
-        .leftJoin('company.directreview', 'directreview')
-        .orderBy({ 'company.isdelete': 'ASC', 'company.companyeesname': 'ASC' })
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
+        .leftJoin('company.directreview', 'directreview');
 
-      const itemCount = await this.companyRepository
-        .createQueryBuilder('company')
-        .select([
-          'company.companyid',
-          'company.companycode',
-          'company.companyeesname',
-          'company.companympsname',
-          'businessline.businesslinedesc',
-          'company.aliascompany1',
-          'company.aliascompany2',
-          'company.aliascompany3',
-          'surveygroup.surveygroupdesc',
-          'modellingtype.modellingtypedesc',
-          'businessgroup.businessgroupdesc',
-          'ownershipstatus.ownershipstatusdesc',
-          'location.locationdesc',
-          'cla.cladesc',
-          'directreview.directreviewdesc',
-          'company.isdelete',
-        ])
-        .leftJoin('company.businessline', 'businessline')
-        .leftJoin('company.surveygroup', 'surveygroup')
-        .leftJoin('company.modellingtype', 'modellingtype')
-        .leftJoin('company.businessgroup', 'businessgroup')
-        .leftJoin('company.ownershipstatus', 'ownershipstatus')
-        .leftJoin('company.location', 'location')
-        .leftJoin('company.cla', 'cla')
-        .leftJoin('company.directreview', 'directreview')
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getCompanyName(
-    page: number,
-    take: number,
-    companyname: string,
-  ): Promise<{
-    data: CompanyDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.companyRepository
-        .createQueryBuilder('company')
-        .select([
-          'company.companyid',
-          'company.companycode',
-          'company.companyeesname',
-          'company.companympsname',
-          'businessline.businesslinedesc',
-          'company.aliascompany1',
-          'company.aliascompany2',
-          'company.aliascompany3',
-          'surveygroup.surveygroupdesc',
-          'modellingtype.modellingtypedesc',
-          'businessgroup.businessgroupdesc',
-          'ownershipstatus.ownershipstatusdesc',
-          'location.locationdesc',
-          'cla.cladesc',
-          'directreview.directreviewdesc',
-          'company.isdelete',
-        ])
-        .leftJoin('company.businessline', 'businessline')
-        .leftJoin('company.surveygroup', 'surveygroup')
-        .leftJoin('company.modellingtype', 'modellingtype')
-        .leftJoin('company.businessgroup', 'businessgroup')
-        .leftJoin('company.ownershipstatus', 'ownershipstatus')
-        .leftJoin('company.location', 'location')
-        .leftJoin('company.cla', 'cla')
-        .leftJoin('company.directreview', 'directreview')
-        .andWhere(
+      if (companyname) {
+        query = query.where(
           'company.companyeesname LIKE :companyname OR LOWER(company.companympsname) LIKE :companyname',
           { companyname: `%${companyname}%` },
-        )
+        );
+      }
+
+      const data = await query
         .orderBy({ 'company.isdelete': 'ASC', 'company.companyeesname': 'ASC' })
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.companyRepository
-        .createQueryBuilder('company')
-        .select([
-          'company.companyid',
-          'company.companycode',
-          'company.companyeesname',
-          'company.companympsname',
-          'businessline.businesslinedesc',
-          'company.aliascompany1',
-          'company.aliascompany2',
-          'company.aliascompany3',
-          'surveygroup.surveygroupdesc',
-          'modellingtype.modellingtypedesc',
-          'businessgroup.businessgroupdesc',
-          'ownershipstatus.ownershipstatusdesc',
-          'location.locationdesc',
-          'cla.cladesc',
-          'directreview.directreviewdesc',
-          'company.isdelete',
-        ])
-        .leftJoin('company.businessline', 'businessline')
-        .leftJoin('company.surveygroup', 'surveygroup')
-        .leftJoin('company.modellingtype', 'modellingtype')
-        .leftJoin('company.businessgroup', 'businessgroup')
-        .leftJoin('company.ownershipstatus', 'ownershipstatus')
-        .leftJoin('company.location', 'location')
-        .leftJoin('company.cla', 'cla')
-        .leftJoin('company.directreview', 'directreview')
-        .andWhere(
-          'LOWER(company.companyeesname) OR LOWER(company.companympsname) LIKE :companyname',
-          { companyname: `%${companyname.toLowerCase()}%` },
-        )
-        .getCount();
+      const itemCount = await query.getCount();
 
       const pageCount = Math.ceil(itemCount / take);
       const hasPreviousPage = page > 1;
@@ -262,7 +139,7 @@ export class CompanyService {
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
           remark: company.remark,
-          isdelete: 'active',
+          isdelete: 'Active',
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),
         })
@@ -310,7 +187,7 @@ export class CompanyService {
       await this.companyRepository
         .createQueryBuilder()
         .update(Company)
-        .set({ isdelete: 'deactive' })
+        .set({ isdelete: 'Deactive' })
         .where('companyid = :companyid', { companyid })
         .execute();
 

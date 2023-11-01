@@ -14,210 +14,8 @@ export class MonitoringValidationService {
   async getAllMonitoringValidation(
     page: number,
     take: number,
-  ): Promise<{
-    data: MonitoringValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .orderBy('uploadtime')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getMonitoringValidationCompany(
-    page: number,
-    take: number,
     company: string,
-  ): Promise<{
-    data: MonitoringValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .where('monitoringvalidation.company = :company', { company })
-        .orderBy('uploadtime')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .where('monitoringvalidation.company = :company', { company })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getMonitoringValidationYear(
-    page: number,
-    take: number,
     year: number,
-  ): Promise<{
-    data: MonitoringValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .where('monitoringvalidation.year = :year', { year })
-        .orderBy('uploadtime')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .where('monitoringvalidation.year = :year', { year })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getMonitoringValidationUploadBy(
-    page: number,
-    take: number,
     uploadby: string,
   ): Promise<{
     data: MonitoringValidationDto[];
@@ -231,7 +29,7 @@ export class MonitoringValidationService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.monitoringValidationRepository
+      let query = this.monitoringValidationRepository
         .createQueryBuilder('monitoringvalidation')
         .select([
           'id',
@@ -243,32 +41,53 @@ export class MonitoringValidationService {
           'createdtime',
           'exceltitle',
           'statusprogress',
-        ])
-        .where('LOWER(monitoringvalidation.uploadby) LIKE :uploadby', {
-          uploadby: `%${uploadby.toLowerCase()}%`,
-        })
-        .orderBy('uploadtime')
+        ]);
+
+      if (company && year && uploadby) {
+        query = query
+          .where('monitoringvalidation.company = :company', { company })
+          .andWhere('monitoringvalidation.year = :year', { year })
+          .andWhere('LOWER(monitoringvalidation.uploadby) LIKE :uploadby', {
+            uploadby: `%${uploadby.toLowerCase()}%`,
+          });
+      } else if (company && year) {
+        query = query
+          .where('monitoringvalidation.company = :company', { company })
+          .andWhere('monitoringvalidation.year = :year', { year });
+      } else if (year && uploadby) {
+        query = query
+          .where('LOWER(monitoringvalidation.uploadby) LIKE :uploadby', {
+            uploadby: `%${uploadby.toLowerCase()}%`,
+          })
+          .andWhere('monitoringvalidation.year = :year', { year });
+      } else if (company && uploadby) {
+        query = query
+          .where('monitoringvalidation.company = :company', { company })
+          .andWhere('LOWER(monitoringvalidation.uploadby) LIKE :uploadby', {
+            uploadby: `%${uploadby.toLowerCase()}%`,
+          });
+      } else if (company) {
+        query = query.where('monitoringvalidation.company = :company', {
+          company,
+        });
+      } else if (year) {
+        query = query.where('monitoringvalidation.year = :year', { year });
+      } else if (uploadby) {
+        query = query.where(
+          'LOWER(monitoringvalidation.uploadby) LIKE :uploadby',
+          {
+            uploadby: `%${uploadby.toLowerCase()}%`,
+          },
+        );
+      }
+
+      const data = await query
+        .orderBy('monitoringvalidation.uploadtime')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.monitoringValidationRepository
-        .createQueryBuilder('monitoringvalidation')
-        .select([
-          'id',
-          'uploadby',
-          'uploadtime',
-          'surveytitle',
-          'company',
-          'year',
-          'createdtime',
-          'exceltitle',
-          'statusprogress',
-        ])
-        .where('LOWER(monitoringvalidation.uploadby) LIKE :uploadby', {
-          uploadby: `%${uploadby.toLowerCase()}%`,
-        })
-        .getCount();
+      const itemCount = await query.getCount();
 
       const pageCount = Math.ceil(itemCount / take);
       const hasPreviousPage = page > 1;

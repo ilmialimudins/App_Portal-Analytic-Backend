@@ -27,23 +27,6 @@ export class BusinessLineController {
   async getBusinessLine(
     @Query('page') page: number,
     @Query('take') take: number,
-  ): Promise<{
-    data: BusinessLineDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.businessLineService.getAllBusinessLine(page, take);
-  }
-
-  @Get('/getBusinessLineName')
-  @ApiCreatedResponse({ type: BusinessLineDto })
-  async getBusinessLineName(
-    @Query('page') page: number,
-    @Query('take') take: number,
     @Query('businessline') businessline: string,
   ): Promise<{
     data: BusinessLineDto[];
@@ -54,7 +37,7 @@ export class BusinessLineController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.businessLineService.getBusinessLineName(
+    return this.businessLineService.getAllBusinessLine(
       page,
       take,
       businessline,

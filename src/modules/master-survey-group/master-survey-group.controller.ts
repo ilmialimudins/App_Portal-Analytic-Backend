@@ -27,23 +27,6 @@ export class SurveyGroupController {
   async getAllSurveyGroup(
     @Query('page') page: number,
     @Query('take') take: number,
-  ): Promise<{
-    data: SurveyGroupDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.surveyGroupService.getAllSurveyGroup(page, take);
-  }
-
-  @Get('/getSurveryGroupName')
-  @ApiCreatedResponse({ type: SurveyGroupDto })
-  async getSurveyGroupName(
-    @Query('page') page: number,
-    @Query('take') take: number,
     @Query('surveygroup') surveygroup: string,
   ): Promise<{
     data: SurveyGroupDto[];
@@ -54,7 +37,7 @@ export class SurveyGroupController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.surveyGroupService.getSurveyGroupName(page, take, surveygroup);
+    return this.surveyGroupService.getAllSurveyGroup(page, take, surveygroup);
   }
 
   @Get('/getSurveyGroupId')

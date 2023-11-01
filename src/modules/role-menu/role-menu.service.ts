@@ -13,13 +13,8 @@ export class RoleMenuService {
     private roleMenuRepository: Repository<RoleMenu>,
   ) {}
 
-  async getAllRoleMenu(
-    page: number,
-    pageSize: number,
-  ): Promise<{ data: RoleMenu[]; total: number }> {
+  async getAllRoleMenu() {
     try {
-      const offset = (page - 1) * pageSize;
-
       const data = await this.roleMenuRepository
         .createQueryBuilder('rolemenu')
         .leftJoin('rolemenu.masterrole', 'masterrole')
@@ -31,19 +26,9 @@ export class RoleMenuService {
         ])
         .where('rolemenu.isdelete = :isdelete', { isdelete: false })
         .orderBy('masterrole.rolemenu')
-        .offset(offset)
-        .limit(pageSize)
         .getRawMany();
 
-      const total = await this.roleMenuRepository
-        .createQueryBuilder('rolemenu')
-        .leftJoin('rolemenu.masterrole', 'masterrole')
-        .leftJoin('rolemenu.mastermenu', 'mastermenu')
-        .select(['masterrole.rolename', 'mastermenu.menuname'])
-        .where('rolemenu.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      return { data, total };
+      return data;
     } catch (error) {
       throw error;
     }

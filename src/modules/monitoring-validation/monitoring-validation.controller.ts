@@ -18,6 +18,9 @@ export class MonitoringValidationController {
   async getMonitoringValidation(
     @Query('page') page: number,
     @Query('take') take: number,
+    @Query('company') company: string,
+    @Query('year') year: number,
+    @Query('uploadby') uploadby: string,
   ): Promise<{
     data: MonitoringValidationDto[];
     page: number;
@@ -30,71 +33,8 @@ export class MonitoringValidationController {
     return this.monitoringValidationService.getAllMonitoringValidation(
       page,
       take,
-    );
-  }
-
-  @Get('/getMonitoringValidationCompany')
-  @ApiCreatedResponse({ type: MonitoringValidationDto })
-  async getMonitoringValidationCompany(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('company') company: string,
-  ): Promise<{
-    data: MonitoringValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.monitoringValidationService.getMonitoringValidationCompany(
-      page,
-      take,
       company,
-    );
-  }
-
-  @Get('/getMonitoringValidationYear')
-  @ApiCreatedResponse({ type: MonitoringValidationDto })
-  async getMonitoringValidationYear(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('year') year: number,
-  ): Promise<{
-    data: MonitoringValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.monitoringValidationService.getMonitoringValidationYear(
-      page,
-      take,
       year,
-    );
-  }
-
-  @Get('/getMonitoringValidationUploadBy')
-  @ApiCreatedResponse({ type: MonitoringValidationDto })
-  async getMonitoringValidationUploadBy(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('uploadby') uploadby: string,
-  ): Promise<{
-    data: MonitoringValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.monitoringValidationService.getMonitoringValidationUploadBy(
-      page,
-      take,
       uploadby,
     );
   }

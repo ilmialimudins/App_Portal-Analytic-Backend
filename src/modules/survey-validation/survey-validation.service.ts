@@ -14,202 +14,8 @@ export class SurveyValidationService {
   async getAllSurveyValidationNeedValidate(
     page: number,
     take: number,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .orderBy('dateversion')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyValidationCompanyNeedValidate(
-    page: number,
-    take: number,
     company: string,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .andWhere('surveyvalidation.company = :company', { company })
-        .orderBy('dateversion')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .andWhere('surveyvalidation.company = :company', { company })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyValidationValidationNeedValidate(
-    page: number,
-    take: number,
-    validateddate: Date,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .andWhere('surveyvalidation.validateddate = :validateddate', {
-          validateddate,
-        })
-        .orderBy('dateversion')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .andWhere('surveyvalidation.validateddate = :validateddate', {
-          validateddate,
-        })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyValidationUsernameNeedValidate(
-    page: number,
-    take: number,
+    dateversion: string,
     username: string,
   ): Promise<{
     data: SurveyValidationDto[];
@@ -223,7 +29,7 @@ export class SurveyValidationService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.surveyValidationRepository
+      let query = this.surveyValidationRepository
         .createQueryBuilder('surveyvalidation')
         .select([
           'id',
@@ -232,29 +38,61 @@ export class SurveyValidationService {
           'titlesurvey',
           'dateversion',
           'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .where('LOWER(surveyvalidation.username) LIKE :username', {
+        ]);
+
+      if (company && dateversion && username) {
+        query = query
+          .where('surveyvalidation.company = :company', { company })
+          .andWhere('surveyvalidation.dateversion = :dateversion', {
+            dateversion,
+          })
+          .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
+            username: `%${username.toLowerCase()}%`,
+          });
+      } else if (company && dateversion) {
+        query = query
+          .where('surveyvalidation.company = :company', { company })
+          .andWhere('surveyvalidation.dateversion = :dateversion', {
+            dateversion,
+          });
+      } else if (username && dateversion) {
+        query = query
+          .where('surveyvalidation.dateversion = :dateversion', {
+            dateversion,
+          })
+          .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
+            username: `%${username.toLowerCase()}%`,
+          });
+      } else if (company && username) {
+        query = query
+          .where('surveyvalidation.company = :company', { company })
+          .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
+            username: `%${username.toLowerCase()}%`,
+          });
+      } else if (company) {
+        query = query.where('surveyvalidation.company = :company', { company });
+      } else if (dateversion) {
+        query = query.where('surveyvalidation.dateversion = :dateversion', {
+          dateversion,
+        });
+      } else if (username) {
+        query = query.where('LOWER(surveyvalidation.username) LIKE :username', {
           username: `%${username.toLowerCase()}%`,
+        });
+      }
+
+      const data = await query
+        .andWhere('surveyvalidation.validation = :validation', {
+          validation: '0',
         })
         .orderBy('dateversion')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '0' })
-        .where('LOWER(surveyvalidation.username) LIKE :username', {
-          username: `%${username.toLowerCase()}%`,
+      const itemCount = await query
+        .andWhere('surveyvalidation.validation = :validation', {
+          validation: '0',
         })
         .getCount();
 
@@ -279,202 +117,8 @@ export class SurveyValidationService {
   async getAllSurveyValidationValidate(
     page: number,
     take: number,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .orderBy('dateversion')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyValidationCompanyValidate(
-    page: number,
-    take: number,
     company: string,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .andWhere('surveyvalidation.company = :company', { company })
-        .orderBy('dateversion')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .andWhere('surveyvalidation.company = :company', { company })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyValidationValidationValidate(
-    page: number,
-    take: number,
-    validateddate: Date,
-  ): Promise<{
-    data: SurveyValidationDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .andWhere('surveyvalidation.validateddate = :validateddate', {
-          validateddate,
-        })
-        .orderBy('dateversion')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .andWhere('surveyvalidation.validateddate = :validateddate', {
-          validateddate,
-        })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getSurveyValidationUsernameValidate(
-    page: number,
-    take: number,
+    dateversion: string,
     username: string,
   ): Promise<{
     data: SurveyValidationDto[];
@@ -488,7 +132,7 @@ export class SurveyValidationService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.surveyValidationRepository
+      let query = this.surveyValidationRepository
         .createQueryBuilder('surveyvalidation')
         .select([
           'id',
@@ -497,29 +141,61 @@ export class SurveyValidationService {
           'titlesurvey',
           'dateversion',
           'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .where('LOWER(surveyvalidation.username) LIKE :username', {
+        ]);
+
+      if (company && dateversion && username) {
+        query = query
+          .where('surveyvalidation.company = :company', { company })
+          .andWhere('surveyvalidation.dateversion = :dateversion', {
+            dateversion,
+          })
+          .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
+            username: `%${username.toLowerCase()}%`,
+          });
+      } else if (company && dateversion) {
+        query = query
+          .where('surveyvalidation.company = :company', { company })
+          .andWhere('surveyvalidation.dateversion = :dateversion', {
+            dateversion,
+          });
+      } else if (username && dateversion) {
+        query = query
+          .where('surveyvalidation.dateversion = :dateversion', {
+            dateversion,
+          })
+          .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
+            username: `%${username.toLowerCase()}%`,
+          });
+      } else if (company && username) {
+        query = query
+          .where('surveyvalidation.company = :company', { company })
+          .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
+            username: `%${username.toLowerCase()}%`,
+          });
+      } else if (company) {
+        query = query.where('surveyvalidation.company = :company', { company });
+      } else if (dateversion) {
+        query = query.where('surveyvalidation.dateversion = :dateversion', {
+          dateversion,
+        });
+      } else if (username) {
+        query = query.where('LOWER(surveyvalidation.username) LIKE :username', {
           username: `%${username.toLowerCase()}%`,
+        });
+      }
+
+      const data = await query
+        .andWhere('surveyvalidation.validation = :validation', {
+          validation: '1',
         })
         .orderBy('dateversion')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.surveyValidationRepository
-        .createQueryBuilder('surveyvalidation')
-        .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ])
-        .where('surveyvalidation.validation = :validation', { validation: '1' })
-        .where('LOWER(surveyvalidation.username) LIKE :username', {
-          username: `%${username.toLowerCase()}%`,
+      const itemCount = await query
+        .andWhere('surveyvalidation.validation = :validation', {
+          validation: '1',
         })
         .getCount();
 

@@ -13,21 +13,8 @@ export class MappingMenuReportService {
     private mappingMenuReportRepository: Repository<MappingMenuReport>,
   ) {}
 
-  async getAllMappingMenuReport(
-    page: number,
-    take: number,
-  ): Promise<{
-    data: MappingMenuReportDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
+  async getAllMappingMenuReport() {
     try {
-      const offset = (page - 1) * take;
-
       const data = await this.mappingMenuReportRepository
         .createQueryBuilder('mappingmenureport')
         .leftJoin('mappingmenureport.mastermenu', 'mastermenu')
@@ -40,37 +27,9 @@ export class MappingMenuReportService {
           'mastersection.sectionname',
         ])
         .where('mappingmenureport.isdelete = :isdelete', { isdelete: false })
-        .offset(offset)
-        .limit(take)
         .getRawMany();
 
-      const itemCount = await this.mappingMenuReportRepository
-        .createQueryBuilder('mappingmenureport')
-        .leftJoin('mappingmenureport.mastermenu', 'mastermenu')
-        .leftJoin('mappingmenureport.masterreport', 'masterreport')
-        .leftJoin('mappingmenureport.mastersection', 'mastersection')
-        .select([
-          'mappingmenureport.mappingmenureportid',
-          'mastermenu.menuname',
-          'masterreport.reportname',
-          'mastersection.sectionname',
-        ])
-        .where('mappingmenureport.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
+      return data;
     } catch (error) {
       throw error;
     }

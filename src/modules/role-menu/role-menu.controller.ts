@@ -24,11 +24,8 @@ export class RoleMenuController {
 
   @Get('/')
   @ApiCreatedResponse({ type: RoleMenuDto })
-  async getRoleMenu(
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ): Promise<{ data: RoleMenuDto[]; total: number }> {
-    return this.roleMenuService.getAllRoleMenu(page, pageSize);
+  async getRoleMenu() {
+    return this.roleMenuService.getAllRoleMenu();
   }
 
   @Get('/getRoleMenuId')
