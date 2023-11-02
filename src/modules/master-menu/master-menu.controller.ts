@@ -55,11 +55,8 @@ export class MasterMenuController {
 
   @Get('/navbar-menu')
   @ApiOkResponse({ type: NavbarMenuDTO })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getNavbarMenu(@UserInfo() userInfo: UserInfoDTO) {
-    return this.masterMenuService.getNavbarUserInfo(
-      'muhammad.furqan@ai.astra.co.id',
-    );
+    return this.masterMenuService.getNavbarUserInfo(userInfo.email);
   }
 
   @Post('/createMasterMenu')
