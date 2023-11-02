@@ -1,13 +1,20 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class AddTableMasterUser1693452023313 implements MigrationInterface {
+export class AddTableCheckingCompleteSurvey1698910353292
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ir_masteruser',
+        name: 'tbl_checkingcompletesurvey',
         columns: [
           {
-            name: 'userid',
+            name: 'id',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -15,37 +22,27 @@ export class AddTableMasterUser1693452023313 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'username',
+            name: 'respondentid',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'surveyid',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'fullname',
+            name: 'company',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'email',
+            name: 'validation',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'companycode',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'companyname',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'phonenumber',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'npk',
+            name: 'status',
             type: 'varchar',
             isNullable: true,
           },
@@ -85,11 +82,10 @@ export class AddTableMasterUser1693452023313 implements MigrationInterface {
           },
         ],
       }),
-      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ir_masteruser');
+    await queryRunner.dropTable('tbl_checkingcompletesurvey');
   }
 }

@@ -97,8 +97,13 @@ export class AddTableValidateSurveyResult1696991219412
             isNullable: true,
           },
           {
-            name: 'location',
+            name: 'locationname',
             type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'age',
+            type: 'int',
             isNullable: true,
           },
           {
@@ -162,7 +167,7 @@ export class AddTableValidateSurveyResult1696991219412
             isNullable: true,
           },
           {
-            name: 'function',
+            name: 'functionname',
             type: 'varchar',
             isNullable: true,
           },
