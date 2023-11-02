@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { MasterUser } from '../master-user.entity';
 
@@ -26,6 +26,9 @@ export class MasterUserDto extends AbstractDto {
 
   @ApiProperty()
   isdelete: string;
+
+  @ApiPropertyOptional()
+  role: string[];
 
   constructor(masterUserEntity: MasterUser) {
     super(masterUserEntity, { exludeFields: true });

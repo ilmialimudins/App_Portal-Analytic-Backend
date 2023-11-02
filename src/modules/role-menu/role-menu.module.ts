@@ -8,5 +8,6 @@ import { RoleMenuController } from './role-menu.controller';
   imports: [TypeOrmModule.forFeature([RoleMenu])],
   providers: [RoleMenuService],
   controllers: [RoleMenuController],
+  exports: [RoleMenuService],
 })
 export class RoleMenuModule {}
