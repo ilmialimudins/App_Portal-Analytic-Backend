@@ -22,7 +22,7 @@ export class SpmInvitedRespondentsDTO extends AbstractDto {
   totalinvited_company?: number;
 
   @ApiPropertyOptional()
-  demography?: string;
+  demographyid?: number;
 
   @ApiPropertyOptional()
   valuedemography?: string;

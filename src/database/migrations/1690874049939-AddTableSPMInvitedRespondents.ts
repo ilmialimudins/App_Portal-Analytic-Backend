@@ -52,9 +52,8 @@ export class AddTableSPMInvitedRespondents1690874049939
             isNullable: true,
           },
           {
-            name: 'demography',
-            type: 'varchar',
-            length: '255',
+            name: 'demographyid',
+            type: 'bigint',
             isNullable: true,
           },
           {

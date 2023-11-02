@@ -11,7 +11,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SpmInvitedRespondentsService } from './spm-invited-respondents.service';
 import {
   GetOneInvitedRespondentsQueryDTO,
@@ -20,6 +20,8 @@ import {
   GetSurveyInvitedRespondentsResultsDTO,
   GetInvitedRespondentsQueryDTO,
   GetManyInvitedRespondentsQueryDTO,
+  GetModifyListQueryDTO,
+  GetModifyResponse,
 } from './dto/get-spm-invited-respondents.dto';
 import {
   PostInvitedRespondentsBodyDTO,
@@ -61,7 +63,7 @@ export class SpmInvitedRespondentsController {
       companyid,
       surveyid,
       valuedemography,
-      demography,
+      demographyid,
       tahun_survey,
       surveygroupid,
     }: DelInvitedRespondentsQueryDTO,
@@ -70,7 +72,7 @@ export class SpmInvitedRespondentsController {
       companyid,
       surveyid,
       valuedemography,
-      demography,
+      demographyid,
       tahun_survey,
       surveygroupid,
     });
@@ -85,6 +87,31 @@ export class SpmInvitedRespondentsController {
 
     return { message: 'Success', data: raw };
   }
+
+  @Get('modify-list')
+  @ApiResponse({ type: GetModifyResponse })
+  async getListModify(
+    @Query() { filter, search, limit, offset }: GetModifyListQueryDTO,
+  ): Promise<GetModifyResponse> {
+    try {
+      return await this.spmInvitedRespondentsService.getListModify({
+        filter,
+        search,
+        limit,
+        offset,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // @Get('modify-detail')
+  // async getDetail(@Query() { tahun_survey, company, surveygroup }) {
+  //   try {
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   // @Get('/get-one')
   // @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })
