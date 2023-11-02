@@ -105,13 +105,18 @@ export class SpmInvitedRespondentsController {
     }
   }
 
-  // @Get('modify-detail')
-  // async getDetail(@Query() { tahun_survey, company, surveygroup }) {
-  //   try {
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  @Get('modify-detail')
+  async getDetail(@Query() { tahun_survey, company, surveygroup }) {
+    try {
+      return await this.spmInvitedRespondentsService.getDetailModify({
+        tahun_survey,
+        company,
+        surveygroup,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // @Get('/get-one')
   // @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })
