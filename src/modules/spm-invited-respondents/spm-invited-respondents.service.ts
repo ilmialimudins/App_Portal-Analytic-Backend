@@ -1,11 +1,21 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { InvitedRespondents } from './spm-invited-respondents.entity';
-import { Repository, EntityManager, DeleteResult } from 'typeorm';
+import {
+  Repository,
+  EntityManager,
+  DeleteResult,
+  FindManyOptions,
+  Like,
+  Not,
+  IsNull,
+} from 'typeorm';
 import * as excel from 'exceljs';
 import {
   GetManyInvitedRespondentsQueryDTO,
@@ -13,6 +23,9 @@ import {
   GetInvitedRespondentsResultDTO,
   GetSurveyInvitedRespondentsQueryDTO,
   GetSurveyInvitedRespondentsResultsDTO,
+  GetModifyListQueryDTO,
+  GetModifyListManyDTO,
+  GetModifyResponse,
 } from './dto/get-spm-invited-respondents.dto';
 import { addTableInvitedTable } from 'src/common/utils/addExcelTable';
 import {
@@ -35,7 +48,7 @@ export class SpmInvitedRespondentsService {
     companyid,
     surveyid,
     valuedemography,
-    demography,
+    demographyid,
     tahun_survey,
     surveygroupid,
   }: GetOneInvitedRespondentsQueryDTO): Promise<GetInvitedRespondentsResultDTO> {
@@ -54,8 +67,8 @@ export class SpmInvitedRespondentsService {
         .andWhere('tbl_spm_invitedrespondents.tahun_survey = :tahun_survey', {
           tahun_survey,
         })
-        .andWhere('tbl_spm_invitedrespondents.demography = :demography', {
-          demography,
+        .andWhere('tbl_spm_invitedrespondents.demographyid = :demographyid', {
+          demographyid,
         })
         .andWhere(
           'tbl_spm_invitedrespondents.valuedemography = :valuedemography',
@@ -141,7 +154,7 @@ export class SpmInvitedRespondentsService {
       }
 
       query = query
-        .orderBy('demography', 'ASC')
+        .orderBy('demographyid', 'ASC')
         .addOrderBy('totalinvited_demography', 'DESC')
         .addOrderBy('valuedemography', 'ASC')
         .andWhere('is_delete = :is_delete', {
@@ -221,7 +234,7 @@ export class SpmInvitedRespondentsService {
                     day: '2-digit',
                   })
                   .replace(/\//g, '-'),
-                demography: item.demography,
+                demography: item.demographyid,
                 totalinvited_demography: item.totalinvited_demography,
                 valuedemography: item.valuedemography,
                 totalinvited_company: item.totalinvited_company,
@@ -252,7 +265,7 @@ export class SpmInvitedRespondentsService {
         companyid: body.companyid,
         surveyid: body.surveyid,
         valuedemography: body.valuedemography,
-        demography: body.demography,
+        demographyid: body.demographyid,
         tahun_survey: body.tahun_survey,
         surveygroupid: body.surveygroupid,
       })
@@ -274,13 +287,13 @@ export class SpmInvitedRespondentsService {
           companyid: body.companyid,
           surveyid: body.surveyid,
           valuedemography: body.valuedemography,
-          demography: body.demography,
+          demographyid: body.demographyid,
           tahun_survey: body.tahun_survey,
           surveygroupid: body.surveygroupid,
         })
           .then(() => {
             throw new BadRequestException(
-              `Value Demography ${body.valuedemography} on ${body.demography} already exist!`,
+              `Value Demography ${body.valuedemography} on ${body.demographyid} already exist!`,
             );
           })
           .catch(() => null);
@@ -307,7 +320,7 @@ export class SpmInvitedRespondentsService {
     companyid,
     surveyid,
     valuedemography,
-    demography,
+    demographyid,
     tahun_survey,
     surveygroupid,
   }: DelInvitedRespondentsQueryDTO): Promise<DeleteResult> {
@@ -319,7 +332,7 @@ export class SpmInvitedRespondentsService {
         companyid,
         surveyid,
         valuedemography,
-        demography,
+        demographyid,
         tahun_survey,
         surveygroupid,
       });
@@ -330,6 +343,128 @@ export class SpmInvitedRespondentsService {
       });
     } catch (error) {
       return error;
+    }
+  }
+
+  async getListModify({
+    search,
+    filter,
+    limit,
+    offset,
+  }: GetModifyListQueryDTO): Promise<GetModifyResponse> {
+    try {
+      if (!limit) limit = 10;
+      if (!offset) offset = 0;
+      const searchCriteria: FindManyOptions = {
+        select: {
+          id: true,
+          tahun_survey: true,
+          company: {
+            companyeesname: true,
+          },
+          surveygroup: {
+            surveygroupdesc: true,
+          },
+        },
+        where: [
+          {
+            company: {
+              companyeesname: Like(`%${search}%`),
+            },
+            is_delete: '0',
+            tahun_survey: filter ? +filter : Not(IsNull()),
+          },
+          {
+            surveygroup: {
+              surveygroupdesc: Like(`%${search}%`),
+            },
+            is_delete: '0',
+            tahun_survey: filter ? +filter : Not(IsNull()),
+          },
+        ],
+        relations: {
+          company: true,
+          surveygroup: true,
+        },
+        take: limit,
+        skip: offset,
+      };
+
+      const counter = await this.invitedRespondentsRepo.find({
+        where: {
+          is_delete: '0',
+        },
+      });
+
+      const list: GetModifyListManyDTO[] =
+        await this.invitedRespondentsRepo.find(searchCriteria);
+
+      return {
+        data: list,
+        limit,
+        offset,
+        size: counter.length,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async getDetailModify({ tahun_survey, company, surveygroup }) {
+    try {
+      const data = await this.invitedRespondentsRepo.findOne({
+        where: {
+          tahun_survey: tahun_survey,
+          company: {
+            companyeesname: company,
+          },
+          surveygroup: {
+            surveygroupdesc: surveygroup,
+          },
+        },
+        relations: {
+          demography: true,
+        },
+      });
+      if (!data) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+
+      const directorateDemo = await this.invitedRespondentsRepo.find({
+        where: {
+          valuedemography: Like(`%directorate%`),
+        },
+        select: {
+          demography: {
+            demographydesc: true,
+          },
+          totalinvited_demography: true,
+        },
+      });
+
+      const divisoionDemo = await this.invitedRespondentsRepo.find({
+        where: {
+          valuedemography: Like(`%divisoion%`),
+        },
+        select: {
+          demography: {
+            demographydesc: true,
+          },
+          totalinvited_demography: true,
+        },
+      });
+
+      const [detail, directorate, division] = await Promise.all([
+        data,
+        directorateDemo,
+        divisoionDemo,
+      ]);
+      return {
+        detail,
+        directorate,
+        division,
+        total_invited: directorate.length + division.length,
+      };
+    } catch (error) {
+      throw error;
     }
   }
 }
