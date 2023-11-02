@@ -1,16 +1,31 @@
-import { Injectable } from '@nestjs/common/decorators';
+import { Inject, Injectable } from '@nestjs/common/decorators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MasterMenu } from './master-menu.entity';
 import { Repository } from 'typeorm';
 import { MasterMenuDto } from './dto/master-menu.dto';
 import { AddMasterMenuDto } from './dto/add-master-menu.dto';
 import { UpdateMasterMenuDto } from './dto/update-master-menu.dto';
+import { MasterUserService } from '../master-user/master-user.service';
+import { NavbarMenuDTO } from './dto/navbar-menu.dto';
+import { BadRequestException } from '@nestjs/common';
+import generateNavbarMenu from 'src/common/utils/generateMenuNavbar';
+import { RoleMenuService } from '../role-menu/role-menu.service';
+import { RoleUserService } from '../role-user/role-user.service';
 
 @Injectable()
 export class MasterMenuService {
   constructor(
     @InjectRepository(MasterMenu)
     private masterMenuRepository: Repository<MasterMenu>,
+
+    @Inject(MasterUserService)
+    private masterUserService: MasterUserService,
+
+    @Inject(RoleMenuService)
+    private roleMenuService: RoleMenuService,
+
+    @Inject(RoleUserService)
+    private roleUserService: RoleUserService,
   ) {}
 
   async getAllMasterMenu() {
@@ -131,6 +146,37 @@ export class MasterMenuService {
 
       return query;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async getNavbarUserInfo(useremail: string): Promise<NavbarMenuDTO> {
+    try {
+      const user = await this.masterUserService.getMasterUserEmail(useremail);
+
+      if (!user) {
+        throw new BadRequestException(
+          'Cannot retrive navbar because there is no user in current database',
+        );
+      }
+
+      const roles = await this.roleUserService.getUserRoles(user.userid);
+
+      const listRole = roles.map((item) => item.masterrole.rolename);
+
+      const listMenuByRole = await this.roleMenuService.getMenuByListRole(
+        listRole,
+      );
+
+      const navbarMenu = generateNavbarMenu(listMenuByRole, 0);
+
+      return {
+        name: user.username,
+        user_role: listRole,
+        datamenu: navbarMenu,
+      };
+    } catch (error) {
+      if (error) console.log(error);
       throw error;
     }
   }

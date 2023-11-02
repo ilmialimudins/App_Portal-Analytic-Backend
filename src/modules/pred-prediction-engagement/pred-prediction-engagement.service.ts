@@ -176,7 +176,7 @@ export class PredPredictionEngagementService {
         const sheet: excel.Worksheet = workbook.addWorksheet(
           data.demographyvalue.trim() === ''
             ? 'Empty'
-            : data.demographyvalue.replace(/([^\w ]|_)/g, ''),
+            : data.demographyvalue.replace(/([^\w ]|_)/g, '').trim(),
         );
 
         addTable(

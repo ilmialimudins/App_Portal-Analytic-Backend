@@ -156,4 +156,21 @@ export class RoleUserService {
       throw error;
     }
   }
+
+  async getUserRoles(userid: number) {
+    try {
+      const roles = await this.roleUserRepository.find({
+        where: {
+          userid: userid,
+        },
+        relations: {
+          masterrole: true,
+        },
+      });
+
+      return roles;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

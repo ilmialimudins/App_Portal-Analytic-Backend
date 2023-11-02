@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleMenu } from './role-menu.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { AddRoleMenuDto } from './dto/add-role-menu.dto';
 import { UpdateRoleMenuDto } from './dto/update-role-menu.dto';
 import { RoleMenuDto } from './dto/role-menu.dto';
@@ -99,6 +99,24 @@ export class RoleMenuService {
         .execute();
 
       return `Data berhasil di hapus`;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getMenuByListRole(rolelist: string[]) {
+    try {
+      const result = await this.roleMenuRepository.find({
+        where: {
+          masterrole: { rolename: In(rolelist) },
+        },
+        relations: {
+          masterrole: true,
+          mastermenu: true,
+        },
+      });
+
+      return result;
     } catch (error) {
       throw error;
     }
