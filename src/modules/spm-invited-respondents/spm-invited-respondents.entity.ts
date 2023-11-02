@@ -4,12 +4,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SpmInvitedRespondentsDTO } from './dto/spm-invited-respondents.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { Company } from '../master-company-ees/master-company-ees.entity';
 import { SurveyGroup } from '../master-survey-group/master-survey-group.entity';
+import { Demography } from '../master-demography/master-demography.entity';
 
 @Entity('tbl_spm_invitedrespondents')
 @UseDto(SpmInvitedRespondentsDTO)
@@ -50,8 +52,8 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
   @Column({ type: 'int', name: 'totalinvited_company' })
   totalinvited_company: number;
 
-  @Column({ type: 'varchar', name: 'demography', length: '255' })
-  demography: string;
+  @Column({ type: 'bigint', name: 'demographyid' })
+  demographyid: number;
 
   @Column({ type: 'varchar', name: 'valuedemography', length: '255' })
   valuedemography: string;
@@ -70,4 +72,8 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
 
   @Column({ type: 'varchar', name: 'is_delete', length: '1' })
   is_delete: string;
+
+  @OneToMany(() => Demography, (demography) => demography.demographyid)
+  @JoinColumn({ name: 'demographyid', referencedColumnName: 'demographyid' })
+  demography: Demography;
 }

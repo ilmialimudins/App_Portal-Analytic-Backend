@@ -19,8 +19,8 @@ export class PostInvitedRespondentsBodyDTO {
   readonly valuedemography: string;
 
   @ApiProperty()
-  @IsString()
-  readonly demography: string;
+  @IsNumber()
+  readonly demographyid: number;
 
   @ApiProperty()
   @IsNumber()
@@ -66,5 +66,5 @@ export class PostInvitedRespondentsResultsDTO {
   valuedemography: string;
 
   @ApiProperty()
-  demography: string;
+  demographyid: number;
 }

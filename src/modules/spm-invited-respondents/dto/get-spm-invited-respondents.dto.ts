@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNumber,
+  IsString,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
 
 export class GetOneInvitedRespondentsQueryDTO {
   @ApiProperty()
@@ -24,7 +30,7 @@ export class GetOneInvitedRespondentsQueryDTO {
 
   @ApiProperty()
   @IsString()
-  demography: string;
+  demographyid: number;
 
   @ApiProperty()
   @IsInt()
@@ -61,7 +67,7 @@ export class GetInvitedRespondentsResultDTO {
   valuedemography: string;
 
   @ApiProperty()
-  demography: string;
+  demographyid: number;
 
   @ApiProperty()
   totalinvited_demography: number;
@@ -134,4 +140,97 @@ export class GetManyInvitedRespondentsQueryDTO extends GetInvitedRespondentsQuer
   @IsInt()
   @Type(() => Number)
   tahun_survey?: number;
+}
+
+export class GetModifyListQueryDTO {
+  @ApiProperty()
+  @ValidateIf((e) => e === '')
+  @IsString()
+  filter?: string = '';
+
+  @ApiProperty()
+  @ValidateIf((e) => e === '')
+  @IsString()
+  search?: string = '';
+
+  @ApiProperty()
+  @ValidateIf((e) => e === undefined)
+  @IsNumber()
+  @Type(() => Number)
+  limit?: number | 10;
+
+  @ApiProperty()
+  @ValidateIf((e) => e === undefined)
+  @IsNumber()
+  @Type(() => Number)
+  offset?: number | 0;
+}
+
+export class GetModifyResponse {
+  @ApiProperty({
+    example: `
+    {
+      "acknowledge": 0,
+      "message": "",
+      "errorCode": 200,
+      "result": {
+          "data": [
+              {
+                  "id": 4,
+                  "tahun_survey": 2023,
+                  "company": {
+                      "companyeesname": "PT Sedaya Pratama"
+                  },
+                  "surveygroup": {
+                      "surveygroupdesc": "Test"
+                  }
+              },
+              {
+                  "id": 5,
+                  "tahun_survey": 2023,
+                  "company": {
+                      "companyeesname": "PT Nirmala Agro Lestari"
+                  },
+                  "surveygroup": {
+                      "surveygroupdesc": "Testing 2"
+                  }
+              }
+          ],
+          "limit": 10,
+          "offset": 0,
+          "size": 2
+      }
+  }
+    `,
+  })
+  @ValidateNested()
+  @Type(() => GetModifyListManyDTO)
+  data: GetModifyListManyDTO[];
+
+  @ApiProperty()
+  limit: number;
+
+  @ApiProperty()
+  offset: number;
+
+  @ApiProperty()
+  size: number;
+}
+
+export class GetModifyListManyDTO {
+  @ApiProperty()
+  @IsNumber()
+  id: number;
+
+  @ApiProperty()
+  @IsNumber()
+  tahun_survey: number;
+
+  @ApiProperty()
+  @IsString()
+  company: { companyeesname: string };
+
+  @ApiProperty()
+  @IsString()
+  surveygroup: { surveygroupdesc: string };
 }
