@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterUser1693452023313 implements MigrationInterface {
+export class AddTableMasterEESWord1697442301923 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ir_masteruser',
+        name: 'ms_ees_word',
         columns: [
           {
-            name: 'userid',
+            name: 'wordid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -15,37 +15,12 @@ export class AddTableMasterUser1693452023313 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'username',
+            name: 'h_wordhashkey',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'fullname',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'email',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'companycode',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'companyname',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'phonenumber',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'npk',
+            name: 'word',
             type: 'varchar',
             isNullable: true,
           },
@@ -85,11 +60,10 @@ export class AddTableMasterUser1693452023313 implements MigrationInterface {
           },
         ],
       }),
-      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ir_masteruser');
+    await queryRunner.dropTable('ms_ees_word');
   }
 }

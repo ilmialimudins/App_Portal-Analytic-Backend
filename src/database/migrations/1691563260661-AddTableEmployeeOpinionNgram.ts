@@ -1,3 +1,4 @@
+import { TableForeignKey } from 'typeorm';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class AddTableEmployeeOpinionNgram1691563260661
@@ -27,38 +28,23 @@ export class AddTableEmployeeOpinionNgram1691563260661
             isNullable: true,
           },
           {
+            name: 'surveygizmoid',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'qcodeid',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'wordid',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'tahun_survey',
             type: 'int',
-            isNullable: true,
-          },
-          {
-            name: 'h_companyhashkey',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'h_surveygizmohashkey',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'h_surveyquestionhashkey',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'h_wordhashkey',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'qcode',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'word',
-            type: 'varchar',
             isNullable: true,
           },
           {
@@ -131,6 +117,36 @@ export class AddTableEmployeeOpinionNgram1691563260661
       }),
       true,
     );
+    await queryRunner.createForeignKeys('tbl_employeeopinionngram', [
+      new TableForeignKey({
+        columnNames: ['companyid'],
+        referencedTableName: 'ms_company',
+        referencedColumnNames: ['companyid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+      new TableForeignKey({
+        columnNames: ['surveygizmoid'],
+        referencedTableName: 'ms_ees_surveygizmo',
+        referencedColumnNames: ['surveygizmoid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+      new TableForeignKey({
+        columnNames: ['qcodeid'],
+        referencedTableName: 'ms_ees_qcode',
+        referencedColumnNames: ['qcodeid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+      new TableForeignKey({
+        columnNames: ['wordid'],
+        referencedTableName: 'ms_ees_word',
+        referencedColumnNames: ['wordid'],
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      }),
+    ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
