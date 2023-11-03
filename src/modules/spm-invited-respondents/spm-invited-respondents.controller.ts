@@ -22,6 +22,8 @@ import {
   GetManyInvitedRespondentsQueryDTO,
   GetModifyListQueryDTO,
   GetModifyResponse,
+  GetModifyDetailQueryDTO,
+  GetModifyDetailResponse,
 } from './dto/get-spm-invited-respondents.dto';
 import {
   PostInvitedRespondentsBodyDTO,
@@ -106,7 +108,10 @@ export class SpmInvitedRespondentsController {
   }
 
   @Get('modify-detail')
-  async getDetail(@Query() { tahun_survey, company, surveygroup }) {
+  @ApiOkResponse({ type: GetModifyDetailResponse })
+  async getDetail(
+    @Query() { tahun_survey, company, surveygroup }: GetModifyDetailQueryDTO,
+  ): Promise<GetModifyDetailResponse> {
     try {
       return await this.spmInvitedRespondentsService.getDetailModify({
         tahun_survey,

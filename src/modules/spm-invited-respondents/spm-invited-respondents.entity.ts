@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SpmInvitedRespondentsDTO } from './dto/spm-invited-respondents.dto';
@@ -73,7 +72,7 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
   @Column({ type: 'varchar', name: 'is_delete', length: '1' })
   is_delete: string;
 
-  @OneToMany(() => Demography, (demography) => demography.demographyid)
+  @ManyToOne(() => Demography, (demography) => demography.demographyid)
   @JoinColumn({ name: 'demographyid', referencedColumnName: 'demographyid' })
   demography: Demography;
 }

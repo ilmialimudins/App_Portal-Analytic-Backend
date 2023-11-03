@@ -136,6 +136,13 @@ export class AddTableSPMInvitedRespondents1690874049939
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION',
       }),
+      new TableForeignKey({
+        columnNames: ['demographyid'],
+        referencedTableName: 'ms_demography',
+        referencedColumnNames: ['demographyid'],
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      }),
     ]);
   }
 

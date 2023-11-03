@@ -26,6 +26,10 @@ import {
   GetModifyListQueryDTO,
   GetModifyListManyDTO,
   GetModifyResponse,
+  GetModifyDemographyDTO,
+  GetModifyDetailQueryDTO,
+  GetModifyDetailResponse,
+  DetailDTO,
 } from './dto/get-spm-invited-respondents.dto';
 import { addTableInvitedTable } from 'src/common/utils/addExcelTable';
 import {
@@ -33,12 +37,16 @@ import {
   PostInvitedRespondentsResultsDTO,
 } from './dto/post-spm-invited-respondents.dto';
 import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
+import { Demography } from '../master-demography/master-demography.entity';
 
 @Injectable()
 export class SpmInvitedRespondentsService {
   constructor(
     @InjectRepository(InvitedRespondents)
     private invitedRespondentsRepo: Repository<InvitedRespondents>,
+
+    @InjectRepository(Demography)
+    private demographyRepository: Repository<Demography>,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -410,58 +418,84 @@ export class SpmInvitedRespondentsService {
     }
   }
 
-  async getDetailModify({ tahun_survey, company, surveygroup }) {
+  async getDetailModify({
+    tahun_survey,
+    company,
+    surveygroup,
+  }: GetModifyDetailQueryDTO): Promise<GetModifyDetailResponse> {
     try {
-      const data = await this.invitedRespondentsRepo.findOne({
-        where: {
-          tahun_survey: tahun_survey,
+      const data: DetailDTO | null = await this.invitedRespondentsRepo.findOne({
+        select: {
           company: {
-            companyeesname: company,
+            companyeesname: true,
           },
           surveygroup: {
-            surveygroupdesc: surveygroup,
+            surveygroupdesc: true,
           },
         },
         relations: {
-          demography: true,
+          company: true,
+          surveygroup: true,
         },
-      });
-      if (!data) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-
-      const directorateDemo = await this.invitedRespondentsRepo.find({
         where: {
-          valuedemography: Like(`%directorate%`),
-        },
-        select: {
-          demography: {
-            demographydesc: true,
+          tahun_survey: +tahun_survey,
+          company: {
+            companyeesname: !company ? '' : company,
           },
-          totalinvited_demography: true,
+          surveygroup: {
+            surveygroupdesc: !surveygroup ? '' : surveygroup,
+          },
         },
       });
+      if (!data)
+        throw new HttpException('Data Not Found', HttpStatus.NOT_FOUND);
 
-      const divisoionDemo = await this.invitedRespondentsRepo.find({
-        where: {
-          valuedemography: Like(`%divisoion%`),
-        },
-        select: {
-          demography: {
-            demographydesc: true,
-          },
-          totalinvited_demography: true,
-        },
+      const demographyValue = await this.demographyRepository
+        .createQueryBuilder()
+        .select('demographycode')
+        .addSelect('demographydesc')
+        .groupBy('demographycode, demographydesc')
+        .getRawMany();
+
+      const divAndDirData = await this.invitedRespondentsRepo
+        .createQueryBuilder('tsi')
+        .distinctOn(['dm.demographycode'])
+        .select('dm.demographydesc', 'demography')
+        .addSelect('tsi.valuedemography', 'valuedemography')
+        .addSelect('dm.demographycode', 'demographycode')
+        .addSelect('tsi.totalinvited_demography', 'totalinvited_demography')
+        .innerJoin('tsi.demography', 'dm')
+        .groupBy(
+          'dm.demographycode, dm.demographydesc, tsi.valuedemography, tsi.totalinvited_demography',
+        )
+        .getRawMany();
+
+      const invitedDemo: GetModifyDemographyDTO[] = [];
+      let total_invited = 0;
+
+      divAndDirData.forEach((demo) => {
+        if (demo.demography == 'Division' || demo.demography == 'Directorate') {
+          invitedDemo.push({
+            demography: demo.demography,
+            valuedemography: demo.valuedemography,
+            totalinvited_demography: demo.totalinvited_demography,
+          });
+
+          total_invited += demo.totalinvited_demography;
+        }
       });
 
-      const [detail, directorate, division] = await Promise.all([
+      const [detail, invited, demography] = await Promise.all([
         data,
-        directorateDemo,
-        divisoionDemo,
+        invitedDemo,
+        demographyValue,
       ]);
+
       return {
         detail,
-        directorate,
-        division,
-        total_invited: directorate.length + division.length,
+        invited_respondents: invited,
+        demography,
+        total_invited_respondents: total_invited,
       };
     } catch (error) {
       throw error;
