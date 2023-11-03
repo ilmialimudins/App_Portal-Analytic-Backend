@@ -367,6 +367,8 @@ export class SpmInvitedRespondentsService {
         select: {
           id: true,
           tahun_survey: true,
+          companyid: true,
+          surveygroupid: true,
           company: {
             companyeesname: true,
           },

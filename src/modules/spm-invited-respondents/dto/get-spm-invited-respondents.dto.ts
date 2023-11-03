@@ -180,6 +180,8 @@ export class GetModifyResponse {
           "data": [
               {
                   "id": 4,
+                  "companyid": 1,
+                  "surveygroupid": 1,
                   "tahun_survey": 2023,
                   "company": {
                       "companyeesname": "PT Sedaya Pratama"
@@ -224,6 +226,14 @@ export class GetModifyListManyDTO {
   @ApiProperty()
   @IsNumber()
   id: number;
+
+  @ApiProperty()
+  @IsNumber()
+  companyid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  surveygroupid: number;
 
   @ApiProperty()
   @IsNumber()
