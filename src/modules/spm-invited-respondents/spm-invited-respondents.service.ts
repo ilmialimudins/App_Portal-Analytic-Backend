@@ -471,7 +471,19 @@ export class SpmInvitedRespondentsService {
         .getRawMany();
 
       const invitedDemo: GetModifyDemographyDTO[] = [];
-      let total_invited = 0;
+      const total_invited = await this.invitedRespondentsRepo
+        .createQueryBuilder('tsi')
+        .select('md.demographydesc', 'demographydesc')
+        .select('SUM(tsi.totalinvited_demography)', 'total_invited')
+        .innerJoin('tsi.demography', 'md')
+        .innerJoin('tsi.company', 'mc')
+        .innerJoin('tsi.surveygroup', 'sg')
+        .where(
+          'tahun_survey = :tahun_survey AND mc.companyeesname = :company AND sg.surveygroupdesc = :surveygroup',
+          { tahun_survey, company, surveygroup },
+        )
+        .groupBy('md.demographydesc')
+        .getRawMany();
 
       divAndDirData.forEach((demo) => {
         if (demo.demography == 'Division' || demo.demography == 'Directorate') {
@@ -480,22 +492,21 @@ export class SpmInvitedRespondentsService {
             valuedemography: demo.valuedemography,
             totalinvited_demography: demo.totalinvited_demography,
           });
-
-          total_invited += demo.totalinvited_demography;
         }
       });
 
-      const [detail, invited, demography] = await Promise.all([
+      const [detail, invited, demography, total] = await Promise.all([
         data,
         invitedDemo,
         demographyValue,
+        Math.max(...total_invited.map((o) => o.total_invited)),
       ]);
 
       return {
         detail,
         invited_respondents: invited,
         demography,
-        total_invited_respondents: total_invited,
+        total_invited_respondents: total,
       };
     } catch (error) {
       throw error;
