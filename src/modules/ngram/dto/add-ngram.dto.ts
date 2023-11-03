@@ -1,6 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { QCodeEnum } from '../ngram.entity';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class AddNgramDto {
   @ApiPropertyOptional()
@@ -11,46 +10,16 @@ export class AddNgramDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
-  readonly companyid: number;
+  readonly qcodeid: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
-  readonly tahun_survey: number;
+  readonly wordid: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly h_companyhashkey: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly h_surveygizmohashkey: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly h_surveyquestion: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly h_wordhashkey: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsEnum(QCodeEnum)
-  readonly qcode: QCodeEnum;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly word: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
   readonly n: number;
 
   @ApiPropertyOptional()
@@ -60,11 +29,6 @@ export class AddNgramDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber()
+  @IsString()
   readonly ngramfrequency: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
-  readonly wordrank: number;
 }

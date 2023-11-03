@@ -19,6 +19,7 @@ export class StopwordsService {
   async getAllStopwords(
     page: number,
     take: number,
+    word: string,
   ): Promise<{
     data: StopwordsDto[];
     page: number;
@@ -31,7 +32,7 @@ export class StopwordsService {
     try {
       const offset = (page - 1) * take;
 
-      const data = await this.stopwordsRepository
+      let query = this.stopwordsRepository
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.company', 'company')
         .select([
@@ -41,174 +42,23 @@ export class StopwordsService {
           'company.companyeesname',
           'stopwords.tahun_survey',
           'stopwords.uuid',
-        ])
-        .where('stopwords.isdelete = :isdelete', { isdelete: false })
+        ]);
+
+      if (word) {
+        query = query.where('LOWER(stopwords.stopwords) LIKE :word', {
+          word: `%${word.toLowerCase()}%`,
+        });
+      }
+
+      const data = await query
+        .andWhere('stopwords.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.company', 'company')
-        .select([
-          'id',
-          'company.companyid',
-          'stopwords.stopwords',
-          'company.companyeesname',
-          'stopwords.tahun_survey',
-          'stopwords.uuid',
-        ])
-        .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getStopwordsFilter(
-    page: number,
-    take: number,
-    companyname: string,
-    tahun_survey: number,
-  ): Promise<{
-    data: StopwordsDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.company', 'company')
-        .select([
-          'id',
-          'company.companyid',
-          'stopwords.stopwords',
-          'company.companyeesname',
-          'stopwords.tahun_survey',
-          'stopwords.uuid',
-        ])
-        .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(company.companyeesname) LIKE :companyname', {
-          companyname: `%${companyname.toLowerCase()}%`,
-        })
-        .andWhere('LOWER(replacewordcloud.tahun_survey) LIKE :tahun_survey', {
-          tahun_survey,
-        })
-        .orderBy('tahun_survey')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.company', 'company')
-        .select([
-          'id',
-          'company.companyid',
-          'stopwords.stopwords',
-          'company.companyeesname',
-          'stopwords.tahun_survey',
-          'stopwords.uuid',
-        ])
-        .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(company.companyeesname) LIKE :companyname', {
-          companyname: `%${companyname.toLowerCase()}%`,
-        })
-        .andWhere('LOWER(replacewordcloud.tahun_survey) LIKE :tahun_survey', {
-          tahun_survey,
-        })
-        .getCount();
-
-      const pageCount = Math.ceil(itemCount / take);
-      const hasPreviousPage = page > 1;
-      const hasNextPage = page < pageCount;
-
-      return {
-        data,
-        page,
-        take,
-        itemCount,
-        pageCount,
-        hasPreviousPage,
-        hasNextPage,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getStopwordsFilterStopwords(
-    page: number,
-    take: number,
-    stopword: string,
-  ): Promise<{
-    data: StopwordsDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    try {
-      const offset = (page - 1) * take;
-
-      const data = await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.company', 'company')
-        .select([
-          'id',
-          'company.companyid',
-          'stopwords.stopwords',
-          'company.companyeesname',
-          'stopwords.tahun_survey',
-          'stopwords.uuid',
-        ])
-        .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(stopwords.stopwords) LIKE :stopword', {
-          stopword: `%${stopword.toLowerCase()}%`,
-        })
-        .orderBy('tahun_survey')
-        .offset(offset)
-        .limit(take)
-        .getRawMany();
-
-      const itemCount = await this.stopwordsRepository
-        .createQueryBuilder('stopwords')
-        .leftJoin('stopwords.company', 'company')
-        .select([
-          'id',
-          'company.companyid',
-          'stopwords.stopwords',
-          'company.companyeesname',
-          'stopwords.tahun_survey',
-          'stopwords.uuid',
-        ])
-        .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('LOWER(stopwords.stopwords) LIKE :stopword', {
-          stopword: `%${stopword.toLowerCase()}%`,
-        })
+      const itemCount = await query
+        .andWhere('stopwords.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -242,6 +92,19 @@ export class StopwordsService {
     }
   }
 
+  async checkDuplicateStopwords(stopword: string) {
+    try {
+      const query = await this.stopwordsRepository
+        .createQueryBuilder('stopwords')
+        .where('stopwords.stopwords = :stopword', { stopword })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async checkOneStopwords(stopwords: AddStopwordsDto) {
     try {
       const query = await this.stopwordsRepository
@@ -260,15 +123,18 @@ export class StopwordsService {
 
   async createStopwords(stopwords: AddStopwordsDto) {
     try {
+      const nowDate = new Date();
+      const nowYear = nowDate.getFullYear();
+
       const query = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
         .insert()
         .into(Stopwords)
         .values({
           uuid: uuidv4(),
-          companyid: stopwords.companyid,
+          companyid: 475,
           stopwords: stopwords.stopwords,
-          tahun_survey: stopwords.tahun_survey,
+          tahun_survey: nowYear,
           isdelete: 'false',
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),
@@ -276,6 +142,39 @@ export class StopwordsService {
         .execute();
 
       return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateStopwords(uuid: string, stopwords: UpdateStopwordsDto) {
+    try {
+      const query = await this.stopwordsRepository
+        .createQueryBuilder()
+        .update(Stopwords)
+        .set({
+          stopwords: stopwords.stopwords,
+        })
+        .where('uuid = :uuid', { uuid })
+        .andWhere('stopwords != :stopwords', { stopwords: stopwords.stopwords })
+        .execute();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteStopwords(uuid: string) {
+    try {
+      await this.stopwordsRepository
+        .createQueryBuilder()
+        .update(Stopwords)
+        .set({ isdelete: 'true' })
+        .where('uuid = :uuid', { uuid })
+        .execute();
+
+      return `Data Berhasil Di Hapus`;
     } catch (error) {
       throw error;
     }
@@ -320,40 +219,6 @@ export class StopwordsService {
       );
 
       return workbook;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateStopwords(uuid: string, stopwords: UpdateStopwordsDto) {
-    try {
-      const query = await this.stopwordsRepository
-        .createQueryBuilder()
-        .update(Stopwords)
-        .set({
-          companyid: stopwords.companyid,
-          stopwords: stopwords.stopwords,
-        })
-        .where('uuid = :uuid', { uuid })
-        .andWhere('stopwords != :stopwords', { stopwords: stopwords.stopwords })
-        .execute();
-
-      return query;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async deleteStopwords(uuid: string) {
-    try {
-      await this.stopwordsRepository
-        .createQueryBuilder()
-        .update(Stopwords)
-        .set({ isdelete: 'true' })
-        .where('uuid = :uuid', { uuid })
-        .execute();
-
-      return `Data Berhasil Di Hapus`;
     } catch (error) {
       throw error;
     }

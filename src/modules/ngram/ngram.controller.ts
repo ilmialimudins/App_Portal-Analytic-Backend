@@ -25,6 +25,9 @@ export class NgramController {
   async getAllNgram(
     @Query('page') page: number,
     @Query('take') take: number,
+    @Query('year') year: number,
+    @Query('company') companyid: number,
+    @Query('word') wordid: number,
   ): Promise<{
     data: NgramDto[];
     page: number;
@@ -34,31 +37,7 @@ export class NgramController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.ngramService.getAllNgram(page, take);
-  }
-
-  @Get('/getAllNgramFilter')
-  @ApiOkResponse({ type: NgramDto })
-  async getAllNgramFilter(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('companyname') companyname: string,
-    @Query('tahun_survey') tahun_survey: number,
-  ): Promise<{
-    data: NgramDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.ngramService.getAllNgramFilter(
-      page,
-      take,
-      companyname,
-      tahun_survey,
-    );
+    return this.ngramService.getAllNgram(page, take, year, companyid, wordid);
   }
 
   @Get('/getNgramId')
@@ -67,32 +46,28 @@ export class NgramController {
     return this.ngramService.getNgramId(uuid);
   }
 
-  @Get('/getNgramByWord')
+  @Get('/getWordFor')
   @ApiOkResponse({ type: NgramDto })
-  async getNgramByWord(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('companyname') companyname: string,
-    @Query('tahun_survey') tahun_survey: number,
-    @Query('qcode') qcode: string,
-    @Query('word') word: string,
-  ): Promise<{
-    data: NgramDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.ngramService.getNgramByWord(
-      page,
-      take,
-      companyname,
-      tahun_survey,
-      qcode,
-      word,
-    );
+  async getWordFor() {
+    return this.ngramService.getWordFor();
+  }
+
+  @Get('/getWordUor')
+  @ApiOkResponse({ type: NgramDto })
+  async getWordUor() {
+    return this.ngramService.getWordUor();
+  }
+
+  @Get('/checkDuplicateNgram')
+  @ApiOkResponse({ type: NgramDto })
+  async checkDuplicateNgram(@Query('ngram') ngram: string) {
+    const result = await this.ngramService.checkDuplicateNgram(ngram);
+
+    if (result) {
+      return { message: 'Duplicate Entry' };
+    } else {
+      return ngram;
+    }
   }
 
   @Patch('/updateNgram')
@@ -101,7 +76,13 @@ export class NgramController {
     @Query('uuid') uuid: string,
     @Body() Ngram: UpdateNgramDto,
   ) {
-    return this.ngramService.updateNgram(uuid, Ngram);
+    const result = await this.ngramService.updateNgram(uuid, Ngram);
+
+    if (result.affected === 0) {
+      throw new Error('Duplicate Entry');
+    }
+
+    return result;
   }
 
   @Delete('/deleteNgram')

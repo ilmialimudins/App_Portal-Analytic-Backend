@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
-import { Ngram, QCodeEnum } from '../ngram.entity';
+import { Ngram } from '../ngram.entity';
 
 export class NgramDto extends AbstractDto {
   @ApiProperty()
@@ -16,22 +16,10 @@ export class NgramDto extends AbstractDto {
   tahun_survey: number;
 
   @ApiProperty()
-  h_companyhashkey: string;
+  qcodeid: number;
 
   @ApiProperty()
-  h_surveygizmohashkey: string;
-
-  @ApiProperty()
-  h_surveyquestionkey: string;
-
-  @ApiProperty()
-  h_wordhashkey: string;
-
-  @ApiProperty()
-  qcode: QCodeEnum;
-
-  @ApiProperty()
-  word: string;
+  wordid: number;
 
   @ApiProperty()
   n: number;
@@ -54,12 +42,8 @@ export class NgramDto extends AbstractDto {
     this.uuid = ngramEntity.uuid;
     this.companyid = ngramEntity.companyid;
     this.tahun_survey = ngramEntity.tahun_survey;
-    this.h_companyhashkey = ngramEntity.h_companyhashkey;
-    this.h_surveygizmohashkey = ngramEntity.h_surveygizmohashkey;
-    this.h_surveyquestionkey = ngramEntity.h_surveyquestionhashkey;
-    this.h_wordhashkey = ngramEntity.h_companyhashkey;
-    this.qcode = ngramEntity.qcode;
-    this.word = ngramEntity.word;
+    this.qcodeid = ngramEntity.qcodeid;
+    this.wordid = ngramEntity.wordid;
     this.n = ngramEntity.n;
     this.ngram = ngramEntity.ngram;
     this.ngramfrequency = ngramEntity.ngramfrequency;
