@@ -313,32 +313,16 @@ export class GetModifyDetailResponse {
   @ApiProperty({
     example: `
   {
-    "createdby": null,
-    "updatedby": null,
-    "createdtime": "2022-12-31T17:00:00.000Z",
-    "createddate": null,
-    "sourcecreatedmodifiedtime": null,
-    "sync_date": null,
-    "id": 3,
-    "surveyid": 1,
+    "suveyid": 1,
     "companyid": "1",
-    "surveygroupid": "1",
     "startsurvey": "2022-12-31T17:00:00.000Z",
     "closesurvey": "2023-01-30T17:00:00.000Z",
-    "totalinvited_company": 100,
+    "totalinvited_company": 270,
     "demographyid": "1",
     "valuedemography": "Company",
-    "totalinvited_demography": 50,
-    "is_sync": 1,
-    "endcreatedtime": "2022-12-31T17:00:00.000Z",
     "tahun_survey": 2023,
-    "is_delete": "0",
-    "company": {
-        "companyeesname": "PT Sedaya Pratama"
-    },
-    "surveygroup": {
-        "surveygroupdesc": "Testhelo"
-    }
+    "company": "PT Sedaya Pratama",
+    "surveygroup": "Testhelo"
   }
   `,
   })
@@ -349,15 +333,48 @@ export class GetModifyDetailResponse {
     example: `
     [
       {
-        "demography": "Directorate",
-        "valuedemography": "Value1",
-        "totalinvited_demography": 50
-      }
-      ,
+        "demography": "Company",
+        "listdemography": [
+            {
+                "demographyvalue": "Company",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 270
+      },
       {
-        "demography": "Division",
-        "valuedemography": "Value2",
-        "totalinvited_demography": 60
+        "demography": "Company 2",
+        "listdemography": [
+            {
+                "demographyvalue": "Company",
+                "inviteddemography": 270
+            },
+            {
+                "demographyvalue": "Company 2",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 540
+      },
+      {
+        "demography": "Jabatan",
+        "listdemography": [
+            {
+                "demographyvalue": "Jabatan",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 270
+      },
+      {
+        "demography": "Golongan",
+        "listdemography": [
+            {
+                "demographyvalue": "Golongan",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 270
       }
     ]
   `,
