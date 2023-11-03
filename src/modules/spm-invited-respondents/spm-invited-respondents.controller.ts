@@ -93,14 +93,14 @@ export class SpmInvitedRespondentsController {
   @Get('modify-list')
   @ApiResponse({ type: GetModifyResponse })
   async getListModify(
-    @Query() { filter, search, limit, offset }: GetModifyListQueryDTO,
+    @Query() { tahun_survey, search, limit, page }: GetModifyListQueryDTO,
   ): Promise<GetModifyResponse> {
     try {
       return await this.spmInvitedRespondentsService.getListModify({
-        filter,
+        tahun_survey,
         search,
         limit,
-        offset,
+        page,
       });
     } catch (error) {
       throw error;
@@ -110,18 +110,30 @@ export class SpmInvitedRespondentsController {
   @Get('modify-detail')
   @ApiOkResponse({ type: GetModifyDetailResponse })
   async getDetail(
-    @Query() { tahun_survey, company, surveygroup }: GetModifyDetailQueryDTO,
+    @Query()
+    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
   ): Promise<GetModifyDetailResponse> {
     try {
       return await this.spmInvitedRespondentsService.getDetailModify({
         tahun_survey,
-        company,
-        surveygroup,
+        companyid,
+        surveygroupid,
       });
     } catch (error) {
       throw error;
     }
   }
+
+  // @Post('modify-total-invited')
+  // async changeTotalInvited(
+  //   @Query() { tahun_survey, company, surveygroup }: GetModifyDetailQueryDTO,
+  //   @Body() body: number,
+  // ) {
+  //   try {
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   // @Get('/get-one')
   // @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })

@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsInt,
   IsNumber,
   IsObject,
@@ -148,7 +149,7 @@ export class GetModifyListQueryDTO {
   @ApiProperty()
   @ValidateIf((e) => e === '')
   @IsString()
-  filter?: string = '';
+  tahun_survey?: string = '';
 
   @ApiProperty()
   @ValidateIf((e) => e === '')
@@ -165,7 +166,7 @@ export class GetModifyListQueryDTO {
   @ValidateIf((e) => e === undefined)
   @IsNumber()
   @Type(() => Number)
-  offset?: number | 0;
+  page?: number | 0;
 }
 
 export class GetModifyResponse {
@@ -213,7 +214,7 @@ export class GetModifyResponse {
   limit: number;
 
   @ApiProperty()
-  offset: number;
+  page: number;
 
   @ApiProperty()
   size: number;
@@ -237,14 +238,24 @@ export class GetModifyListManyDTO {
   surveygroup: { surveygroupdesc: string };
 }
 
+export class ListDemographyValueDTO {
+  @ApiProperty()
+  @IsString()
+  demographyvalue: string;
+
+  @ApiProperty()
+  @IsNumber()
+  inviteddemography: number;
+}
 export class GetModifyDemographyDTO {
   @ApiProperty()
   @IsString()
   demography: string;
 
   @ApiProperty()
-  @IsString()
-  valuedemography: string;
+  @ValidateNested()
+  @IsArray()
+  listdemography: ListDemographyValueDTO[];
 
   @ApiProperty()
   @IsNumber()
@@ -260,12 +271,12 @@ export class GetModifyDetailQueryDTO {
   @ApiProperty()
   @ValidateIf((e) => e === undefined)
   @IsString()
-  company: string;
+  companyid: number;
 
   @ApiProperty()
   @ValidateIf((e) => e === undefined)
   @IsString()
-  surveygroup: string;
+  surveygroupid: number;
 }
 
 export class CompanyDTO {
@@ -293,10 +304,6 @@ export class DemoInvited {
   @ApiProperty()
   @IsString()
   demography: string;
-
-  @ApiProperty()
-  @IsString()
-  valuedemography: string;
 
   @ApiProperty()
   @IsNumber()
