@@ -68,3 +68,9 @@ export class PostInvitedRespondentsResultsDTO {
   @ApiProperty()
   demographyid: number;
 }
+
+export class PutTotalInvitedBodyDTO {
+  @ApiProperty()
+  @IsNumber()
+  total: number;
+}

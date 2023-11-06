@@ -356,17 +356,19 @@ export class SpmInvitedRespondentsService {
 
   async getListModify({
     search,
-    filter,
+    tahun_survey,
     limit,
-    offset,
+    page,
   }: GetModifyListQueryDTO): Promise<GetModifyResponse> {
     try {
       if (!limit) limit = 10;
-      if (!offset) offset = 0;
+      if (!page) page = 0;
       const searchCriteria: FindManyOptions = {
         select: {
           id: true,
           tahun_survey: true,
+          companyid: true,
+          surveygroupid: true,
           company: {
             companyeesname: true,
           },
@@ -380,14 +382,14 @@ export class SpmInvitedRespondentsService {
               companyeesname: Like(`%${search}%`),
             },
             is_delete: '0',
-            tahun_survey: filter ? +filter : Not(IsNull()),
+            tahun_survey: tahun_survey ? +tahun_survey : Not(IsNull()),
           },
           {
             surveygroup: {
               surveygroupdesc: Like(`%${search}%`),
             },
             is_delete: '0',
-            tahun_survey: filter ? +filter : Not(IsNull()),
+            tahun_survey: tahun_survey ? +tahun_survey : Not(IsNull()),
           },
         ],
         relations: {
@@ -395,7 +397,7 @@ export class SpmInvitedRespondentsService {
           surveygroup: true,
         },
         take: limit,
-        skip: offset,
+        skip: page,
       };
 
       const counter = await this.invitedRespondentsRepo.find({
@@ -410,7 +412,7 @@ export class SpmInvitedRespondentsService {
       return {
         data: list,
         limit,
-        offset,
+        page,
         size: counter.length,
       };
     } catch (error) {
@@ -420,33 +422,30 @@ export class SpmInvitedRespondentsService {
 
   async getDetailModify({
     tahun_survey,
-    company,
-    surveygroup,
+    companyid,
+    surveygroupid,
   }: GetModifyDetailQueryDTO): Promise<GetModifyDetailResponse> {
     try {
-      const data: DetailDTO | null = await this.invitedRespondentsRepo.findOne({
-        select: {
-          company: {
-            companyeesname: true,
-          },
-          surveygroup: {
-            surveygroupdesc: true,
-          },
-        },
-        relations: {
-          company: true,
-          surveygroup: true,
-        },
-        where: {
-          tahun_survey: +tahun_survey,
-          company: {
-            companyeesname: !company ? '' : company,
-          },
-          surveygroup: {
-            surveygroupdesc: !surveygroup ? '' : surveygroup,
-          },
-        },
-      });
+      const data: DetailDTO | undefined = await this.invitedRespondentsRepo
+        .createQueryBuilder('tsi')
+        .select('tsi.surveyid', 'surveyid')
+        .addSelect('tsi.surveygroupid', 'surveygroupid')
+        .addSelect('tsi.companyid', 'companyid')
+        .addSelect('tsi.startsurvey', 'startsurvey')
+        .addSelect('tsi.closesurvey', 'closesurvey')
+        .addSelect('tsi.totalinvited_company', 'totalinvited_company')
+        .addSelect('tsi.demographyid', 'demographyid')
+        .addSelect('tsi.valuedemography', 'valuedemography')
+        .addSelect('tsi.tahun_survey', 'tahun_survey')
+        .addSelect('c.companyeesname', 'company')
+        .addSelect('s.surveygroupdesc', 'surveygroup')
+        .innerJoin('tsi.company', 'c')
+        .innerJoin('tsi.surveygroup', 's')
+        .where(
+          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid',
+          { tahun_survey, companyid, surveygroupid },
+        )
+        .getRawOne();
       if (!data)
         throw new HttpException('Data Not Found', HttpStatus.NOT_FOUND);
 
@@ -463,40 +462,87 @@ export class SpmInvitedRespondentsService {
         .select('dm.demographydesc', 'demography')
         .addSelect('tsi.valuedemography', 'valuedemography')
         .addSelect('dm.demographycode', 'demographycode')
-        .addSelect('tsi.totalinvited_demography', 'totalinvited_demography')
+        .addSelect('tsi.totalinvited_company', 'totalinvited_company')
         .innerJoin('tsi.demography', 'dm')
+        .where(
+          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid',
+          { tahun_survey, companyid, surveygroupid },
+        )
         .groupBy(
-          'dm.demographycode, dm.demographydesc, tsi.valuedemography, tsi.totalinvited_demography',
+          'dm.demographycode, dm.demographydesc, tsi.valuedemography, tsi.totalinvited_company',
         )
         .getRawMany();
 
       const invitedDemo: GetModifyDemographyDTO[] = [];
-      let total_invited = 0;
 
       divAndDirData.forEach((demo) => {
-        if (demo.demography == 'Division' || demo.demography == 'Directorate') {
+        const index = invitedDemo.findIndex(
+          (keys) => keys.demography === demo.demography,
+        );
+
+        if (index == -1) {
           invitedDemo.push({
             demography: demo.demography,
-            valuedemography: demo.valuedemography,
-            totalinvited_demography: demo.totalinvited_demography,
+            listdemography: [
+              {
+                demographyvalue: demo.valuedemography,
+                inviteddemography: demo.totalinvited_company,
+              },
+            ],
+            totalinvited_demography: demo.totalinvited_company,
           });
+        } else {
+          const existValue = invitedDemo[index]?.listdemography.findIndex(
+            (value) => value.demographyvalue == demo.valuedemography,
+          );
 
-          total_invited += demo.totalinvited_demography;
+          if (existValue === -1) {
+            invitedDemo[index]?.listdemography.push({
+              demographyvalue: demo.valuedemography,
+              inviteddemography: demo.totalinvited_company,
+            });
+          } else {
+            invitedDemo[index].totalinvited_demography +=
+              demo.totalinvited_company;
+          }
+          invitedDemo[index].totalinvited_demography +=
+            demo.totalinvited_company;
         }
       });
 
-      const [detail, invited, demography] = await Promise.all([
+      const [detail, demography, total] = await Promise.all([
         data,
-        invitedDemo,
         demographyValue,
+        Math.max(...invitedDemo.map((max) => max.totalinvited_demography)),
       ]);
 
       return {
         detail,
-        invited_respondents: invited,
+        invited_respondents: invitedDemo,
         demography,
-        total_invited_respondents: total_invited,
+        total_invited_respondents: total,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async changeTotalInvited(
+    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
+    total: number,
+  ) {
+    try {
+      const insert = await this.invitedRespondentsRepo
+        .createQueryBuilder()
+        .update(InvitedRespondents)
+        .set({ totalinvited_company: total })
+        .where(
+          'tahun_survey = :tahun_survey AND companyid = :companyid AND surveygroupid = :surveygroupid',
+          { tahun_survey, companyid, surveygroupid },
+        )
+        .execute();
+
+      return insert;
     } catch (error) {
       throw error;
     }

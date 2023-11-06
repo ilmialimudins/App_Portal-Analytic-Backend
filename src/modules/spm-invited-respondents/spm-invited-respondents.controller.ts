@@ -9,6 +9,7 @@ import {
   Query,
   Res,
   BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -28,6 +29,7 @@ import {
 import {
   PostInvitedRespondentsBodyDTO,
   PostInvitedRespondentsResultsDTO,
+  PutTotalInvitedBodyDTO,
 } from './dto/post-spm-invited-respondents.dto';
 import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
 
@@ -93,14 +95,14 @@ export class SpmInvitedRespondentsController {
   @Get('modify-list')
   @ApiResponse({ type: GetModifyResponse })
   async getListModify(
-    @Query() { filter, search, limit, offset }: GetModifyListQueryDTO,
+    @Query() { tahun_survey, search, limit, page }: GetModifyListQueryDTO,
   ): Promise<GetModifyResponse> {
     try {
       return await this.spmInvitedRespondentsService.getListModify({
-        filter,
+        tahun_survey,
         search,
         limit,
-        offset,
+        page,
       });
     } catch (error) {
       throw error;
@@ -110,14 +112,31 @@ export class SpmInvitedRespondentsController {
   @Get('modify-detail')
   @ApiOkResponse({ type: GetModifyDetailResponse })
   async getDetail(
-    @Query() { tahun_survey, company, surveygroup }: GetModifyDetailQueryDTO,
+    @Query()
+    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
   ): Promise<GetModifyDetailResponse> {
     try {
       return await this.spmInvitedRespondentsService.getDetailModify({
         tahun_survey,
-        company,
-        surveygroup,
+        companyid,
+        surveygroupid,
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Put('modify-total-invited')
+  async changeTotalInvited(
+    @Query()
+    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
+    @Body() body: PutTotalInvitedBodyDTO,
+  ) {
+    try {
+      return await this.spmInvitedRespondentsService.changeTotalInvited(
+        { tahun_survey, companyid, surveygroupid },
+        body.total,
+      );
     } catch (error) {
       throw error;
     }

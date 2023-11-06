@@ -1,14 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsInt,
   IsNumber,
-  IsObject,
   IsString,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { SpmInvitedRespondentsDTO } from './spm-invited-respondents.dto';
 
 export class GetOneInvitedRespondentsQueryDTO {
   @ApiProperty()
@@ -148,7 +147,7 @@ export class GetModifyListQueryDTO {
   @ApiProperty()
   @ValidateIf((e) => e === '')
   @IsString()
-  filter?: string = '';
+  tahun_survey?: string = '';
 
   @ApiProperty()
   @ValidateIf((e) => e === '')
@@ -165,7 +164,7 @@ export class GetModifyListQueryDTO {
   @ValidateIf((e) => e === undefined)
   @IsNumber()
   @Type(() => Number)
-  offset?: number | 0;
+  page?: number | 0;
 }
 
 export class GetModifyResponse {
@@ -179,6 +178,8 @@ export class GetModifyResponse {
           "data": [
               {
                   "id": 4,
+                  "companyid": 1,
+                  "surveygroupid": 1,
                   "tahun_survey": 2023,
                   "company": {
                       "companyeesname": "PT Sedaya Pratama"
@@ -213,7 +214,7 @@ export class GetModifyResponse {
   limit: number;
 
   @ApiProperty()
-  offset: number;
+  page: number;
 
   @ApiProperty()
   size: number;
@@ -223,6 +224,14 @@ export class GetModifyListManyDTO {
   @ApiProperty()
   @IsNumber()
   id: number;
+
+  @ApiProperty()
+  @IsNumber()
+  companyid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  surveygroupid: number;
 
   @ApiProperty()
   @IsNumber()
@@ -237,14 +246,24 @@ export class GetModifyListManyDTO {
   surveygroup: { surveygroupdesc: string };
 }
 
+export class ListDemographyValueDTO {
+  @ApiProperty()
+  @IsString()
+  demographyvalue: string;
+
+  @ApiProperty()
+  @IsNumber()
+  inviteddemography: number;
+}
 export class GetModifyDemographyDTO {
   @ApiProperty()
   @IsString()
   demography: string;
 
   @ApiProperty()
-  @IsString()
-  valuedemography: string;
+  @ValidateNested()
+  @IsArray()
+  listdemography: ListDemographyValueDTO[];
 
   @ApiProperty()
   @IsNumber()
@@ -260,43 +279,55 @@ export class GetModifyDetailQueryDTO {
   @ApiProperty()
   @ValidateIf((e) => e === undefined)
   @IsString()
-  company: string;
+  companyid: number;
 
   @ApiProperty()
   @ValidateIf((e) => e === undefined)
   @IsString()
+  surveygroupid: number;
+}
+export class DetailDTO {
+  @ApiProperty()
+  @IsNumber()
+  surveyid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  surveygroupid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  companyid: number;
+
+  @ApiProperty()
+  startsurvey: string;
+
+  @ApiProperty()
+  closesurvey: string;
+
+  @ApiProperty()
+  totalinvited_company: number;
+
+  @ApiProperty()
+  demographyid: number;
+
+  @ApiProperty()
+  valuedemography: string;
+
+  @ApiProperty()
+  tahun_survey: number;
+
+  @ApiProperty()
+  company: string;
+
+  @ApiProperty()
   surveygroup: string;
-}
-
-export class CompanyDTO {
-  @ApiProperty()
-  @IsString()
-  companyeesname: string;
-}
-
-export class SurveyGroupDTO {
-  @ApiProperty()
-  @IsString()
-  surveygroupdesc: string;
-}
-export class DetailDTO extends SpmInvitedRespondentsDTO {
-  @ApiProperty()
-  @IsObject()
-  company: CompanyDTO;
-
-  @ApiProperty()
-  @IsObject()
-  surveygroup: SurveyGroupDTO;
 }
 
 export class DemoInvited {
   @ApiProperty()
   @IsString()
   demography: string;
-
-  @ApiProperty()
-  @IsString()
-  valuedemography: string;
 
   @ApiProperty()
   @IsNumber()
@@ -306,32 +337,16 @@ export class GetModifyDetailResponse {
   @ApiProperty({
     example: `
   {
-    "createdby": null,
-    "updatedby": null,
-    "createdtime": "2022-12-31T17:00:00.000Z",
-    "createddate": null,
-    "sourcecreatedmodifiedtime": null,
-    "sync_date": null,
-    "id": 3,
-    "surveyid": 1,
+    "surveygroupid": 1,
     "companyid": "1",
-    "surveygroupid": "1",
     "startsurvey": "2022-12-31T17:00:00.000Z",
     "closesurvey": "2023-01-30T17:00:00.000Z",
-    "totalinvited_company": 100,
+    "totalinvited_company": 270,
     "demographyid": "1",
     "valuedemography": "Company",
-    "totalinvited_demography": 50,
-    "is_sync": 1,
-    "endcreatedtime": "2022-12-31T17:00:00.000Z",
     "tahun_survey": 2023,
-    "is_delete": "0",
-    "company": {
-        "companyeesname": "PT Sedaya Pratama"
-    },
-    "surveygroup": {
-        "surveygroupdesc": "Testhelo"
-    }
+    "company": "PT Sedaya Pratama",
+    "surveygroup": "Testhelo"
   }
   `,
   })
@@ -342,15 +357,48 @@ export class GetModifyDetailResponse {
     example: `
     [
       {
-        "demography": "Directorate",
-        "valuedemography": "Value1",
-        "totalinvited_demography": 50
-      }
-      ,
+        "demography": "Company",
+        "listdemography": [
+            {
+                "demographyvalue": "Company",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 270
+      },
       {
-        "demography": "Division",
-        "valuedemography": "Value2",
-        "totalinvited_demography": 60
+        "demography": "Company 2",
+        "listdemography": [
+            {
+                "demographyvalue": "Company",
+                "inviteddemography": 270
+            },
+            {
+                "demographyvalue": "Company 2",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 540
+      },
+      {
+        "demography": "Jabatan",
+        "listdemography": [
+            {
+                "demographyvalue": "Jabatan",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 270
+      },
+      {
+        "demography": "Golongan",
+        "listdemography": [
+            {
+                "demographyvalue": "Golongan",
+                "inviteddemography": 270
+            }
+        ],
+        "totalinvited_demography": 270
       }
     ]
   `,
