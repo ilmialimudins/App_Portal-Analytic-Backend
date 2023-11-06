@@ -428,7 +428,8 @@ export class SpmInvitedRespondentsService {
     try {
       const data: DetailDTO | undefined = await this.invitedRespondentsRepo
         .createQueryBuilder('tsi')
-        .select('tsi.surveyid', 'suveyid')
+        .select('tsi.surveyid', 'surveyid')
+        .addSelect('tsi.surveygroupid', 'surveygroupid')
         .addSelect('tsi.companyid', 'companyid')
         .addSelect('tsi.startsurvey', 'startsurvey')
         .addSelect('tsi.closesurvey', 'closesurvey')
@@ -463,6 +464,10 @@ export class SpmInvitedRespondentsService {
         .addSelect('dm.demographycode', 'demographycode')
         .addSelect('tsi.totalinvited_company', 'totalinvited_company')
         .innerJoin('tsi.demography', 'dm')
+        .where(
+          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid',
+          { tahun_survey, companyid, surveygroupid },
+        )
         .groupBy(
           'dm.demographycode, dm.demographydesc, tsi.valuedemography, tsi.totalinvited_company',
         )
@@ -522,22 +527,24 @@ export class SpmInvitedRespondentsService {
     }
   }
 
-  // async changeTotalInvited(
-  //   { tahun_survey, company, surveygroup }: GetModifyDetailQueryDTO,
-  //   total: number,
-  // ) {
-  //   try {
-  //     const insert = await this.invitedRespondentsRepo
-  //       .createQueryBuilder()
-  //       .update(InvitedRespondents)
-  //       .set({ totalinvited_demography: total })
-  //       .where(
-  //         'tahun_survey = :tahun_survey AND mc.companyeesname = :company AND sg.surveygroupdesc = :surveygroup',
-  //         { tahun_survey, company, surveygroup },
-  //       )
-  //       .execute();
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  async changeTotalInvited(
+    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
+    total: number,
+  ) {
+    try {
+      const insert = await this.invitedRespondentsRepo
+        .createQueryBuilder()
+        .update(InvitedRespondents)
+        .set({ totalinvited_company: total })
+        .where(
+          'tahun_survey = :tahun_survey AND companyid = :companyid AND surveygroupid = :surveygroupid',
+          { tahun_survey, companyid, surveygroupid },
+        )
+        .execute();
+
+      return insert;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -9,6 +9,7 @@ import {
   Query,
   Res,
   BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -28,6 +29,7 @@ import {
 import {
   PostInvitedRespondentsBodyDTO,
   PostInvitedRespondentsResultsDTO,
+  PutTotalInvitedBodyDTO,
 } from './dto/post-spm-invited-respondents.dto';
 import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
 
@@ -124,16 +126,21 @@ export class SpmInvitedRespondentsController {
     }
   }
 
-  // @Post('modify-total-invited')
-  // async changeTotalInvited(
-  //   @Query() { tahun_survey, company, surveygroup }: GetModifyDetailQueryDTO,
-  //   @Body() body: number,
-  // ) {
-  //   try {
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  @Put('modify-total-invited')
+  async changeTotalInvited(
+    @Query()
+    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
+    @Body() body: PutTotalInvitedBodyDTO,
+  ) {
+    try {
+      return await this.spmInvitedRespondentsService.changeTotalInvited(
+        { tahun_survey, companyid, surveygroupid },
+        body.total,
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // @Get('/get-one')
   // @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })

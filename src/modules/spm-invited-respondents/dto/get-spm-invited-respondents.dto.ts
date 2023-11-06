@@ -4,12 +4,10 @@ import {
   IsArray,
   IsInt,
   IsNumber,
-  IsObject,
   IsString,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { SpmInvitedRespondentsDTO } from './spm-invited-respondents.dto';
 
 export class GetOneInvitedRespondentsQueryDTO {
   @ApiProperty()
@@ -288,26 +286,42 @@ export class GetModifyDetailQueryDTO {
   @IsString()
   surveygroupid: number;
 }
-
-export class CompanyDTO {
+export class DetailDTO {
   @ApiProperty()
-  @IsString()
-  companyeesname: string;
-}
-
-export class SurveyGroupDTO {
-  @ApiProperty()
-  @IsString()
-  surveygroupdesc: string;
-}
-export class DetailDTO extends SpmInvitedRespondentsDTO {
-  @ApiProperty()
-  @IsObject()
-  company: CompanyDTO;
+  @IsNumber()
+  surveyid: number;
 
   @ApiProperty()
-  @IsObject()
-  surveygroup: SurveyGroupDTO;
+  @IsNumber()
+  surveygroupid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  companyid: number;
+
+  @ApiProperty()
+  startsurvey: string;
+
+  @ApiProperty()
+  closesurvey: string;
+
+  @ApiProperty()
+  totalinvited_company: number;
+
+  @ApiProperty()
+  demographyid: number;
+
+  @ApiProperty()
+  valuedemography: string;
+
+  @ApiProperty()
+  tahun_survey: number;
+
+  @ApiProperty()
+  company: string;
+
+  @ApiProperty()
+  surveygroup: string;
 }
 
 export class DemoInvited {
@@ -323,7 +337,7 @@ export class GetModifyDetailResponse {
   @ApiProperty({
     example: `
   {
-    "suveyid": 1,
+    "surveygroupid": 1,
     "companyid": "1",
     "startsurvey": "2022-12-31T17:00:00.000Z",
     "closesurvey": "2023-01-30T17:00:00.000Z",
