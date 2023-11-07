@@ -10,6 +10,9 @@ export class MasterUserDto extends AbstractDto {
   username: string;
 
   @ApiProperty()
+  fullname: string;
+
+  @ApiProperty()
   email: string;
 
   @ApiProperty()
@@ -34,6 +37,7 @@ export class MasterUserDto extends AbstractDto {
     super(masterUserEntity, { exludeFields: true });
     this.userid = masterUserEntity.userid * 1;
     this.username = masterUserEntity.username;
+    this.fullname = masterUserEntity.fullname;
     this.email = masterUserEntity.email;
     this.companycode = masterUserEntity.companycode;
     this.companyname = masterUserEntity.companyname;

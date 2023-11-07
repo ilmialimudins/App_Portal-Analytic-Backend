@@ -79,12 +79,25 @@ export class MasterMenuService {
     }
   }
 
+  async checkDuplicateMenu(menuname: string) {
+    try {
+      const query = await this.masterMenuRepository
+        .createQueryBuilder('mastermenu')
+        .where('mastermenu.menuname = :menuname', { menuname })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastMasterMenuCode() {
     try {
       const query = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
         .select('mastermenu.menucode')
-        .orderBy('mastermenu.menucode', 'DESC')
+        .orderBy('mastermenu.menuid', 'DESC')
         .getOne();
 
       return query;

@@ -76,6 +76,36 @@ export class DemographyService {
     }
   }
 
+  async getDemographyAlias(demographyid: number) {
+    try {
+      const query = this.demographyRepository
+        .createQueryBuilder('demography')
+        .select(['demographyid, demographydesc, urutanfilter, demographyalias'])
+        .where('demography.demographyid = :demographyid', { demographyid })
+        .andWhere('demography.desc = :desc', { desc: 'Non-Default' })
+        .andWhere('demography.isdelete = :isdelete', { isdelete: false });
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async checkDuplicateDemographyAlias(demographyalias: string) {
+    try {
+      const query = await this.demographyRepository
+        .createQueryBuilder('demography')
+        .where('demography.demographyalias = :demographyalias', {
+          demographyalias,
+        })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getDemographyId(
     demographyid: number,
   ): Promise<DemographyDto | undefined> {
@@ -98,10 +128,8 @@ export class DemographyService {
         .insert()
         .into(Demography)
         .values({
-          demographycode: demography.demographycode,
-          demographydesc: demography.demographydesc,
           demographyalias: demography.demographyalias,
-          urutanfilter: demography.urutanfilter,
+          desc: 'Non-Default',
           isdelete: 'false',
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),

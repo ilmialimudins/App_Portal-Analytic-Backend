@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -48,7 +49,21 @@ export class SurveyGroupController {
     return this.surveyGroupService.getSurveyGroupId(surveygroupid);
   }
 
-  @Get('getLastSurveyGroupCode')
+  @Get('/checkDuplicateSurveygroup')
+  @ApiCreatedResponse({ type: SurveyGroupDto })
+  async checkDuplicateSurveygroup(@Query('surveygroup') surveygroup: string) {
+    const result = await this.surveyGroupService.checkDuplicateSurveygroup(
+      surveygroup,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return surveygroup;
+    }
+  }
+
+  @Get('/getLastSurveyGroupCode')
   @ApiCreatedResponse({ type: SurveyGroupDto })
   async getLastSurveyGroupCode() {
     return this.surveyGroupService.getLastSurveyGroupCode();

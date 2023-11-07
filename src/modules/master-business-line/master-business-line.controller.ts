@@ -7,6 +7,7 @@ import {
   Delete,
   Patch,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { BusinessLineService } from './master-business-line.service';
@@ -50,6 +51,22 @@ export class BusinessLineController {
     @Query('businesslineid') businesslineid: number,
   ): Promise<BusinessLineDto | undefined> {
     return this.businessLineService.getBusinessLineId(businesslineid);
+  }
+
+  @Get('/checkDuplicateBusinessline')
+  @ApiCreatedResponse({ type: BusinessLineDto })
+  async checkDuplicateBusinessline(
+    @Query('businessline') businessline: string,
+  ) {
+    const result = await this.businessLineService.checkDuplicateBusinessline(
+      businessline,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return businessline;
+    }
   }
 
   @Get('/getLastBusinessLineCode')

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -46,6 +47,18 @@ export class LocationController {
     @Query('locationid') locationid: number,
   ): Promise<LocationDto | undefined> {
     return this.locationService.getLocationId(locationid);
+  }
+
+  @Get('/checkDuplicateLocation')
+  @ApiCreatedResponse({ type: LocationDto })
+  async checkDuplicateLocation(@Query('location') location: string) {
+    const result = await this.locationService.checkDuplicateLocation(location);
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return location;
+    }
   }
 
   @Get('/getLastLocationCode')

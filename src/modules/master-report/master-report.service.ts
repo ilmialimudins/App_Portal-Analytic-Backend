@@ -58,7 +58,7 @@ export class MasterReportService {
       const query = await this.masterReportRepository
         .createQueryBuilder('masterreport')
         .select('masterreport.reportcode')
-        .orderBy('masterreport.reportcode', 'DESC')
+        .orderBy('masterreport.reportid', 'DESC')
         .getOne();
 
       return query;

@@ -48,12 +48,25 @@ export class MasterWorkSpaceService {
     }
   }
 
+  async checkDuplicateWorkspace(workspace: string) {
+    try {
+      const query = await this.masterWorkSpaceRepository
+        .createQueryBuilder('masterworkspace')
+        .where('masterworkspace.workspacename = :workspace', { workspace })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastMasterWorkSpaceCode() {
     try {
       const query = await this.masterWorkSpaceRepository
         .createQueryBuilder('masterworkspace')
         .select('masterworkspace.workspacecode')
-        .orderBy('masterworkspace.workspacecode', 'DESC')
+        .orderBy('masterworkspace.workspaceid', 'DESC')
         .getOne();
 
       return query;

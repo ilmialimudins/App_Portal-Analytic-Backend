@@ -88,12 +88,27 @@ export class BusinessLineService {
     }
   }
 
+  async checkDuplicateBusinessline(businessline: string) {
+    try {
+      const query = await this.businessLineRepository
+        .createQueryBuilder('businessline')
+        .where('businessline.businesslinedesc = :businessline', {
+          businessline,
+        })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastBusinessLineCode() {
     try {
       const query = await this.businessLineRepository
         .createQueryBuilder('businessline')
         .select('businessline.businesslinecode')
-        .orderBy('businessline.businesslinecode', 'DESC')
+        .orderBy('businessline.businesslineid', 'DESC')
         .getOne();
 
       return query;

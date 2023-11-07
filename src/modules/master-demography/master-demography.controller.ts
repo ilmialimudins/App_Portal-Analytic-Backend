@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -46,6 +47,28 @@ export class DemographyController {
     @Query('demographyid') demographyid: number,
   ): Promise<DemographyDto | undefined> {
     return this.demographyService.getDemographyId(demographyid);
+  }
+
+  @Get('/getDemographyAlias')
+  @ApiCreatedResponse({ type: DemographyDto })
+  async getDemographyAlias(@Query('demographyid') demographyid: number) {
+    return this.demographyService.getDemographyAlias(demographyid);
+  }
+
+  @Get('/checkDuplicateDemographyAlias')
+  @ApiCreatedResponse({ type: DemographyDto })
+  async checkDuplicateDemographyAlias(
+    @Query('demographyalias') demographyalias: string,
+  ) {
+    const result = await this.demographyService.checkDuplicateDemographyAlias(
+      demographyalias,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return demographyalias;
+    }
   }
 
   @Post('/createDemography')

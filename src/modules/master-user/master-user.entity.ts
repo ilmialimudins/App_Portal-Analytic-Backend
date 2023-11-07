@@ -20,6 +20,9 @@ export class MasterUser extends AbstractEntity<MasterUserDto> {
   @Column({ type: 'varchar', name: 'username', nullable: true })
   username: string;
 
+  @Column({ type: 'varchar', name: 'fullname', nullable: true })
+  fullname: string;
+
   @Column({ type: 'varchar', name: 'email', nullable: true })
   email: string;
 
