@@ -10,11 +10,8 @@ import { Company } from '../master-company-ees/master-company-ees.entity';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { UseDto } from 'src/decorators/use-dto.decorator';
 import { NgramDto } from './dto/ngram.dto';
-
-export enum QCodeEnum {
-  FOR = 'FOR',
-  UOR = 'UOR',
-}
+import { MasterQcode } from '../master-qcode/master-qcode.entity';
+import { MasterWord } from '../master-word/master-word.entity';
 
 @Entity('tbl_employeeopinionngram')
 @UseDto(NgramDto)
@@ -38,23 +35,23 @@ export class Ngram extends AbstractEntity<NgramDto> {
   @Column({ type: 'int', name: 'tahun_survey', nullable: true })
   tahun_survey: number;
 
-  @Column({ type: 'varchar', name: 'h_companyhashkey', nullable: true })
-  h_companyhashkey: string;
+  @Column({ nullable: true })
+  qcodeid: number;
+  @ManyToOne(() => MasterQcode, (qcode) => qcode.qcodeid)
+  @JoinColumn({
+    name: 'qcodeid',
+    referencedColumnName: 'qcodeid',
+  })
+  qcode: MasterQcode;
 
-  @Column({ type: 'varchar', name: 'h_surveygizmohashkey', nullable: true })
-  h_surveygizmohashkey: string;
-
-  @Column({ type: 'varchar', name: 'h_surveyquestionhashkey', nullable: true })
-  h_surveyquestionhashkey: string;
-
-  @Column({ type: 'varchar', name: 'h_wordhashkey', nullable: true })
-  h_wordhashkey: string;
-
-  @Column({ type: 'varchar', name: 'qcode', enum: QCodeEnum, nullable: true })
-  qcode: QCodeEnum;
-
-  @Column({ type: 'varchar', name: 'word', nullable: true })
-  word: string;
+  @Column({ nullable: true })
+  wordid: number;
+  @ManyToOne(() => MasterWord, (word) => word.wordid)
+  @JoinColumn({
+    name: 'wordid',
+    referencedColumnName: 'wordid',
+  })
+  word: MasterWord;
 
   @Column({ type: 'int', name: 'n', nullable: true })
   n: number;

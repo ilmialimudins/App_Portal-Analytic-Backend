@@ -13,7 +13,6 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ReplaceWordcloudService } from './replace-wordcloud.service';
 import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
-import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Response as ExpressResponse } from 'express';
 
@@ -29,6 +28,7 @@ export class ReplaceWordcloudController {
   async getAllReplaceWordcloud(
     @Query('page') page: number,
     @Query('take') take: number,
+    @Query('word') word: string,
   ): Promise<{
     data: ReplaceWordcloudDto[];
     page: number;
@@ -38,52 +38,10 @@ export class ReplaceWordcloudController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.replaceWordcloudService.getAllReplaceWordcloud(page, take);
-  }
-
-  @Get('/replaceWordcloudFilter')
-  @ApiOkResponse({ type: ReplaceWordcloudDto })
-  async getAllReplaceWordcloudFilter(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('companyname') companyname: string,
-    @Query('tahun_survey') tahun_survey: number,
-  ): Promise<{
-    data: ReplaceWordcloudDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.replaceWordcloudService.getAllReplaceWordcloudFilter(
+    return this.replaceWordcloudService.getAllReplaceWordcloud(
       page,
       take,
-      companyname,
-      tahun_survey,
-    );
-  }
-
-  @Get('/replaceWordcloudFilterOriginalText')
-  @ApiOkResponse({ type: ReplaceWordcloudDto })
-  async getAllReplaceWordcloudFilterOriginalText(
-    @Query('page') page: number,
-    @Query('take') take: number,
-    @Query('original_text') original_text: string,
-  ): Promise<{
-    data: ReplaceWordcloudDto[];
-    page: number;
-    take: number;
-    itemCount: number;
-    pageCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-  }> {
-    return this.replaceWordcloudService.getAllReplaceWordcloudFilterOriginalText(
-      page,
-      take,
-      original_text,
+      word,
     );
   }
 
@@ -93,20 +51,21 @@ export class ReplaceWordcloudController {
     return this.replaceWordcloudService.getReplaceWordcloudId(uuid);
   }
 
-  @Post('/validatewordcloud')
+  @Get('/checkDuplicateReplaceWordCloud')
   @ApiOkResponse({ type: ReplaceWordcloudDto })
-  async validateStopwords(@Body() replacewordcloud: AddReplaceWordcloudDto) {
-    const checkOne =
-      await this.replaceWordcloudService.checkOneReplaceWordcloud(
-        replacewordcloud,
+  async checkDuplicateReplaceWordCloud(
+    @Query('original_text') original_text: string,
+  ) {
+    const result =
+      await this.replaceWordcloudService.checkDuplicateReplaceWordCloud(
+        original_text,
       );
 
-    let isExist = false;
-    if (checkOne) {
-      isExist = true;
+    if (result) {
+      return { message: 'Duplicate Entry' };
+    } else {
+      return original_text;
     }
-
-    return { isExist };
   }
 
   @Post('/createReplaceWordcloud')
@@ -128,6 +87,35 @@ export class ReplaceWordcloudController {
     );
 
     return result;
+  }
+
+  @Patch('/updateReplaceWordcloud')
+  @ApiOkResponse({ type: ReplaceWordcloudDto })
+  async updateReplaceWordcloud(
+    @Query('uuid') uuid: string,
+    @Body() replacewordcloud: AddReplaceWordcloudDto,
+  ) {
+    const checkOne =
+      await this.replaceWordcloudService.checkOneReplaceWordcloud(
+        replacewordcloud,
+      );
+
+    if (checkOne) {
+      throw new Error('Duplicate Entry');
+    }
+
+    const result = this.replaceWordcloudService.updateReplaceWordcloud(
+      uuid,
+      replacewordcloud,
+    );
+
+    return result;
+  }
+
+  @Delete('/deleteReplaceWordcloud')
+  @ApiOkResponse({ type: ReplaceWordcloudDto })
+  async deleteReplaceWordcloud(@Query('uuid') uuid: string) {
+    return this.replaceWordcloudService.deleteReplaceWordcloud(uuid);
   }
 
   @Post('/generateExcelReplaceWordcloud')
@@ -154,23 +142,5 @@ export class ReplaceWordcloudController {
 
     await workbook.xlsx.write(res);
     res.send('File Send');
-  }
-
-  @Patch('/updateReplaceWordcloud')
-  @ApiOkResponse({ type: ReplaceWordcloudDto })
-  async updateReplaceWordcloud(
-    @Query('uuid') uuid: string,
-    @Body() ReplaceWordcloud: UpdateReplaceWordcloudDto,
-  ) {
-    return this.replaceWordcloudService.updateReplaceWordcloud(
-      uuid,
-      ReplaceWordcloud,
-    );
-  }
-
-  @Delete('/deleteReplaceWordcloud')
-  @ApiOkResponse({ type: ReplaceWordcloudDto })
-  async deleteReplaceWordcloud(@Query('uuid') uuid: string) {
-    return this.replaceWordcloudService.deleteReplaceWordcloud(uuid);
   }
 }
