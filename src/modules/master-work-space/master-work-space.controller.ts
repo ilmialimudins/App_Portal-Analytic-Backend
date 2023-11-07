@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -34,6 +35,20 @@ export class MasterWorkSpaceController {
     @Query('workspaceid') workspaceid: number,
   ): Promise<MasterWorkSpaceDto | undefined> {
     return this.masterWorkSpaceService.getMasterWorkspaceId(workspaceid);
+  }
+
+  @Get('/checkDuplicateWorkspace')
+  @ApiCreatedResponse({ type: MasterWorkSpaceDto })
+  async checkDuplicateWorkspace(@Query('workspace') workspace: string) {
+    const result = await this.masterWorkSpaceService.checkDuplicateWorkspace(
+      workspace,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return workspace;
+    }
   }
 
   @Get('/getLastMasterWorkSpaceCode')

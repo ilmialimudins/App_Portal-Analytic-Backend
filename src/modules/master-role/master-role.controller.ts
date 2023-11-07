@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { MasterRoleService } from './master-role.service';
@@ -46,6 +47,20 @@ export class MasterRoleController {
     @Query('roleid') roleid: number,
   ): Promise<MasterRoleDto | undefined> {
     return this.masterRoleService.getMasterRoleId(roleid);
+  }
+
+  @Get('/checkDuplicateMasterRole')
+  @ApiCreatedResponse({ type: MasterRoleDto })
+  async checkDuplicateMasterRole(@Query('rolename') rolename: string) {
+    const result = await this.masterRoleService.checkDuplicateMasterRole(
+      rolename,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return rolename;
+    }
   }
 
   @Get('/getLastMasterRoleCode')

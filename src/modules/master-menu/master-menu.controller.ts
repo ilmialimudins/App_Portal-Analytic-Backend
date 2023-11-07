@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -34,6 +35,18 @@ export class MasterMenuController {
   @ApiCreatedResponse({ type: MasterMenuDto })
   async getMasterMenu() {
     return this.masterMenuService.getAllMasterMenu();
+  }
+
+  @Get('/checkDuplicateMenu')
+  @ApiCreatedResponse({ type: MasterMenuDto })
+  async checkDuplicateMenu(@Query('menuname') menuname: string) {
+    const result = await this.masterMenuService.checkDuplicateMenu(menuname);
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return menuname;
+    }
   }
 
   @Get('/getMasterMenuParent')

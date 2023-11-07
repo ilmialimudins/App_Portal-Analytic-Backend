@@ -7,6 +7,7 @@ import {
   Query,
   Patch,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -51,6 +52,30 @@ export class CompanyController {
     @Query('companyid') companyid: number,
   ): Promise<CompanyDto | undefined> {
     return this.companyService.getCompanyId(companyid);
+  }
+
+  @Get('/checkDuplicateCompany')
+  @ApiCreatedResponse({ type: CompanyDto })
+  async checkDuplicateCompany(
+    @Query('companyees') companyees: string,
+    @Query('companymps') companymps: string,
+    @Query('alias') alias: string,
+  ) {
+    const result = await this.companyService.checkDuplicateCompany(
+      companyees,
+      companymps,
+      alias,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return {
+        CompanyEESName: companyees,
+        CompanyMPSName: companymps,
+        CompanyAlias: alias,
+      };
+    }
   }
 
   @Get('/getLastCompanyCode')

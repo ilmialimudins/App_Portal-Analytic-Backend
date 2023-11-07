@@ -86,12 +86,27 @@ export class BusinessGroupService {
     }
   }
 
+  async checkDuplicateBusinessgroup(businessgroup: string) {
+    try {
+      const query = await this.businessGroupRepository
+        .createQueryBuilder('businessgroup')
+        .where('businessgroup.businessgroupdesc = :businessgroup', {
+          businessgroup,
+        })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastBusinessGroupCode() {
     try {
       const query = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .select('businessgroup.businessgroupcode')
-        .orderBy('businessgroup.businessgroupcode', 'DESC')
+        .orderBy('businessgroup.businessgroupid', 'DESC')
         .getOne();
 
       return query;

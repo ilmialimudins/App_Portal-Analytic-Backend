@@ -81,12 +81,25 @@ export class LocationService {
     }
   }
 
+  async checkDuplicateLocation(location: string) {
+    try {
+      const query = await this.locationRepository
+        .createQueryBuilder('location')
+        .where('location.locationdesc = :location', { location })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastLocationCode() {
     try {
       const query = await this.locationRepository
         .createQueryBuilder('location')
         .select('location.locationcode')
-        .orderBy('location.locationcode', 'DESC')
+        .orderBy('location.locationid', 'DESC')
         .getOne();
 
       return query;

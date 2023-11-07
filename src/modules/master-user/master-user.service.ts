@@ -39,6 +39,7 @@ export class MasterUserService {
           'userid',
           'companycode',
           'username',
+          'fullname',
           'email',
           'npk',
           'phonenumber',
@@ -93,6 +94,29 @@ export class MasterUserService {
     }
   }
 
+  async checkDuplicateMasterUser(username: string, email: string, npk: string) {
+    try {
+      let query = this.masterUserRepository.createQueryBuilder('masteruser');
+
+      if (username) {
+        query = query.where('masteruser.username = :username', { username });
+      }
+
+      if (email) {
+        query = query.where('masteruser.email = :email', { email });
+      }
+
+      if (npk) {
+        query = query.where('masteruser.npk = :npk', { npk });
+      }
+
+      const data = query.getOne();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getMasterUserEmail(email: string): Promise<MasterUserDto | undefined> {
     try {
       const searchableEmail = email.trim().toLocaleLowerCase();
@@ -125,6 +149,7 @@ export class MasterUserService {
         .values({
           npk: masteruser.npk,
           username: masteruser.username,
+          fullname: masteruser.fullname,
           phonenumber: masteruser.phonenumber,
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,
@@ -149,6 +174,7 @@ export class MasterUserService {
         .set({
           npk: masteruser.npk,
           username: masteruser.username,
+          fullname: masteruser.fullname,
           phonenumber: masteruser.phonenumber,
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,

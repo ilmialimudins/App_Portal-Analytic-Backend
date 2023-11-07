@@ -86,12 +86,25 @@ export class SurveyGroupService {
     }
   }
 
+  async checkDuplicateSurveygroup(surveygroup: string) {
+    try {
+      const query = await this.surveyGroupRepository
+        .createQueryBuilder('surveygroup')
+        .where('surveygroup.surveygroupdesc = :surveygroup', { surveygroup })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastSurveyGroupCode() {
     try {
       const query = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .select('surveygroup.surveygroupcode')
-        .orderBy('surveygroup.surveygroupcode', 'DESC')
+        .orderBy('surveygroup.surveygroupid', 'DESC')
         .getOne();
 
       return query;

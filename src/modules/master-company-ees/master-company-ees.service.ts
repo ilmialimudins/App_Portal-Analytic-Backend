@@ -103,12 +103,47 @@ export class CompanyService {
     }
   }
 
+  async checkDuplicateCompany(
+    companyees: string,
+    companymps: string,
+    alias: string,
+  ) {
+    try {
+      let query = this.companyRepository.createQueryBuilder('mastercompany');
+
+      if (companyees) {
+        query = query.where('mastercompany.companyeesname = :companyees', {
+          companyees,
+        });
+      }
+
+      if (companymps) {
+        query = query.where('mastercompany.companympsname = :companymps', {
+          companymps,
+        });
+      }
+
+      if (alias) {
+        query = query.where(
+          '(mastercompany.aliascompany1 = :alias OR mastercompany.aliascompany2 = :alias OR mastercompany.aliascompany3 = :alias)',
+          { alias },
+        );
+      }
+
+      const data = query.getOne();
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastCompanyCode() {
     try {
       const query = await this.companyRepository
         .createQueryBuilder('company')
         .select('company.companycode')
-        .orderBy('company.companycode', 'DESC')
+        .orderBy('company.companyid', 'DESC')
         .getOne();
 
       return query;

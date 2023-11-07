@@ -81,12 +81,25 @@ export class MasterRoleService {
     }
   }
 
+  async checkDuplicateMasterRole(rolename: string) {
+    try {
+      const query = await this.masterRoleRepository
+        .createQueryBuilder('masterrole')
+        .where('masterrole.rolename = :rolename', { rolename })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLastMasterRoleCode() {
     try {
       const query = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
         .select('masterrole.rolecode')
-        .orderBy('masterrole.rolecode', 'DESC')
+        .orderBy('masterrole.roleid', 'DESC')
         .getOne();
 
       return query;

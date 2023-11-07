@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -38,6 +39,26 @@ export class MasterUserController {
     hasNextPage: boolean;
   }> {
     return this.masteruserService.getAllMasterUser(page, take, username);
+  }
+
+  @Get('/checkDuplicateMasterUser')
+  @ApiCreatedResponse({ type: MasterUserDto })
+  async checkDuplicateMasterUser(
+    @Query('username') username: string,
+    @Query('email') email: string,
+    @Query('npk') npk: string,
+  ) {
+    const result = await this.masteruserService.checkDuplicateMasterUser(
+      username,
+      email,
+      npk,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return { username: username, email: email, npk: npk };
+    }
   }
 
   @Get('/getMasterUserId')

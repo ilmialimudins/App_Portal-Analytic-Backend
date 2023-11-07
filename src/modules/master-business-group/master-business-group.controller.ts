@@ -7,6 +7,7 @@ import {
   Query,
   UseGuards,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
@@ -50,6 +51,22 @@ export class BusinessGroupController {
     @Query('businessgroupid') businessgroupid: number,
   ): Promise<BusinessGroupDto | undefined> {
     return this.businessGroupService.getBusinessGroupId(businessgroupid);
+  }
+
+  @Get('/checkDuplicateBusinessgroup')
+  @ApiCreatedResponse({ type: BusinessGroupDto })
+  async checkDuplicateBusinessgroup(
+    @Query('businessgroup') businessgroup: string,
+  ) {
+    const result = await this.businessGroupService.checkDuplicateBusinessgroup(
+      businessgroup,
+    );
+
+    if (result) {
+      throw new BadRequestException('Duplicate Entry');
+    } else {
+      return businessgroup;
+    }
   }
 
   @Get('/getLastBusinessGroupCode')

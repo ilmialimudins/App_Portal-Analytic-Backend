@@ -57,7 +57,7 @@ export class MasterSectionService {
       const query = await this.masterSectionRepository
         .createQueryBuilder('mastersection')
         .select('mastersection.sectioncode')
-        .orderBy('mastersection.sectioncode', 'DESC')
+        .orderBy('mastersection.sectionid', 'DESC')
         .getOne();
 
       return query;

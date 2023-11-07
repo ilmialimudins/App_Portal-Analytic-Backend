@@ -15,6 +15,11 @@ export class AddMasterUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  readonly fullname: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   readonly phonenumber: string;
 
   @ApiPropertyOptional()
