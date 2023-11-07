@@ -249,11 +249,11 @@ export class GetModifyListManyDTO {
 export class ListDemographyValueDTO {
   @ApiProperty()
   @IsString()
-  demographyvalue: string;
+  demographyvalue?: string;
 
   @ApiProperty()
   @IsNumber()
-  inviteddemography: number;
+  inviteddemography?: number;
 }
 export class GetModifyDemographyDTO {
   @ApiProperty()

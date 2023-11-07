@@ -30,13 +30,18 @@ import {
   GetModifyDetailQueryDTO,
   GetModifyDetailResponse,
   DetailDTO,
+  ListDemographyValueDTO,
 } from './dto/get-spm-invited-respondents.dto';
 import { addTableInvitedTable } from 'src/common/utils/addExcelTable';
 import {
+  PostAddModifyValueBodyDTO,
   PostInvitedRespondentsBodyDTO,
   PostInvitedRespondentsResultsDTO,
 } from './dto/post-spm-invited-respondents.dto';
-import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
+import {
+  DelInvitedRespondentsQueryDTO,
+  DelSectionModifyDTO,
+} from './dto/delete-spm-invited-respondents.dto';
 import { Demography } from '../master-demography/master-demography.entity';
 
 @Injectable()
@@ -51,6 +56,10 @@ export class SpmInvitedRespondentsService {
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
+
+  private currentDate = new Date();
+  private offset = 7 * 60;
+  private now = new Date(this.currentDate.getTime() + this.offset * 60 * 1000);
 
   public async getOneService({
     companyid,
@@ -333,9 +342,6 @@ export class SpmInvitedRespondentsService {
     surveygroupid,
   }: DelInvitedRespondentsQueryDTO): Promise<DeleteResult> {
     try {
-      const currentDate = new Date();
-      const offset = 7 * 60;
-      const now = new Date(currentDate.getTime() + offset * 60 * 1000);
       const updateDelete = await this.getOneService({
         companyid,
         surveyid,
@@ -346,7 +352,7 @@ export class SpmInvitedRespondentsService {
       });
 
       return await this.invitedRespondentsRepo.update(updateDelete.id, {
-        sourcecreatedmodifiedtime: now.toISOString(),
+        sourcecreatedmodifiedtime: this.now.toISOString(),
         is_delete: '1',
       });
     } catch (error) {
@@ -442,7 +448,7 @@ export class SpmInvitedRespondentsService {
         .innerJoin('tsi.company', 'c')
         .innerJoin('tsi.surveygroup', 's')
         .where(
-          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid',
+          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid AND tsi.is_delete = 0',
           { tahun_survey, companyid, surveygroupid },
         )
         .getRawOne();
@@ -465,7 +471,7 @@ export class SpmInvitedRespondentsService {
         .addSelect('tsi.totalinvited_company', 'totalinvited_company')
         .innerJoin('tsi.demography', 'dm')
         .where(
-          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid',
+          'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid AND tsi.is_delete = 0',
           { tahun_survey, companyid, surveygroupid },
         )
         .groupBy(
@@ -537,12 +543,122 @@ export class SpmInvitedRespondentsService {
         .update(InvitedRespondents)
         .set({ totalinvited_company: total })
         .where(
-          'tahun_survey = :tahun_survey AND companyid = :companyid AND surveygroupid = :surveygroupid',
+          'tahun_survey = :tahun_survey AND companyid = :companyid AND surveygroupid = :surveygroupid AND is_delete = 0',
           { tahun_survey, companyid, surveygroupid },
         )
         .execute();
 
       return insert;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addDemographyValueModify(body: PostAddModifyValueBodyDTO) {
+    try {
+      const findId = await this.demographyRepository.findOne({
+        where: {
+          demographycode: body.demographycode,
+        },
+      });
+
+      if (typeof findId?.demographyid !== 'undefined') {
+        const insert = await this.createRespondent({
+          surveyid: body.surveyid,
+          companyid: body.companyid,
+          surveygroupid: body.surveygroupid,
+          valuedemography: body.valuedemography,
+          demographyid: findId.demographyid,
+          tahun_survey: body.tahun_survey,
+          startsurvey: body.startsurvey || this.now.toISOString(),
+          closesurvey: body.closesurvey,
+          totalinvited_demography: body.totalinvited_demography,
+          totalinvited_company: body.totalinvited_company,
+        });
+
+        const result: ListDemographyValueDTO = {
+          demographyvalue: insert?.valuedemography,
+          inviteddemography: insert?.totalinvited_company,
+        };
+
+        return result;
+      }
+
+      throw new HttpException(
+        `code: ${body.demographycode} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async removeValueDemo({
+    companyid,
+    surveygroupid,
+    tahun_survey,
+    demography,
+    valuedemography,
+  }) {
+    try {
+      const findSelected = await this.invitedRespondentsRepo
+        .createQueryBuilder('tsi')
+        .select('tsi.id', 'id')
+        .innerJoin('tsi.demography', 'dm')
+        .where(
+          'tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid AND tsi.tahun_survey = :tahun_survey AND tsi.valuedemography = :valuedemography AND dm.demographydesc = :demography',
+          {
+            companyid,
+            surveygroupid,
+            tahun_survey,
+            demography,
+            valuedemography,
+          },
+        )
+        .getRawOne();
+
+      return await this.invitedRespondentsRepo.update(findSelected?.id, {
+        sourcecreatedmodifiedtime: this.now.toISOString(),
+        is_delete: '1',
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async removeSectionDemo({
+    companyid,
+    surveygroupid,
+    tahun_survey,
+    demography,
+  }: DelSectionModifyDTO) {
+    try {
+      const data = await this.invitedRespondentsRepo
+        .createQueryBuilder('tsi')
+        .select('tsi.demographyid', 'demographyid')
+        .innerJoin('tsi.demography', 'dm')
+        .where(
+          "tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid AND tsi.tahun_survey = :tahun_survey AND dm.demographydesc = :demography AND is_delete = '0'",
+          { companyid, surveygroupid, tahun_survey, demography },
+        )
+        .getRawOne();
+      return await this.invitedRespondentsRepo
+        .createQueryBuilder()
+        .update(InvitedRespondents)
+        .set({
+          sourcecreatedmodifiedtime: this.now.toISOString(),
+          is_delete: '1',
+        })
+        .where(
+          'companyid = :companyid AND surveygroupid = :surveygroupid AND tahun_survey = :tahun_survey AND demographyid = :demographyid',
+          {
+            companyid,
+            surveygroupid,
+            tahun_survey,
+            demographyid: data?.demographyid,
+          },
+        )
+        .execute();
     } catch (error) {
       throw error;
     }

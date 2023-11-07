@@ -25,13 +25,19 @@ import {
   GetModifyResponse,
   GetModifyDetailQueryDTO,
   GetModifyDetailResponse,
+  ListDemographyValueDTO,
 } from './dto/get-spm-invited-respondents.dto';
 import {
+  PostAddModifyValueBodyDTO,
   PostInvitedRespondentsBodyDTO,
   PostInvitedRespondentsResultsDTO,
   PutTotalInvitedBodyDTO,
 } from './dto/post-spm-invited-respondents.dto';
-import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
+import {
+  DelInvitedRespondentsQueryDTO,
+  DelSectionModifyDTO,
+  DelValueDemoModifyDTO,
+} from './dto/delete-spm-invited-respondents.dto';
 
 @ApiTags('Invited Respondents')
 @Controller('invited-respondents')
@@ -137,6 +143,61 @@ export class SpmInvitedRespondentsController {
         { tahun_survey, companyid, surveygroupid },
         body.total,
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('add-demographyvalue')
+  @ApiOkResponse({ type: ListDemographyValueDTO })
+  async addValueDemography(
+    @Body() body: PostAddModifyValueBodyDTO,
+  ): Promise<ListDemographyValueDTO> {
+    try {
+      return await this.spmInvitedRespondentsService.addDemographyValueModify(
+        body,
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('delete-modify-demography')
+  async deleteSectionValue(
+    @Query()
+    {
+      companyid,
+      tahun_survey,
+      surveygroupid,
+      valuedemography,
+      demography,
+    }: DelValueDemoModifyDTO,
+  ) {
+    try {
+      return await this.spmInvitedRespondentsService.removeValueDemo({
+        companyid,
+        tahun_survey,
+        surveygroupid,
+        valuedemography,
+        demography,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('delete-modify-section')
+  async deleteSectionModify(
+    @Query()
+    { companyid, tahun_survey, surveygroupid, demography }: DelSectionModifyDTO,
+  ) {
+    try {
+      return await this.spmInvitedRespondentsService.removeSectionDemo({
+        companyid,
+        tahun_survey,
+        surveygroupid,
+        demography,
+      });
     } catch (error) {
       throw error;
     }
