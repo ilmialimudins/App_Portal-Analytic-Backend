@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PostInvitedRespondentsBodyDTO {
   @ApiProperty()
@@ -73,4 +73,47 @@ export class PutTotalInvitedBodyDTO {
   @ApiProperty()
   @IsNumber()
   total: number;
+}
+
+export class PostAddModifyValueBodyDTO {
+  @ApiProperty()
+  @IsNumber()
+  readonly companyid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly surveyid: number;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly surveygroupid: number;
+
+  @ApiProperty()
+  @IsString()
+  readonly valuedemography: string;
+
+  @ApiProperty()
+  @IsString()
+  readonly demographycode: string;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly tahun_survey: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  readonly startsurvey?: string;
+
+  @ApiProperty()
+  @IsString()
+  readonly closesurvey: string;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly totalinvited_demography: number;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly totalinvited_company: number;
 }
