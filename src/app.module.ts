@@ -12,7 +12,6 @@ import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.services';
 import { ResponseTransformInterceptor } from 'src/interceptors/response-transform.interceptor';
 import { SentryModule } from './sentry/sentry.module';
-// import { MasterCompanyModule } from './modules/master-company/master-company.module';
 import { FactorModule } from './modules/factor/factor.module';
 import { PredEngagamentValueModule } from './modules/pred-engagement-value/pred-engagement-value.module';
 import { MasterQcodeModule } from './modules/master-qcode/master-qcode.module';
@@ -49,7 +48,6 @@ import { ClaModule } from './modules/master-cla/master-cla.module';
 import { DirectReviewModule } from './modules/master-direct-review/master-direct-review.module';
 import { ModellingTypeModule } from './modules/master-modelling-type/master-modelling-type.module';
 import { OwnershipStatusModule } from './modules/master-ownership-status/master-ownership-status.module';
-import { PowerBIModule } from './modules/powerbi-token-temp/powerbi-temp.module';
 import { SurveyValidationModule } from './modules/survey-validation/survey-validation.module';
 import { MonitoringValidationModule } from './modules/monitoring-validation/monitoring-validation.module';
 import { ValidateSurveyResultModule } from './modules/validate-survey-result/validate-survey-result.module';
@@ -82,8 +80,6 @@ const ApiModules = [
   ValidateSurveyResultModule,
   SurveyValidationModule,
   MonitoringValidationModule,
-  PowerBIModule,
-  // MasterCompanyModule,
   FactorModule,
   PredEngagamentValueModule,
   DuendeAuthenticationModule,
