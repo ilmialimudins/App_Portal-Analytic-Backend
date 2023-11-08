@@ -1,7 +1,11 @@
+import { UseDto } from 'src/decorators/use-dto.decorator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
+import { AbstractEntity } from 'src/common/abstract.entity';
 
 @Entity('tbl_validatesurveyresult')
-export class ValidateSurveyResult {
+@UseDto(ValidateSurveyResultDto)
+export class ValidateSurveyResult extends AbstractEntity<ValidateSurveyResultDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
@@ -53,8 +57,11 @@ export class ValidateSurveyResult {
   @Column({ type: 'varchar', name: 'jobtitle', nullable: true })
   jobtitle: string;
 
-  @Column({ type: 'varchar', name: 'location', nullable: true })
-  location: string;
+  @Column({ type: 'varchar', name: 'locationname', nullable: true })
+  locationname: string;
+
+  @Column({ type: 'varchar', name: 'age', nullable: true })
+  age: string;
 
   @Column({ type: 'varchar', name: 'agegeneration', nullable: true })
   agegeneration: string;
@@ -92,8 +99,8 @@ export class ValidateSurveyResult {
   @Column({ type: 'varchar', name: 'statuskaryawan', nullable: true })
   statuskaryawan: string;
 
-  @Column({ type: 'varchar', name: 'function', nullable: true })
-  funcion: string;
+  @Column({ type: 'varchar', name: 'functionname', nullable: true })
+  functionname: string;
 
   @Column({ type: 'varchar', name: 'salesoffice', nullable: true })
   salesoffice: string;
