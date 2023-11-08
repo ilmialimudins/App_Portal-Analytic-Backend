@@ -42,7 +42,7 @@ export class BusinessGroupService {
 
       const data = await query
         .andWhere('businessgroup.isdelete = :isdelete', { isdelete: false })
-        .orderBy('businessgroupcode')
+        .orderBy('businessgroup.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

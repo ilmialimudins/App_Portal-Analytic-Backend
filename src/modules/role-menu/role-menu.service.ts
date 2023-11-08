@@ -25,7 +25,7 @@ export class RoleMenuService {
           'mastermenu.menuname',
         ])
         .where('rolemenu.isdelete = :isdelete', { isdelete: false })
-        .orderBy('masterrole.rolemenu')
+        .orderBy('masterrole.rolemenu', 'ASC')
         .getRawMany();
 
       return data;

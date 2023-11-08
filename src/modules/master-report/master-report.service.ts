@@ -29,7 +29,7 @@ export class MasterReportService {
           'masterworkspace.workspacepowerbiid',
         ])
         .where('masterreport.isdelete = :isdelete', { isdelete: false })
-        .orderBy('masterreport.reportname')
+        .orderBy('masterreport.reportname', 'ASC')
         .getRawMany();
 
       return data;

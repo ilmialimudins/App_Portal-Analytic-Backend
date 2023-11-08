@@ -29,22 +29,27 @@ export class SurveyValidationService {
     try {
       const offset = (page - 1) * take;
 
+      const date = new Date(dateversion);
+
       let query = this.surveyValidationRepository
         .createQueryBuilder('surveyvalidation')
+        .leftJoin('surveyvalidation.complete', 'complete')
         .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
-        ]);
+          'surveyvalidation.id',
+          'surveyvalidation.company',
+          'surveyvalidation.surveyid',
+          'surveyvalidation.titlesurvey',
+          'surveyvalidation.dateversion',
+          'surveyvalidation.username',
+          'complete.status',
+        ])
+        .distinct(true);
 
       if (company && dateversion && username) {
         query = query
           .where('surveyvalidation.company = :company', { company })
-          .andWhere('surveyvalidation.dateversion = :dateversion', {
-            dateversion,
+          .andWhere('surveyvalidation.dateversion = :date', {
+            date: date.toISOString(),
           })
           .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
             username: `%${username.toLowerCase()}%`,
@@ -52,13 +57,13 @@ export class SurveyValidationService {
       } else if (company && dateversion) {
         query = query
           .where('surveyvalidation.company = :company', { company })
-          .andWhere('surveyvalidation.dateversion = :dateversion', {
-            dateversion,
+          .andWhere('surveyvalidation.dateversion = :date', {
+            date: date.toISOString(),
           });
       } else if (username && dateversion) {
         query = query
-          .where('surveyvalidation.dateversion = :dateversion', {
-            dateversion,
+          .where('surveyvalidation.dateversion = :date', {
+            date: date.toISOString(),
           })
           .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
             username: `%${username.toLowerCase()}%`,
@@ -72,8 +77,8 @@ export class SurveyValidationService {
       } else if (company) {
         query = query.where('surveyvalidation.company = :company', { company });
       } else if (dateversion) {
-        query = query.where('surveyvalidation.dateversion = :dateversion', {
-          dateversion,
+        query = query.where('surveyvalidation.dateversion = :date', {
+          date: date.toISOString(),
         });
       } else if (username) {
         query = query.where('LOWER(surveyvalidation.username) LIKE :username', {
@@ -85,7 +90,9 @@ export class SurveyValidationService {
         .andWhere('surveyvalidation.validation = :validation', {
           validation: '0',
         })
-        .orderBy('dateversion')
+        .andWhere('surveyvalidation.company = complete.company')
+        .andWhere('surveyvalidation.surveyid = complete.surveyid')
+        .orderBy('dateversion', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -94,6 +101,8 @@ export class SurveyValidationService {
         .andWhere('surveyvalidation.validation = :validation', {
           validation: '0',
         })
+        .andWhere('surveyvalidation.company = complete.company')
+        .andWhere('surveyvalidation.surveyid = complete.surveyid')
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -132,22 +141,25 @@ export class SurveyValidationService {
     try {
       const offset = (page - 1) * take;
 
+      const date = new Date(dateversion);
+
       let query = this.surveyValidationRepository
         .createQueryBuilder('surveyvalidation')
         .select([
-          'id',
-          'company',
-          'surveyid',
-          'titlesurvey',
-          'dateversion',
-          'username',
+          'surveyvalidation.id',
+          'surveyvalidation.company',
+          'surveyvalidation.surveyid',
+          'surveyvalidation.titlesurvey',
+          'surveyvalidation.dateversion',
+          'surveyvalidation.username',
+          'surveyvalidation.validateddate',
         ]);
 
       if (company && dateversion && username) {
         query = query
           .where('surveyvalidation.company = :company', { company })
-          .andWhere('surveyvalidation.dateversion = :dateversion', {
-            dateversion,
+          .andWhere('surveyvalidation.dateversion = :date', {
+            date: date.toISOString(),
           })
           .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
             username: `%${username.toLowerCase()}%`,
@@ -155,13 +167,13 @@ export class SurveyValidationService {
       } else if (company && dateversion) {
         query = query
           .where('surveyvalidation.company = :company', { company })
-          .andWhere('surveyvalidation.dateversion = :dateversion', {
-            dateversion,
+          .andWhere('surveyvalidation.dateversion = :date', {
+            date: date.toISOString(),
           });
       } else if (username && dateversion) {
         query = query
-          .where('surveyvalidation.dateversion = :dateversion', {
-            dateversion,
+          .where('surveyvalidation.dateversion = :date', {
+            date: date.toISOString(),
           })
           .andWhere('LOWER(surveyvalidation.username) LIKE :username', {
             username: `%${username.toLowerCase()}%`,
@@ -175,8 +187,8 @@ export class SurveyValidationService {
       } else if (company) {
         query = query.where('surveyvalidation.company = :company', { company });
       } else if (dateversion) {
-        query = query.where('surveyvalidation.dateversion = :dateversion', {
-          dateversion,
+        query = query.where('surveyvalidation.dateversion = :date', {
+          date: date.toISOString(),
         });
       } else if (username) {
         query = query.where('LOWER(surveyvalidation.username) LIKE :username', {
@@ -188,7 +200,7 @@ export class SurveyValidationService {
         .andWhere('surveyvalidation.validation = :validation', {
           validation: '1',
         })
-        .orderBy('dateversion')
+        .orderBy('dateversion', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -217,12 +229,38 @@ export class SurveyValidationService {
     }
   }
 
+  async getIncompleteResponse() {
+    try {
+      const query = await this.surveyValidationRepository
+        .createQueryBuilder('surveyvalidation')
+        .leftJoin('surveyvalidation.complete', 'complete')
+        .select([
+          'surveyvalidation.surveyid',
+          'surveyvalidation.titlesurvey',
+          'complete.respondentid',
+        ])
+        .where('surveyvalidation.validation = :validation', {
+          validation: '0',
+        })
+        .andWhere('surveyvalidation.company = complete.company')
+        .andWhere('surveyvalidation.surveyid = complete.surveyid')
+        .getRawMany();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateValidation(id: number) {
     try {
       const query = await this.surveyValidationRepository
         .createQueryBuilder()
         .update(SurveyValidation)
-        .set({ validation: '1' })
+        .set({
+          validation: '1',
+          validateddate: new Date(),
+        })
         .where('id = :id', { id })
         .execute();
 

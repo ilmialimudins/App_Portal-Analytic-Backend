@@ -66,7 +66,11 @@ export class CompanyService {
       }
 
       const data = await query
-        .orderBy({ 'company.isdelete': 'ASC', 'company.companyeesname': 'ASC' })
+        .orderBy({
+          'company.sourcecreatedmodifiedtime': 'DESC',
+          'company.isdelete': 'ASC',
+          'company.companyeesname': 'ASC',
+        })
         .offset(offset)
         .limit(take)
         .getRawMany();

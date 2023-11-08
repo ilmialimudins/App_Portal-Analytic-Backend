@@ -1,7 +1,15 @@
 import { UseDto } from 'src/decorators/use-dto.decorator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { SurveyValidationDto } from './dto/survey-validation.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
+import { CompleteCheckingSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
 
 @Entity('tbl_surveyvalidation')
 @UseDto(SurveyValidationDto)
@@ -15,8 +23,14 @@ export class SurveyValidation extends AbstractEntity<SurveyValidationDto> {
   @Column({ type: 'varchar', name: 'company', nullable: false })
   company: string;
 
-  @Column({ type: 'varchar', name: 'surveyid', nullable: false })
+  @Column({ nullable: false })
   surveyid: string;
+  @OneToOne(() => CompleteCheckingSurvey, (complete) => complete.surveyid)
+  @JoinColumn({
+    name: 'surveyid',
+    referencedColumnName: 'surveyid',
+  })
+  complete: CompleteCheckingSurvey;
 
   @Column({ type: 'varchar', name: 'titlesurvey', nullable: false })
   titlesurvey: string;
@@ -27,6 +41,6 @@ export class SurveyValidation extends AbstractEntity<SurveyValidationDto> {
   @Column({ type: 'varchar', name: 'username', nullable: false })
   username: string;
 
-  @Column({ type: 'varchar', name: 'validateddate', nullable: false })
+  @CreateDateColumn()
   validateddate: Date;
 }

@@ -82,7 +82,7 @@ export class MonitoringValidationService {
       }
 
       const data = await query
-        .orderBy('monitoringvalidation.uploadtime')
+        .orderBy('monitoringvalidation.uploadtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

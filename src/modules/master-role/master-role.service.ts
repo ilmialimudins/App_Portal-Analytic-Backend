@@ -41,7 +41,7 @@ export class MasterRoleService {
 
       const data = await query
         .andWhere('masterrole.isdelete = :isdelete', { isdelete: false })
-        .orderBy('rolename')
+        .orderBy('masterrole.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

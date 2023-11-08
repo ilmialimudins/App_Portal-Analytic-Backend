@@ -60,7 +60,7 @@ export class RoleUserService {
 
       const data = await query
         .andWhere('roleuser.isdelete = :isdelete', { isdelete: false })
-        .orderBy('masteruser.email')
+        .orderBy('roleuser.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

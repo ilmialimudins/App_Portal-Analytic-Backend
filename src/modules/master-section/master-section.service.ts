@@ -28,7 +28,7 @@ export class MasterSectionService {
           'masterreport.datasetpowerbiid',
         ])
         .where('mastersection.isdelete = :isdelete', { isdelete: false })
-        .orderBy('masterreport.reportname')
+        .orderBy('masterreport.reportname', 'ASC')
         .getRawMany();
 
       return data;

@@ -44,7 +44,7 @@ export class BusinessLineService {
 
       const data = await query
         .andWhere('businessline.isdelete = :isdelete', { isdelete: false })
-        .orderBy('businesslinecode')
+        .orderBy('businessline.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
