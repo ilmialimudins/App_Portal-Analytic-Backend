@@ -54,6 +54,7 @@ import { ValidateSurveyResultModule } from './modules/validate-survey-result/val
 
 const ApiModules = [
   SharedModule,
+  DuendeAuthenticationModule,
   CompanyModule,
   BusinessLineModule,
   BusinessGroupModule,
@@ -82,7 +83,6 @@ const ApiModules = [
   MonitoringValidationModule,
   FactorModule,
   PredEngagamentValueModule,
-  DuendeAuthenticationModule,
 ];
 
 @Module({
