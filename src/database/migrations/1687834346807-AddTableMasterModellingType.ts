@@ -1,13 +1,15 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterEESWord1697442301923 implements MigrationInterface {
+export class AddTableMasterModellingType1687834346807
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_ees_word',
+        name: 'ms_modellingtype',
         columns: [
           {
-            name: 'wordid',
+            name: 'modellingtypeid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -15,12 +17,17 @@ export class AddTableMasterEESWord1697442301923 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'h_wordhashkey',
+            name: 'modellingtypecode',
             type: 'varchar',
-            isNullable: true,
+            isNullable: false,
           },
           {
-            name: 'word',
+            name: 'modellingtypedesc',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'desc',
             type: 'varchar',
             isNullable: true,
           },
@@ -42,6 +49,7 @@ export class AddTableMasterEESWord1697442301923 implements MigrationInterface {
           {
             name: 'createdtime',
             type: 'datetime2',
+            isNullable: true,
           },
           {
             name: 'createddate',
@@ -60,10 +68,11 @@ export class AddTableMasterEESWord1697442301923 implements MigrationInterface {
           },
         ],
       }),
+      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_ees_word');
+    await queryRunner.dropTable('ms_modellingtype');
   }
 }

@@ -1,13 +1,15 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableDirectReview1690339019786 implements MigrationInterface {
+export class AddTableMasterBusinessGroup1687834346805
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_directreview',
+        name: 'ms_businessgroup',
         columns: [
           {
-            name: 'directreviewid',
+            name: 'businessgroupid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -15,12 +17,12 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'directreviewcode',
+            name: 'businessgroupcode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'directreviewdesc',
+            name: 'businessgroupdesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -47,7 +49,6 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -71,6 +72,6 @@ export class AddTableDirectReview1690339019786 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_directreview');
+    await queryRunner.dropTable('ms_businessgroup');
   }
 }

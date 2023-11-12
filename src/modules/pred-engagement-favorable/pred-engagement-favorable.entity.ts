@@ -20,6 +20,24 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   id: number;
 
   @Column({ nullable: true })
+  factorid: number;
+  @ManyToOne(() => EESFactor, (factor) => factor.engagementfavorable)
+  @JoinColumn({
+    name: 'factorid',
+    referencedColumnName: 'factorid',
+  })
+  factor: EESFactor;
+
+  @Column({ nullable: true })
+  companyid: number;
+  @ManyToOne(() => Company, (company) => company.engagementfavorable)
+  @JoinColumn({
+    name: 'companyid',
+    referencedColumnName: 'companyid',
+  })
+  company: Company;
+
+  @Column({ nullable: true })
   surveygizmoid: number;
   @ManyToOne(
     () => MasterSurveygizmo,
@@ -32,33 +50,6 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   surveygizmo: MasterSurveygizmo;
 
   @Column({ nullable: true })
-  companyid: number;
-  @ManyToOne(() => Company, (company) => company.engagementfavorable)
-  @JoinColumn({
-    name: 'companyid',
-    referencedColumnName: 'companyid',
-  })
-  company: Company;
-
-  @Column({ type: 'varchar', name: 'iscurrentsurvey', nullable: true })
-  iscurrentsurvey: string;
-
-  @Column({ type: 'int', name: 'tahunsurvey', nullable: true })
-  tahunsurvey: number;
-
-  @Column({ type: 'bigint', name: 'totalcompletedrespondent', nullable: true })
-  totalcompletedrespondent: number;
-
-  @Column({ nullable: true })
-  factorid: number;
-  @ManyToOne(() => EESFactor, (factor) => factor.engagementfavorable)
-  @JoinColumn({
-    name: 'factorid',
-    referencedColumnName: 'factorid',
-  })
-  factor: EESFactor;
-
-  @Column({ nullable: true })
   qcodeid: number;
   @ManyToOne(() => MasterQcode, (factor) => factor.engagementfavorable)
   @JoinColumn({
@@ -67,42 +58,42 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   })
   qcode: MasterQcode;
 
-  @Column({ type: 'bigint', name: 'count_all_favorabletype', nullable: true })
-  count_all_favorabletype: number;
+  @Column({ type: 'varchar', name: 'engagementlevel', nullable: true })
+  engagementlevel: string;
 
-  @Column({
-    type: 'float',
-    name: 'percentage_all_favorabletype',
-    nullable: true,
-    precision: 53,
-  })
-  percentage_all_favorabletype: number;
+  @Column({ type: 'varchar', name: 'demography', nullable: true })
+  demography: string;
 
-  @Column({ type: 'varchar', name: 'favorable_type', nullable: true })
-  favorable_type: string;
+  @Column({ type: 'varchar', name: 'demographyvalue', nullable: true })
+  demographyvalue: string;
+
+  @Column({ type: 'int', name: 'tahunsurvey', nullable: true })
+  tahunsurvey: number;
+
+  @Column({ type: 'varchar', name: 'latest', nullable: true })
+  latest: string;
+
+  @Column({ type: 'bigint', name: 'sum_unfavorable', nullable: true })
+  sum_unfavorable: number;
+
+  @Column({ type: 'bigint', name: 'sum_neutral', nullable: true })
+  sum_neutral: number;
+
+  @Column({ type: 'bigint', name: 'sum_favorable', nullable: true })
+  sum_favorable: number;
+
+  @Column({ type: 'bigint', name: 'count_unfavorable', nullable: true })
+  count_unfavorable: number;
+
+  @Column({ type: 'bigint', name: 'count_neutral', nullable: true })
+  count_neutral: number;
+
+  @Column({ type: 'bigint', name: 'count_favorable', nullable: true })
+  count_favorable: number;
 
   @Column({ type: 'bigint', name: 'count_respondent', nullable: true })
   count_respondent: number;
 
-  @Column({
-    type: 'float',
-    name: 'avg_per_qcode',
-    nullable: true,
-    precision: 53,
-  })
-  avg_per_qcode: number;
-
-  @Column({
-    type: 'float',
-    name: 'avg_per_factor',
-    nullable: true,
-    precision: 53,
-  })
-  avg_per_factor: number;
-
-  @Column({ type: 'datetime', name: 'created_on', nullable: true })
-  created_on: Date;
-
-  @Column({ type: 'datetime', name: 'modified_on', nullable: true })
-  modified_on: Date;
+  @Column({ type: 'bigint', name: 'count_answer', nullable: true })
+  count_answer: number;
 }

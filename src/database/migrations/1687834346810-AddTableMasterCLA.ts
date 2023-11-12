@@ -1,15 +1,13 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterBusinessGroup1690275853976
-  implements MigrationInterface
-{
+export class AddTableMasterCLA1687834346810 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_businessgroup',
+        name: 'ms_cla',
         columns: [
           {
-            name: 'businessgroupid',
+            name: 'claid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -17,12 +15,12 @@ export class AddTableMasterBusinessGroup1690275853976
             generationStrategy: 'increment',
           },
           {
-            name: 'businessgroupcode',
+            name: 'clacode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'businessgroupdesc',
+            name: 'cladesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -49,6 +47,7 @@ export class AddTableMasterBusinessGroup1690275853976
           {
             name: 'createdtime',
             type: 'datetime2',
+            isNullable: true,
           },
           {
             name: 'createddate',
@@ -72,6 +71,6 @@ export class AddTableMasterBusinessGroup1690275853976
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_businessgroup');
+    await queryRunner.dropTable('ms_cla');
   }
 }
