@@ -15,7 +15,4 @@ export class TokenDto {
 
   @ApiProperty()
   refresh_token: string;
-
-  @ApiProperty()
-  scope: string;
 }
