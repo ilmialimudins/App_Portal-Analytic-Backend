@@ -53,7 +53,7 @@ export class AccessUserService {
 
       const data = await query
         .andWhere('accessuser.isdelete = :isdelete', { isdelete: false })
-        .orderBy('masteruser.email')
+        .orderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

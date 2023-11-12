@@ -52,7 +52,7 @@ export class StopwordsService {
 
       const data = await query
         .andWhere('stopwords.isdelete = :isdelete', { isdelete: false })
-        .orderBy('tahun_survey')
+        .orderBy('tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -194,7 +194,7 @@ export class StopwordsService {
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
         .andWhere('company.companyeesname = :companyname', { companyname })
         .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
-        .orderBy('tahun_survey')
+        .orderBy('tahun_survey', 'DESC')
         .getMany();
 
       const workbook = new excel.Workbook();

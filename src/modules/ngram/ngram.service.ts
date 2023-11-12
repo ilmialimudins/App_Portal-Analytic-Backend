@@ -68,7 +68,7 @@ export class NgramService {
 
       const data = await query
         .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
-        .orderBy('tahun_survey')
+        .orderBy('tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -115,7 +115,7 @@ export class NgramService {
         .select(['qcode.qcode', 'ngram.wordid', 'word.word'])
         .where('qcode.qcodeid = 134')
         .distinct(true)
-        .orderBy('word.word')
+        .orderBy('word.word', 'ASC')
         .getRawMany();
 
       return query;
@@ -132,7 +132,7 @@ export class NgramService {
         .select(['qcode.qcode', 'ngram.wordid', 'word.word'])
         .where('qcode.qcodeid = 90')
         .distinct(true)
-        .orderBy('word.word')
+        .orderBy('word.word', 'ASC')
         .getRawMany();
 
       return query;

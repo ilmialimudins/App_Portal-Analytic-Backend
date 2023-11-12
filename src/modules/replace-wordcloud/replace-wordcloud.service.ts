@@ -56,7 +56,7 @@ export class ReplaceWordcloudService {
 
       const data = await query
         .andWhere('replacewordcloud.isdelete = :isdelete', { isdelete: false })
-        .orderBy('tahun_survey')
+        .orderBy('tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

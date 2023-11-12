@@ -44,7 +44,7 @@ export class SurveyGroupService {
 
       const data = await query
         .andWhere('surveygroup.isdelete = :isdelete', { isdelete: false })
-        .orderBy('surveygroupcode')
+        .orderBy('surveygroup.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();

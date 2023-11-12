@@ -24,7 +24,7 @@ export class MasterWorkSpaceService {
           'workspacepowerbiid',
         ])
         .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
-        .orderBy('workspacename')
+        .orderBy('masterworkspace.sourcecreatedmodifiedtime', 'DESC')
         .getRawMany();
 
       return data;

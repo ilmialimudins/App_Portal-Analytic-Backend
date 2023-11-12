@@ -41,7 +41,7 @@ export class MasterMenuService {
           'issection',
         ])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
-        .orderBy('parentid')
+        .orderBy('parentid', 'ASC')
         .getMany();
 
       return data;
@@ -57,7 +57,7 @@ export class MasterMenuService {
         .select(['menuid', 'menuname', 'parentid'])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .andWhere('mastermenu.parentid = :parentid', { parentid: 0 })
-        .orderBy('parentid')
+        .orderBy('parentid', 'ASC')
         .getMany();
 
       return data;

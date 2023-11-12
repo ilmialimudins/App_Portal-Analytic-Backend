@@ -49,7 +49,7 @@ export class DemographyService {
 
       const data = await query
         .andWhere('demography.isdelete = :isdelete', { isdelete: false })
-        .orderBy('urutanfilter')
+        .orderBy('urutanfilter', 'ASC')
         .offset(offset)
         .limit(take)
         .getRawMany();

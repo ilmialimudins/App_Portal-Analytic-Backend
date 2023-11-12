@@ -17,7 +17,7 @@ export class SurveyValidationController {
     @Query('page') page: number,
     @Query('take') take: number,
     @Query('company') company: string,
-    @Query('date') date: string,
+    @Query('dateversion') dateversion: string,
     @Query('username') username: string,
   ): Promise<{
     data: SurveyValidationDto[];
@@ -32,7 +32,7 @@ export class SurveyValidationController {
       page,
       take,
       company,
-      date,
+      dateversion,
       username,
     );
   }
@@ -43,7 +43,7 @@ export class SurveyValidationController {
     @Query('page') page: number,
     @Query('take') take: number,
     @Query('company') company: string,
-    @Query('date') date: string,
+    @Query('dateversion') dateversion: string,
     @Query('username') username: string,
   ): Promise<{
     data: SurveyValidationDto[];
@@ -58,12 +58,18 @@ export class SurveyValidationController {
       page,
       take,
       company,
-      date,
+      dateversion,
       username,
     );
   }
 
-  @Patch('/updateValidationSurveyValidation')
+  @Get('/getIncompleteResponse')
+  @ApiCreatedResponse({ type: SurveyValidationDto })
+  async getIncompleteResponse() {
+    return this.surveyValidationService.getIncompleteResponse();
+  }
+
+  @Patch('/updateSurveyValidation')
   @ApiCreatedResponse({ type: SurveyValidationDto })
   async updateValidation(@Query('id') id: number) {
     return this.surveyValidationService.updateValidation(id);

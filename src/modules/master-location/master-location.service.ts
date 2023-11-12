@@ -41,7 +41,7 @@ export class LocationService {
 
       const data = await query
         .andWhere('location.isdelete = :isdelete', { isdelete: false })
-        .orderBy('locationcode')
+        .orderBy('location.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
