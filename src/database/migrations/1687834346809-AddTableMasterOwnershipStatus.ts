@@ -1,15 +1,15 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterSurveyGroup1690276667541
+export class AddTableMasterOwnershipStatus1687834346809
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_surveygroup',
+        name: 'ms_ownershipstatus',
         columns: [
           {
-            name: 'surveygroupid',
+            name: 'ownershipstatusid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -17,12 +17,12 @@ export class AddTableMasterSurveyGroup1690276667541
             generationStrategy: 'increment',
           },
           {
-            name: 'surveygroupcode',
+            name: 'ownershipstatuscode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'surveygroupdesc',
+            name: 'ownershipstatusdesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -49,6 +49,7 @@ export class AddTableMasterSurveyGroup1690276667541
           {
             name: 'createdtime',
             type: 'datetime2',
+            isNullable: true,
           },
           {
             name: 'createddate',
@@ -72,6 +73,6 @@ export class AddTableMasterSurveyGroup1690276667541
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_surveygroup');
+    await queryRunner.dropTable('ms_ownershipstatus');
   }
 }

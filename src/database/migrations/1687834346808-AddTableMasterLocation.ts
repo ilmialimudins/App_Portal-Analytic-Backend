@@ -1,13 +1,15 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterCLA1690338437053 implements MigrationInterface {
+export class AddTableMasterDataLocation1687834346808
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_cla',
+        name: 'ms_location',
         columns: [
           {
-            name: 'claid',
+            name: 'locationid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -15,12 +17,12 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'clacode',
+            name: 'locationcode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'cladesc',
+            name: 'locationdesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -71,6 +73,6 @@ export class AddTableMasterCLA1690338437053 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_cla');
+    await queryRunner.dropTable('ms_datalocation');
   }
 }

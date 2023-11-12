@@ -1,15 +1,15 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterModellingType1690334574513
+export class AddTableMasterBusinessLine1687834346804
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_modellingtype',
+        name: 'ms_businessline',
         columns: [
           {
-            name: 'modellingtypeid',
+            name: 'businesslineid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -17,12 +17,12 @@ export class AddTableMasterModellingType1690334574513
             generationStrategy: 'increment',
           },
           {
-            name: 'modellingtypecode',
+            name: 'businesslinecode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'modellingtypedesc',
+            name: 'businesslinedesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -49,7 +49,6 @@ export class AddTableMasterModellingType1690334574513
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -73,6 +72,6 @@ export class AddTableMasterModellingType1690334574513
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_modellingtype');
+    await queryRunner.dropTable('ms_businessline');
   }
 }

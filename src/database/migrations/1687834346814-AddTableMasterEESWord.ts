@@ -1,15 +1,13 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterBusinessLine1690271264412
-  implements MigrationInterface
-{
+export class AddTableMasterEESWord1687834346814 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_businessline',
+        name: 'ms_ees_word',
         columns: [
           {
-            name: 'businesslineid',
+            name: 'wordid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -17,17 +15,12 @@ export class AddTableMasterBusinessLine1690271264412
             generationStrategy: 'increment',
           },
           {
-            name: 'businesslinecode',
+            name: 'h_wordhashkey',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
-            name: 'businesslinedesc',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'desc',
+            name: 'word',
             type: 'varchar',
             isNullable: true,
           },
@@ -67,11 +60,10 @@ export class AddTableMasterBusinessLine1690271264412
           },
         ],
       }),
-      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_businessline');
+    await queryRunner.dropTable('ms_ees_word');
   }
 }

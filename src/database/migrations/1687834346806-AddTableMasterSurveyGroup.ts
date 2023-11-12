@@ -1,15 +1,15 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterDataLocation1690335811786
+export class AddTableMasterSurveyGroup1687834346806
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_location',
+        name: 'ms_surveygroup',
         columns: [
           {
-            name: 'locationid',
+            name: 'surveygroupid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -17,12 +17,12 @@ export class AddTableMasterDataLocation1690335811786
             generationStrategy: 'increment',
           },
           {
-            name: 'locationcode',
+            name: 'surveygroupcode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'locationdesc',
+            name: 'surveygroupdesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -49,7 +49,6 @@ export class AddTableMasterDataLocation1690335811786
           {
             name: 'createdtime',
             type: 'datetime2',
-            isNullable: true,
           },
           {
             name: 'createddate',
@@ -73,6 +72,6 @@ export class AddTableMasterDataLocation1690335811786
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_datalocation');
+    await queryRunner.dropTable('ms_surveygroup');
   }
 }

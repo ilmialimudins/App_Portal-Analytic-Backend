@@ -22,7 +22,7 @@ export class PredEngagementFavorable1687933601762
             generationStrategy: 'increment',
           },
           {
-            name: 'surveygizmoid',
+            name: 'factorid',
             type: 'bigint',
             isNullable: false,
           },
@@ -32,22 +32,7 @@ export class PredEngagementFavorable1687933601762
             isNullable: false,
           },
           {
-            name: 'iscurrentsurvey',
-            type: 'tinyint',
-            isNullable: true,
-          },
-          {
-            name: 'tahunsurvey',
-            type: 'int',
-            isNullable: true,
-          },
-          {
-            name: 'totalcompletedrespondent',
-            type: 'bigint',
-            isNullable: true,
-          },
-          {
-            name: 'factorid',
+            name: 'surveygizmoid',
             type: 'bigint',
             isNullable: false,
           },
@@ -56,49 +41,85 @@ export class PredEngagementFavorable1687933601762
             type: 'bigint',
             isNullable: false,
           },
+
           {
-            name: 'count_all_favorabletype',
-            type: 'bigint',
-            isNullable: true,
-          },
-          {
-            name: 'percentage_all_favorabletype',
-            type: 'float',
-            isNullable: true,
-            length: '53',
-          },
-          {
-            name: 'favorable_type',
+            name: 'engagementlevel',
             type: 'varchar',
             isNullable: true,
           },
+          {
+            name: 'demography',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'demographyvalue',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'tahunsurvey',
+            type: 'int',
+            isNullable: true,
+          },
+          {
+            name: 'iscurrentsurvey',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'latest',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'sum_unfavorable',
+            type: 'bigint',
+            isNullable: true,
+          },
+
+          {
+            name: 'sum_neutral',
+            type: 'bigint',
+            isNullable: true,
+          },
+
+          {
+            name: 'sum_favorable',
+            type: 'bigint',
+            isNullable: true,
+          },
+
+          {
+            name: 'count_unfavorable',
+            type: 'bigint',
+            isNullable: true,
+          },
+
+          {
+            name: 'count_neutral',
+            type: 'bigint',
+            isNullable: true,
+          },
+
+          {
+            name: 'count_favorable',
+            type: 'bigint',
+            isNullable: true,
+          },
+
           {
             name: 'count_respondent',
             type: 'bigint',
             isNullable: true,
           },
+
           {
-            name: 'avg_per_qcode',
-            type: 'float',
-            isNullable: true,
-            length: '53',
-          },
-          {
-            name: 'avg_per_factor',
-            type: 'float',
-            isNullable: true,
-            length: '53',
-          },
-          {
-            name: 'created_on',
-            type: 'datetime',
+            name: 'count_answer',
+            type: 'bigint',
             isNullable: true,
           },
-          {
-            name: 'modified_on',
-            type: 'datetime',
-            isNullable: true,
-          },
+
           {
             name: 'createdby',
             type: 'varchar',

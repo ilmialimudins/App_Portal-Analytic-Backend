@@ -1,15 +1,13 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class AddTableMasterOwnershipStatus1690336576753
-  implements MigrationInterface
-{
+export class AddTableDirectReview1687834346811 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'ms_ownershipstatus',
+        name: 'ms_directreview',
         columns: [
           {
-            name: 'ownershipstatusid',
+            name: 'directreviewid',
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
@@ -17,12 +15,12 @@ export class AddTableMasterOwnershipStatus1690336576753
             generationStrategy: 'increment',
           },
           {
-            name: 'ownershipstatuscode',
+            name: 'directreviewcode',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'ownershipstatusdesc',
+            name: 'directreviewdesc',
             type: 'varchar',
             isNullable: false,
           },
@@ -73,6 +71,6 @@ export class AddTableMasterOwnershipStatus1690336576753
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('ms_ownershipstatus');
+    await queryRunner.dropTable('ms_directreview');
   }
 }

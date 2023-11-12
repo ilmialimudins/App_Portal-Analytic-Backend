@@ -7,43 +7,55 @@ export class PredEngagementFavorableDTO extends AbstractDto {
   id: number;
 
   @ApiProperty()
-  surveygizmoid: number;
+  factorid: number;
 
   @ApiProperty()
   companyid: number;
 
   @ApiProperty()
-  iscurrentsurvey: number;
+  surveygizmoid: number;
+
+  @ApiProperty()
+  engagementlevel: string;
+
+  @ApiProperty()
+  demography: string;
+
+  @ApiProperty()
+  demographyvalue: string;
 
   @ApiProperty()
   tahunsurvey: number;
 
   @ApiProperty()
-  totalcompletedrespondent: number;
+  iscurrentsurvey: string;
 
   @ApiProperty()
-  factorid: number;
+  latest: string;
 
   @ApiProperty()
-  qcodeid: number;
+  sum_unfavorable: number;
 
   @ApiProperty()
-  count_all_favorabletype: number;
+  sum_neutral: number;
 
   @ApiProperty()
-  percentage_all_favorabletype: number;
+  sum_favorable: number;
 
   @ApiProperty()
-  favorable_type: string;
+  count_unfavorable: number;
+
+  @ApiProperty()
+  count_neutral: number;
+
+  @ApiProperty()
+  count_favorable: number;
 
   @ApiProperty()
   count_respondent: number;
 
   @ApiProperty()
-  avg_per_qcode: number;
-
-  @ApiProperty()
-  avg_per_factor: number;
+  count_answer: number;
 
   @ApiPropertyOptional()
   created_on: Date;
