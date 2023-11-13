@@ -1,24 +1,40 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UseDto } from 'src/decorators/use-dto.decorator';
+import { Column, Entity, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
+import { AbstractEntity } from 'src/common/abstract.entity';
+import { OneToOne } from 'typeorm';
+import { SurveyValidation } from '../survey-validation/survey-validation.entity';
+import { CheckingCompleteSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
 
 @Entity('tbl_validatesurveyresult')
-export class ValidateSurveyResult {
+@UseDto(ValidateSurveyResultDto)
+export class ValidateSurveyResult extends AbstractEntity<ValidateSurveyResultDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
   @Column({ type: 'varchar', name: 'uuid', nullable: false })
   uuid: string;
 
-  @Column({ type: 'varchar', name: 'excelname', nullable: false })
-  excelname: string;
-
-  @Column({ type: 'varchar', name: 'validation', nullable: true })
-  validation: string;
-
   @Column({ type: 'datetime2', name: 'dateversion', nullable: true })
   dateversion: Date;
 
-  @Column({ type: 'bigint', name: 'surveyid', nullable: true })
-  surveyid: number;
+  @Column({ nullable: false })
+  surveyid: string;
+  @OneToOne(
+    () => SurveyValidation,
+    (surveyvalidation) => surveyvalidation.surveyid,
+  )
+  @JoinColumn({
+    name: 'surveyid',
+    referencedColumnName: 'surveyid',
+  })
+  surveyvalidation: SurveyValidation;
+  @OneToOne(() => CheckingCompleteSurvey, (complete) => complete.surveyid)
+  @JoinColumn({
+    name: 'surveyid',
+    referencedColumnName: 'surveyid',
+  })
+  complete: CheckingCompleteSurvey;
 
   @Column({ type: 'bigint', name: 'respondentid', nullable: false })
   respondentid: number;
@@ -53,8 +69,11 @@ export class ValidateSurveyResult {
   @Column({ type: 'varchar', name: 'jobtitle', nullable: true })
   jobtitle: string;
 
-  @Column({ type: 'varchar', name: 'location', nullable: true })
-  location: string;
+  @Column({ type: 'varchar', name: 'locationname', nullable: true })
+  locationname: string;
+
+  @Column({ type: 'varchar', name: 'age', nullable: true })
+  age: string;
 
   @Column({ type: 'varchar', name: 'agegeneration', nullable: true })
   agegeneration: string;
@@ -92,8 +111,8 @@ export class ValidateSurveyResult {
   @Column({ type: 'varchar', name: 'statuskaryawan', nullable: true })
   statuskaryawan: string;
 
-  @Column({ type: 'varchar', name: 'function', nullable: true })
-  funcion: string;
+  @Column({ type: 'varchar', name: 'functionname', nullable: true })
+  functionname: string;
 
   @Column({ type: 'varchar', name: 'salesoffice', nullable: true })
   salesoffice: string;
@@ -134,9 +153,6 @@ export class ValidateSurveyResult {
     nullable: true,
   })
   age_when_entering_company: string;
-
-  @Column({ type: 'varchar', name: 'excel_username', nullable: true })
-  excel_username: string;
 
   @Column({ type: 'varchar', name: 'row_status', nullable: true })
   row_status: string;

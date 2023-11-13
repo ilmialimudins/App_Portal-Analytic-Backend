@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
-import { CompleteCheckingSurvey } from '../checking-complete-survey.entity';
+import { CheckingCompleteSurvey } from '../checking-complete-survey.entity';
 
 export class CheckingCompleteSurveyDto extends AbstractDto {
   @ApiProperty()
@@ -24,7 +24,7 @@ export class CheckingCompleteSurveyDto extends AbstractDto {
   @ApiProperty()
   isdelete: string;
 
-  constructor(checkingCompleteSurveyEntity: CompleteCheckingSurvey) {
+  constructor(checkingCompleteSurveyEntity: CheckingCompleteSurvey) {
     super(checkingCompleteSurveyEntity, { exludeFields: true });
     this.id = checkingCompleteSurveyEntity.id * 1;
     this.respondentid = checkingCompleteSurveyEntity.respondentid;
