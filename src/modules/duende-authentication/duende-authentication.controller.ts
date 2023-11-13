@@ -4,7 +4,6 @@ import { DuendeAuthenticationService } from './duende-authentication.service';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from './dto/userinfo.dto';
-import { TokenDto } from './dto/token.dto';
 import { PowerBIEmbedUrlDto } from './dto/powerbi-get-embedurl.dto';
 import { PowerBIEmbedTokenDto } from './dto/powerbi-embed-token.dto';
 
@@ -20,31 +19,6 @@ export class DuendeAuthenticationController {
   @Get('/user-info')
   async getUserInfo(@UserInfo() user: UserInfoDTO): Promise<UserInfoDTO> {
     return user;
-  }
-
-  @Post('/getToken')
-  async getToken(@Query('authcode') authcode: string) {
-    const res = await this.duendeAuthenticationService.getToken(authcode);
-
-    const getToken: TokenDto = res.body;
-
-    return getToken;
-  }
-
-  @Post('/refreshToken')
-  async refreshToken(@Query('refreshToken') refreshToken: string) {
-    const resRefresh = await this.duendeAuthenticationService.refreshToken(
-      refreshToken,
-    );
-
-    const getRefresh: TokenDto = resRefresh.body;
-
-    return getRefresh;
-  }
-
-  @Post('/revokeToken')
-  async revokeToken(@Query('access_token') access_token: string) {
-    return this.duendeAuthenticationService.revokeToken(access_token);
   }
 
   @Post('/powerBIEmbed')
