@@ -1,7 +1,10 @@
 import { UseDto } from 'src/decorators/use-dto.decorator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
+import { OneToOne } from 'typeorm';
+import { SurveyValidation } from '../survey-validation/survey-validation.entity';
+import { CheckingCompleteSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
 
 @Entity('tbl_validatesurveyresult')
 @UseDto(ValidateSurveyResultDto)
@@ -12,17 +15,26 @@ export class ValidateSurveyResult extends AbstractEntity<ValidateSurveyResultDto
   @Column({ type: 'varchar', name: 'uuid', nullable: false })
   uuid: string;
 
-  @Column({ type: 'varchar', name: 'excelname', nullable: false })
-  excelname: string;
-
-  @Column({ type: 'varchar', name: 'validation', nullable: true })
-  validation: string;
-
   @Column({ type: 'datetime2', name: 'dateversion', nullable: true })
   dateversion: Date;
 
-  @Column({ type: 'bigint', name: 'surveyid', nullable: true })
-  surveyid: number;
+  @Column({ nullable: false })
+  surveyid: string;
+  @OneToOne(
+    () => SurveyValidation,
+    (surveyvalidation) => surveyvalidation.surveyid,
+  )
+  @JoinColumn({
+    name: 'surveyid',
+    referencedColumnName: 'surveyid',
+  })
+  surveyvalidation: SurveyValidation;
+  @OneToOne(() => CheckingCompleteSurvey, (complete) => complete.surveyid)
+  @JoinColumn({
+    name: 'surveyid',
+    referencedColumnName: 'surveyid',
+  })
+  complete: CheckingCompleteSurvey;
 
   @Column({ type: 'bigint', name: 'respondentid', nullable: false })
   respondentid: number;
@@ -141,9 +153,6 @@ export class ValidateSurveyResult extends AbstractEntity<ValidateSurveyResultDto
     nullable: true,
   })
   age_when_entering_company: string;
-
-  @Column({ type: 'varchar', name: 'excel_username', nullable: true })
-  excel_username: string;
 
   @Column({ type: 'varchar', name: 'row_status', nullable: true })
   row_status: string;

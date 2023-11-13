@@ -3,10 +3,11 @@ import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CheckingCompleteSurveyDto } from './dto/checking-complete-survey.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { SurveyValidation } from '../survey-validation/survey-validation.entity';
+import { ValidateSurveyResult } from '../validate-survey-result/validate-survey-result.entity';
 
 @Entity('tbl_checkingcompletesurvey')
 @UseDto(CheckingCompleteSurveyDto)
-export class CompleteCheckingSurvey extends AbstractEntity<CheckingCompleteSurveyDto> {
+export class CheckingCompleteSurvey extends AbstractEntity<CheckingCompleteSurveyDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
@@ -33,4 +34,7 @@ export class CompleteCheckingSurvey extends AbstractEntity<CheckingCompleteSurve
     (surveyvalidation) => surveyvalidation.surveyid,
   )
   surveyvalidation: SurveyValidation[];
+
+  @OneToOne(() => ValidateSurveyResult, (surveyresult) => surveyresult.surveyid)
+  surveyresult: ValidateSurveyResult[];
 }

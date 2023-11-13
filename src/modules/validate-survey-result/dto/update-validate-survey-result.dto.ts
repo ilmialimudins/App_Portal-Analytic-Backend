@@ -75,6 +75,11 @@ export class UpdateValidateSurveyResultDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  readonly grade: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   readonly education: string;
 
   @ApiPropertyOptional()

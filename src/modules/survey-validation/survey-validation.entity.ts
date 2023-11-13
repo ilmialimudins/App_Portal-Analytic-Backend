@@ -9,7 +9,8 @@ import {
 } from 'typeorm';
 import { SurveyValidationDto } from './dto/survey-validation.dto';
 import { AbstractEntity } from 'src/common/abstract.entity';
-import { CompleteCheckingSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
+import { CheckingCompleteSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
+import { ValidateSurveyResult } from '../validate-survey-result/validate-survey-result.entity';
 
 @Entity('tbl_surveyvalidation')
 @UseDto(SurveyValidationDto)
@@ -25,12 +26,12 @@ export class SurveyValidation extends AbstractEntity<SurveyValidationDto> {
 
   @Column({ nullable: false })
   surveyid: string;
-  @OneToOne(() => CompleteCheckingSurvey, (complete) => complete.surveyid)
+  @OneToOne(() => CheckingCompleteSurvey, (complete) => complete.surveyid)
   @JoinColumn({
     name: 'surveyid',
     referencedColumnName: 'surveyid',
   })
-  complete: CompleteCheckingSurvey;
+  complete: CheckingCompleteSurvey;
 
   @Column({ type: 'varchar', name: 'titlesurvey', nullable: false })
   titlesurvey: string;
@@ -43,4 +44,10 @@ export class SurveyValidation extends AbstractEntity<SurveyValidationDto> {
 
   @CreateDateColumn()
   validateddate: Date;
+
+  @OneToOne(
+    () => ValidateSurveyResult,
+    (validatesurveyresult) => validatesurveyresult.surveyid,
+  )
+  validatesurveyresult: ValidateSurveyResult[];
 }

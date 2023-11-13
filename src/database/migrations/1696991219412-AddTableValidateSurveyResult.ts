@@ -22,16 +22,6 @@ export class AddTableValidateSurveyResult1696991219412
             isNullable: false,
           },
           {
-            name: 'excelname',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'validation',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
             name: 'dateversion',
             type: 'datetime2',
             isNullable: true,
@@ -228,11 +218,6 @@ export class AddTableValidateSurveyResult1696991219412
           },
           {
             name: 'age_when_entering_company',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'excel_username',
             type: 'varchar',
             isNullable: true,
           },

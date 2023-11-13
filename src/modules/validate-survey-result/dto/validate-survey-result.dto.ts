@@ -10,16 +10,10 @@ export class ValidateSurveyResultDto extends AbstractDto {
   uuid: string;
 
   @ApiProperty()
-  excelname: string;
-
-  @ApiProperty()
-  validation: string;
-
-  @ApiProperty()
   dateversion: Date;
 
   @ApiProperty()
-  surveyid: number;
+  surveyid: string;
 
   @ApiProperty()
   respondentid: number;
@@ -136,17 +130,12 @@ export class ValidateSurveyResultDto extends AbstractDto {
   age_when_entering_company: string;
 
   @ApiProperty()
-  excel_username: string;
-
-  @ApiProperty()
   row_status: string;
 
   constructor(validateSurveyResultEntity: ValidateSurveyResult) {
     super(validateSurveyResultEntity, { exludeFields: true });
     this.id = validateSurveyResultEntity.id * 1;
     this.uuid = validateSurveyResultEntity.uuid;
-    this.excelname = validateSurveyResultEntity.excelname;
-    this.validation = validateSurveyResultEntity.validation;
     this.dateversion = validateSurveyResultEntity.dateversion;
     this.surveyid = validateSurveyResultEntity.surveyid;
     this.respondentid = validateSurveyResultEntity.respondentid;
@@ -189,7 +178,6 @@ export class ValidateSurveyResultDto extends AbstractDto {
     this.age_this_year = validateSurveyResultEntity.age_this_year;
     this.age_when_entering_company =
       validateSurveyResultEntity.age_when_entering_company;
-    this.excel_username = validateSurveyResultEntity.excel_username;
     this.row_status = validateSurveyResultEntity.row_status;
   }
 }
