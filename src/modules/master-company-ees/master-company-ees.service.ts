@@ -221,16 +221,31 @@ export class CompanyService {
     }
   }
 
-  async deleteCompany(companyid: number) {
+  async activeCompany(companyid: number) {
     try {
-      await this.companyRepository
+      const query = await this.companyRepository
+        .createQueryBuilder()
+        .update(Company)
+        .set({ isdelete: 'Active' })
+        .where('companyid = :companyid', { companyid })
+        .execute();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deactiveCompany(companyid: number) {
+    try {
+      const query = await this.companyRepository
         .createQueryBuilder()
         .update(Company)
         .set({ isdelete: 'Deactive' })
         .where('companyid = :companyid', { companyid })
         .execute();
 
-      return `Data berhasil di hapus`;
+      return query;
     } catch (error) {
       throw error;
     }

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -43,7 +42,7 @@ export class MasterMenuController {
     const result = await this.masterMenuService.checkDuplicateMenu(menuname);
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
       return menuname;
     }

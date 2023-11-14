@@ -102,7 +102,7 @@ export class MappingMenuReportService {
 
   async deleteMappingMenuReport(mappingmenureportid: number) {
     try {
-      await this.mappingMenuReportRepository
+      const query = await this.mappingMenuReportRepository
         .createQueryBuilder()
         .update(MappingMenuReport)
         .set({ isdelete: 'true' })
@@ -111,7 +111,7 @@ export class MappingMenuReportService {
         })
         .execute();
 
-      return `Data berhasil dihapus`;
+      return query;
     } catch (error) {
       throw error;
     }

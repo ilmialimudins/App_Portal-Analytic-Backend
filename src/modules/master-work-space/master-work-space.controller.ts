@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -45,7 +44,7 @@ export class MasterWorkSpaceController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
       return workspace;
     }

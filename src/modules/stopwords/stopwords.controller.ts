@@ -55,7 +55,7 @@ export class StopwordsController {
     );
 
     if (result) {
-      return { message: 'Duplicate Entry' };
+      return { isDuplicate: true };
     } else {
       return stopword;
     }
@@ -67,7 +67,7 @@ export class StopwordsController {
     const checkOne = await this.stopwordsService.checkOneStopwords(stopwords);
 
     if (checkOne) {
-      throw new Error('Duplicate Entry');
+      return { isDuplicate: true };
     }
 
     const result = await this.stopwordsService.createStopwords(stopwords);
@@ -84,7 +84,7 @@ export class StopwordsController {
     const checkOne = await this.stopwordsService.checkOneStopwords(stopwords);
 
     if (checkOne) {
-      throw new Error('Duplicate Entry');
+      return { isDuplicate: true };
     }
 
     const result = this.stopwordsService.updateStopwords(uuid, stopwords);
@@ -100,26 +100,16 @@ export class StopwordsController {
 
   @Post('/generateExcelStopwords')
   @ApiOkResponse({ type: StopwordsDto })
-  async generateExcelStopwords(
-    @Query('companyname') companyname: string,
-    @Query('tahun_survey') tahun_survey: number,
-    @Res() res: ExpressResponse,
-  ) {
-    const workbook = await this.stopwordsService.generateExcelStopwords(
-      companyname,
-      tahun_survey,
-    );
+  async generateExcelStopwords(@Res() res: ExpressResponse) {
+    const workbook = await this.stopwordsService.generateExcelStopwords();
 
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename=Stopwords_${companyname}.xlsx`,
-    );
+    res.setHeader('Content-Disposition', `attachment; filename=Stopwords.xlsx`);
 
     await workbook.xlsx.write(res);
-    res.send('File Send');
+    res.end();
   }
 }

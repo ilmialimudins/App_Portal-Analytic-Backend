@@ -5,12 +5,16 @@ import { Repository } from 'typeorm';
 import { BusinessGroupDto } from './dto/master-business-group.dto';
 import { AddBusinessGroupDto } from './dto/add-master-business-group.dto';
 import { UpdateBusinessGroupDto } from './dto/update-master-business-group.dto';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Injectable()
 export class BusinessGroupService {
   constructor(
     @InjectRepository(BusinessGroup)
     private businessGroupRepository: Repository<BusinessGroup>,
+
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
   ) {}
 
   async getAllBusinessGroup(
@@ -27,6 +31,11 @@ export class BusinessGroupService {
     hasNextPage: boolean;
   }> {
     try {
+      const company = await this.companyRepository
+        .createQueryBuilder('company')
+        .select('company.businessgroupid')
+        .getMany();
+
       const offset = (page - 1) * take;
 
       let query = this.businessGroupRepository
@@ -47,6 +56,13 @@ export class BusinessGroupService {
         .limit(take)
         .getRawMany();
 
+      const dataWithStatus = data.map((item) => ({
+        ...item,
+        status: company.find((c) => c.businessgroupid === item.businessgroupid)
+          ? 'isUsed'
+          : 'isNotUsed',
+      }));
+
       const itemCount = await query
         .andWhere('businessgroup.isdelete = :isdelete', { isdelete: false })
         .getCount();
@@ -56,7 +72,7 @@ export class BusinessGroupService {
       const hasNextPage = page < pageCount;
 
       return {
-        data,
+        data: dataWithStatus,
         page,
         take,
         itemCount,
@@ -93,6 +109,7 @@ export class BusinessGroupService {
         .where('businessgroup.businessgroupdesc = :businessgroup', {
           businessgroup,
         })
+        .andWhere('businessgroup.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -57,7 +56,7 @@ export class SurveyGroupController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
       return surveygroup;
     }

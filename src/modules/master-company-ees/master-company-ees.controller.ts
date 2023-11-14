@@ -7,7 +7,6 @@ import {
   Query,
   Patch,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -68,7 +67,7 @@ export class CompanyController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
       return {
         CompanyEESName: companyees,
@@ -99,9 +98,15 @@ export class CompanyController {
     return this.companyService.updateCompany(companyid, company);
   }
 
-  @Delete('/deleteCompany')
+  @Delete('/activeCompany')
   @ApiCreatedResponse({ type: CompanyDto })
-  async deleteCompany(@Query('companyid') companyid: number): Promise<string> {
-    return this.companyService.deleteCompany(companyid);
+  async activeCompany(@Query('companyid') companyid: number) {
+    return this.companyService.activeCompany(companyid);
+  }
+
+  @Delete('/deactiveCompany')
+  @ApiCreatedResponse({ type: CompanyDto })
+  async deactiveCompany(@Query('companyid') companyid: number) {
+    return this.companyService.deactiveCompany(companyid);
   }
 }

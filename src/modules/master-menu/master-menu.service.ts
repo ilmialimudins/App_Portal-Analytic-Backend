@@ -84,6 +84,7 @@ export class MasterMenuService {
       const query = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
         .where('mastermenu.menuname = :menuname', { menuname })
+        .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

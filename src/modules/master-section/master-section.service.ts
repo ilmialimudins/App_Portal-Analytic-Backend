@@ -114,14 +114,14 @@ export class MasterSectionService {
 
   async deleteMasterSection(sectionid: number) {
     try {
-      await this.masterSectionRepository
+      const query = await this.masterSectionRepository
         .createQueryBuilder()
         .update(MasterSection)
         .set({ isdelete: 'true' })
         .where('sectionid = :sectionid', { sectionid })
         .execute();
 
-      return `Data berhasil dihapus`;
+      return query;
     } catch (error) {
       throw error;
     }

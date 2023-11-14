@@ -53,6 +53,7 @@ export class AccessUserService {
 
       const data = await query
         .andWhere('accessuser.isdelete = :isdelete', { isdelete: false })
+        .andWhere('company.isdelete = :isdelete', { isdelete: false })
         .orderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
@@ -60,6 +61,7 @@ export class AccessUserService {
 
       const itemCount = await query
         .andWhere('accessuser.isdelete = :isdelete', { isdelete: false })
+        .andWhere('company.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -142,14 +144,29 @@ export class AccessUserService {
 
   async deleteAccessUser(accessuserid: number) {
     try {
-      await this.accessUserRepository
+      const query = await this.accessUserRepository
         .createQueryBuilder()
         .update(AccessUser)
         .set({ isdelete: 'true' })
         .where('aksesuserid = :accessuserid', { accessuserid })
         .execute();
 
-      return `Data berhasil di hapus`;
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteAccessUserByUserId(userid: number) {
+    try {
+      const query = await this.accessUserRepository
+        .createQueryBuilder()
+        .update(AccessUser)
+        .set({ isdelete: 'true' })
+        .where('userid = :userid', { userid })
+        .execute();
+
+      return query;
     } catch (error) {
       throw error;
     }

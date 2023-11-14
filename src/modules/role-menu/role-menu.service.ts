@@ -91,14 +91,14 @@ export class RoleMenuService {
 
   async deleteRoleMenu(rolemenuid: number) {
     try {
-      await this.roleMenuRepository
+      const query = await this.roleMenuRepository
         .createQueryBuilder()
         .update(RoleMenu)
         .set({ isdelete: 'true' })
         .where('rolemenuid = :rolemenuid', { rolemenuid })
         .execute();
 
-      return `Data berhasil di hapus`;
+      return query;
     } catch (error) {
       throw error;
     }

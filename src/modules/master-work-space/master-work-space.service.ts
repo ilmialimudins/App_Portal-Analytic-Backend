@@ -53,6 +53,7 @@ export class MasterWorkSpaceService {
       const query = await this.masterWorkSpaceRepository
         .createQueryBuilder('masterworkspace')
         .where('masterworkspace.workspacename = :workspace', { workspace })
+        .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;
@@ -121,14 +122,14 @@ export class MasterWorkSpaceService {
 
   async deleteMasterWorkSpace(workspaceid: number) {
     try {
-      await this.masterWorkSpaceRepository
+      const query = await this.masterWorkSpaceRepository
         .createQueryBuilder()
         .update(MasterWorkSpace)
         .set({ isdelete: 'true' })
         .where('workspaceid = :workspaceid', { workspaceid })
         .execute();
 
-      return `Data berhasil di hapus`;
+      return query;
     } catch (error) {
       throw error;
     }

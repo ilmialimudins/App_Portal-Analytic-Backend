@@ -60,6 +60,7 @@ export class RoleUserService {
 
       const data = await query
         .andWhere('roleuser.isdelete = :isdelete', { isdelete: false })
+        .andWhere('masterrole.isdelete = :isdelete', { isdelete: false })
         .orderBy('roleuser.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
@@ -67,6 +68,7 @@ export class RoleUserService {
 
       const itemCount = await query
         .andWhere('roleuser.isdelete = :isdelete', { isdelete: false })
+        .andWhere('masterrole.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -144,14 +146,29 @@ export class RoleUserService {
 
   async deleteRoleUser(roleuserid: number) {
     try {
-      await this.roleUserRepository
+      const query = await this.roleUserRepository
         .createQueryBuilder()
         .update(RoleUser)
         .set({ isdelete: 'true' })
         .where('roleuserid = :roleuserid', { roleuserid })
         .execute();
 
-      return `Data berhasil di hapus`;
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteRoleUserByUserId(userid: number) {
+    try {
+      const query = await this.roleUserRepository
+        .createQueryBuilder()
+        .update(RoleUser)
+        .set({ isdelete: 'true' })
+        .where('userid = :userid', { userid })
+        .execute();
+
+      return query;
     } catch (error) {
       throw error;
     }

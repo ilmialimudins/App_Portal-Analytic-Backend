@@ -62,7 +62,7 @@ export class ReplaceWordcloudController {
       );
 
     if (result) {
-      return { message: 'Duplicate Entry' };
+      return { isDuplicate: true };
     } else {
       return original_text;
     }
@@ -79,7 +79,7 @@ export class ReplaceWordcloudController {
       );
 
     if (checkOne) {
-      throw new Error('Duplicate Entry');
+      return { isDuplicate: true };
     }
 
     const result = await this.replaceWordcloudService.createReplaceWordcloud(
@@ -101,7 +101,7 @@ export class ReplaceWordcloudController {
       );
 
     if (checkOne) {
-      throw new Error('Duplicate Entry');
+      return { isDuplicate: true };
     }
 
     const result = this.replaceWordcloudService.updateReplaceWordcloud(
@@ -120,16 +120,9 @@ export class ReplaceWordcloudController {
 
   @Post('/generateExcelReplaceWordcloud')
   @ApiOkResponse({ type: ReplaceWordcloudDto })
-  async generateExcelReplaceWordcloud(
-    @Query('companyname') companyname: string,
-    @Query('tahun_survey') tahun_survey: number,
-    @Res() res: ExpressResponse,
-  ) {
+  async generateExcelReplaceWordcloud(@Res() res: ExpressResponse) {
     const workbook =
-      await this.replaceWordcloudService.generateExcelReplaceWordcloud(
-        companyname,
-        tahun_survey,
-      );
+      await this.replaceWordcloudService.generateExcelReplaceWordcloud();
 
     res.setHeader(
       'Content-Type',
@@ -137,10 +130,10 @@ export class ReplaceWordcloudController {
     );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=ReplaceWordcloud_${companyname}.xlsx`,
+      `attachment; filename=ReplaceWordcloud.xlsx`,
     );
 
     await workbook.xlsx.write(res);
-    res.send('File Send');
+    res.end();
   }
 }

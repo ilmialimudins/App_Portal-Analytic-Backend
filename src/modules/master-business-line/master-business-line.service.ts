@@ -5,12 +5,16 @@ import { Repository } from 'typeorm';
 import { BusinessLineDto } from './dto/master-business-line.dto';
 import { AddBusinessLineDto } from './dto/add-master-business-line.dto';
 import { UpdateBusinessLineDto } from './dto/update-master-business-line.dto';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Injectable()
 export class BusinessLineService {
   constructor(
     @InjectRepository(BusinessLine)
     private businessLineRepository: Repository<BusinessLine>,
+
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
   ) {}
 
   async getAllBusinessLine(
@@ -27,6 +31,11 @@ export class BusinessLineService {
     hasNextPage: boolean;
   }> {
     try {
+      const company = await this.companyRepository
+        .createQueryBuilder('company')
+        .select('company.businesslineid')
+        .getMany();
+
       const offset = (page - 1) * take;
 
       let query = this.businessLineRepository
@@ -49,6 +58,13 @@ export class BusinessLineService {
         .limit(take)
         .getRawMany();
 
+      const dataWithStatus = data.map((item) => ({
+        ...item,
+        status: company.find((c) => c.businesslineid === item.businesslineid)
+          ? 'isUsed'
+          : 'isNotUsed',
+      }));
+
       const itemCount = await query
         .andWhere('businessline.isdelete = :isdelete', { isdelete: false })
         .getCount();
@@ -58,7 +74,7 @@ export class BusinessLineService {
       const hasNextPage = page < pageCount;
 
       return {
-        data,
+        data: dataWithStatus,
         page,
         take,
         itemCount,
@@ -95,6 +111,7 @@ export class BusinessLineService {
         .where('businessline.businesslinedesc = :businessline', {
           businessline,
         })
+        .andWhere('businessline.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

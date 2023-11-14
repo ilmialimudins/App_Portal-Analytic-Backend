@@ -41,7 +41,6 @@ export class ReplaceWordcloudService {
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
-          'replacewordcloud.tahun_survey',
           'replacewordcloud.uuid',
         ]);
 
@@ -105,6 +104,7 @@ export class ReplaceWordcloudService {
         .where('replacewordcloud.original_text = :original_text', {
           original_text: original_text,
         })
+        .andWhere('replacewordcloud.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;
@@ -195,54 +195,42 @@ export class ReplaceWordcloudService {
 
   async deleteReplaceWordcloud(uuid: string) {
     try {
-      await this.replaceWordcloudRepository
+      const query = await this.replaceWordcloudRepository
         .createQueryBuilder()
         .update(ReplaceWordcloud)
         .set({ isdelete: 'true' })
         .where('uuid = :uuid', { uuid })
         .execute();
 
-      return 'Data Berhasil Di Hapus';
+      return query;
     } catch (error) {
       throw error;
     }
   }
 
-  async generateExcelReplaceWordcloud(
-    companyname: string,
-    tahun_survey: number,
-  ) {
+  async generateExcelReplaceWordcloud() {
     try {
       const query = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
         .leftJoin('replacewordcloud.company', 'company')
         .select([
+          'replacewordcloud.id',
           'replacewordcloud.original_text',
           'replacewordcloud.replace_text',
           'company.companyeesname',
-          'replacewordcloud.tahun_survey',
+          'replacewordcloud.uuid',
         ])
         .where('replacewordcloud.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', { companyname })
-        .andWhere('replacewordcloud.tahun_survey = :tahun_survey', {
-          tahun_survey,
-        })
         .getMany();
 
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet('Replace Wordcloud Data');
 
-      const headerTitle = [
-        'Original Text',
-        'Replacement Text',
-        'Company Name',
-        'Tahun Survey',
-      ];
+      const headerTitle = ['Company Name', 'Original Text', 'Replacement Text'];
       const tableData = query.map((item) => ({
+        'Company Name': item.company.companyeesname,
         'Original Text': item.original_text,
         'Replacement Text': item.replace_text,
-        'Company Name': item.company.companyeesname,
-        'Tahun Survey': item.tahun_survey,
       }));
 
       addTable(
