@@ -24,11 +24,18 @@ export class PredEngagementFavorableController {
   @Get('/favorable-all-factor')
   @ApiOkResponse({ type: [GetAverageFavorableAllFactorResultDTO] })
   async getAllAverageFactor(
-    @Query() { companyid }: GetAverageFavorableAllFactorQueryDTO,
+    @Query()
+    {
+      companyid,
+      demography,
+      demographyvalue,
+    }: GetAverageFavorableAllFactorQueryDTO,
   ): Promise<GetAverageFavorableAllFactorResultDTO[]> {
     return await this.predEngagementFavorableService.getAverageFavorableAllFactor(
       {
         companyid,
+        demography,
+        demographyvalue,
       },
     );
   }
