@@ -62,7 +62,7 @@ export class MasterUserController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return { username: username, email: email, npk: npk };
+      return { isDuplicate: false };
     }
   }
 

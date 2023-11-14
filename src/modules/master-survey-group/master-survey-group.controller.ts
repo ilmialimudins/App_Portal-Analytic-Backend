@@ -58,7 +58,7 @@ export class SurveyGroupController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return surveygroup;
+      return { isDuplicate: false };
     }
   }
 

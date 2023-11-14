@@ -66,7 +66,7 @@ export class NgramController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return ngram;
+      return { isDuplicate: false };
     }
   }
 

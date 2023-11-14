@@ -64,7 +64,7 @@ export class BusinessLineController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return businessline;
+      return { isDuplicate: false };
     }
   }
 

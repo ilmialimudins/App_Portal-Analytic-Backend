@@ -56,7 +56,7 @@ export class LocationController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return location;
+      return { isDuplicate: false };
     }
   }
 

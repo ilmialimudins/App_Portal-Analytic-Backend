@@ -46,7 +46,7 @@ export class MasterWorkSpaceController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return workspace;
+      return { isDuplicate: false };
     }
   }
 

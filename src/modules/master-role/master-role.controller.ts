@@ -58,7 +58,7 @@ export class MasterRoleController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return rolename;
+      return { isDuplicate: false };
     }
   }
 

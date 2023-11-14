@@ -64,7 +64,7 @@ export class ReplaceWordcloudController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return original_text;
+      return { isDuplicate: false };
     }
   }
 

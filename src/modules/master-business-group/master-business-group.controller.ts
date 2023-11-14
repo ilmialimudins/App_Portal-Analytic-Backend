@@ -64,7 +64,7 @@ export class BusinessGroupController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return businessgroup;
+      return { isDuplicate: false };
     }
   }
 

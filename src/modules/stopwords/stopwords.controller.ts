@@ -57,7 +57,7 @@ export class StopwordsController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return stopword;
+      return { isDuplicate: false };
     }
   }
 

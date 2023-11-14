@@ -69,11 +69,7 @@ export class CompanyController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return {
-        CompanyEESName: companyees,
-        CompanyMPSName: companymps,
-        CompanyAlias: alias,
-      };
+      return { isDuplicate: false };
     }
   }
 

@@ -66,7 +66,7 @@ export class DemographyController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return demographyalias;
+      return { isDuplicate: false };
     }
   }
 

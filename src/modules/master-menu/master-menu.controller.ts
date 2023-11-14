@@ -44,7 +44,7 @@ export class MasterMenuController {
     if (result) {
       return { isDuplicate: true };
     } else {
-      return menuname;
+      return { isDuplicate: false };
     }
   }
 
