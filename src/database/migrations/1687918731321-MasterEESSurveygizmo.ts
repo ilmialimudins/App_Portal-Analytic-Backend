@@ -11,6 +11,8 @@ export class MasterEESSurveygizmo1687918731321 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
             name: 'h_surveygizmohashkey',
