@@ -11,6 +11,8 @@ export class AddTableMasterEESQCode1687846715189 implements MigrationInterface {
             type: 'bigint',
             isPrimary: true,
             isNullable: false,
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
             name: 'h_qcodehashkey',
