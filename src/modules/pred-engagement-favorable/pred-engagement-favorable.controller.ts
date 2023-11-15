@@ -42,11 +42,19 @@ export class PredEngagementFavorableController {
 
   @Get('/favorable-detail')
   async getFavorableDetail(
-    @Query() { companyid, factorid }: GetFavorableFactorDetailQueryDTO,
+    @Query()
+    {
+      companyid,
+      factorid,
+      demography,
+      demographyvalue,
+    }: GetFavorableFactorDetailQueryDTO,
   ): Promise<GetFavorableFactorDetailDTO> {
     return await this.predEngagementFavorableService.getFavorableDetail({
       companyid,
       factorid,
+      demography,
+      demographyvalue,
     });
   }
 }

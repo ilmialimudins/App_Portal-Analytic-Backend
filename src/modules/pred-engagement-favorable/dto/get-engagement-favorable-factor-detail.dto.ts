@@ -9,6 +9,14 @@ export class GetFavorableFactorDetailQueryDTO {
 
   @ApiProperty()
   @IsString()
+  demography: string;
+
+  @ApiProperty()
+  @IsString()
+  demographyvalue: string;
+
+  @ApiProperty()
+  @IsString()
   factorid: string;
 }
 
