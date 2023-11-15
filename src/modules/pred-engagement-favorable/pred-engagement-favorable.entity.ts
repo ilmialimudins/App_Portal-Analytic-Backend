@@ -61,6 +61,9 @@ export class PredEngagementFavorable extends AbstractEntity<PredEngagementFavora
   @Column({ type: 'varchar', name: 'engagementlevel', nullable: true })
   engagementlevel: string;
 
+  @Column({ type: 'varchar', name: 'iscurrentsurvey', nullable: true })
+  iscurrentsurvey: string;
+
   @Column({ type: 'varchar', name: 'demography', nullable: true })
   demography: string;
 

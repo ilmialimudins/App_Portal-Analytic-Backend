@@ -5,6 +5,14 @@ export class GetAverageFavorableAllFactorQueryDTO {
   @ApiProperty()
   @IsString()
   companyid: string;
+
+  @ApiProperty()
+  @IsString()
+  demography: string;
+
+  @ApiProperty()
+  @IsString()
+  demographyvalue: string;
 }
 
 export class GetAverageFavorableAllFactorResultDTO {

@@ -21,6 +21,8 @@ export class PredEngagementFavorableService {
 
   public async getAverageFavorableAllFactor({
     companyid,
+    demography,
+    demographyvalue,
   }: GetAverageFavorableAllFactorQueryDTO): Promise<
     GetAverageFavorableAllFactorResultDTO[]
   > {
@@ -30,12 +32,20 @@ export class PredEngagementFavorableService {
       const result = await this.engagementFavorableRepo
         .createQueryBuilder('favorable')
         .select('DISTINCT favorable.factorid as factorid')
-        .addSelect('favorable.avg_per_factor as average_per_factor')
+        .addSelect(
+          'favorable.avg_respondentanswer_factor as avg_respondentanswer_factor',
+        )
         .addSelect('factor.factorname as factor_name')
         .addSelect('factor.factorcode as factor_code')
         .leftJoin('favorable.factor', 'factor')
         .where('favorable.companyid = :companyid', {
           companyid: companyid,
+        })
+        .andWhere('favorable.demography = :demography', {
+          demography,
+        })
+        .andWhere('favorable.demographyvalue = :demographyvalue', {
+          demographyvalue,
         })
         .andWhere('favorable.iscurrentsurvey = :value', { value: 'Current' })
         .andWhere('factor.factorname NOT IN (:...excludedFactorNames)', {
@@ -57,63 +67,85 @@ export class PredEngagementFavorableService {
   public async getFavorableDetail({
     companyid,
     factorid,
+    demography,
+    demographyvalue,
   }: GetFavorableFactorDetailQueryDTO): Promise<GetFavorableFactorDetailDTO> {
     try {
-      const result = await this.engagementFavorableRepo.find({
-        where: {
-          companyid: parseInt(companyid),
-          factorid: parseInt(factorid),
-          iscurrentsurvey: 'Current',
-        },
-        relations: {
-          qcode: true,
-          factor: true,
-        },
-        order: {
-          favorable_type: 'ASC',
-          qcode: {
-            qcode: 'ASC',
-          },
-        },
+      const result = await this.engagementFavorableRepo
+        .createQueryBuilder('favorable')
+        .select([
+          'favorable.companyid',
+          'favorable.demography',
+          'favorable.demographyvalue',
+          'favorable.avg_respondentanswer_factor as avg_respondentanswer_factor',
+          'factor.factorcode',
+          'factor.factorname',
+          'qcode.qcode',
+          'qcode.question',
+          'SUM ( favorable.sum_unfavorable ) AS sum_unfavorable',
+          'SUM ( favorable.sum_neutral ) as sum_neutral',
+          'SUM ( favorable.sum_favorable ) as sum_favorable',
+          'SUM (favorable.count_unfavorable ) as count_unfavorable',
+          'SUM (favorable.count_neutral ) as count_neutral',
+          'SUM (favorable.count_favorable ) as count_favorable',
+          'SUM ( favorable.count_respondent) as count_respondent',
+        ])
+        .leftJoin('favorable.factor', 'factor')
+        .leftJoin('favorable.qcode', 'qcode')
+        .where('favorable.companyid = :companyid', {
+          companyid: companyid,
+        })
+        .andWhere('favorable.demography = :demography', {
+          demography,
+        })
+        .andWhere('favorable.demographyvalue = :demographyvalue', {
+          demographyvalue,
+        })
+        .andWhere('favorable.iscurrentsurvey = :value', { value: 'Current' })
+        .andWhere('favorable.factorid = :factorid', { factorid })
+        .groupBy('favorable.companyid')
+        .addGroupBy('favorable.demography')
+        .addGroupBy('favorable.avg_respondentanswer_factor')
+        .addGroupBy('favorable.demographyvalue')
+        .addGroupBy('factor.factorcode')
+        .addGroupBy('factor.factorname')
+        .addGroupBy('qcode.qcode')
+        .addGroupBy('qcode.question')
+        .orderBy('qcode.qcode')
+        .getRawMany();
+
+      const favorableType = ['unfavorable', 'neutral', 'favorable'];
+
+      const summarizeResult: FavorableDataDTO[] = favorableType.map((item) => {
+        return {
+          favorable_type: item,
+          qcodedata: result.map((qcode) => {
+            const totalsum =
+              parseInt(qcode.sum_favorable) +
+              parseInt(qcode.sum_neutral) +
+              parseInt(qcode.sum_unfavorable);
+
+            return {
+              average_per_qcode:
+                parseInt(qcode[`sum_${item}`]) /
+                parseInt(qcode[`count_${item}`]),
+              percentage_all_favorabletype:
+                parseInt(qcode[`sum_${item}`]) / totalsum,
+              count_respondent: qcode.count_respondent,
+              question: qcode.question,
+              qcode: qcode.qcode,
+            };
+          }),
+        };
       });
 
-      const favorableData = result.reduce<FavorableDataDTO[]>((acc, val) => {
-        const indexFavorableType = acc.findIndex(
-          (x) => x.favorable_type === val.favorable_type,
-        );
-
-        if (indexFavorableType === -1) {
-          acc.push({
-            favorable_type: val.favorable_type,
-            qcodedata: [
-              {
-                average_per_qcode: val.avg_per_qcode,
-                count_respondent: val.count_respondent,
-                percentage_all_favorabletype: val.percentage_all_favorabletype,
-                question: val.qcode.question,
-                qcode: val.qcode.new_qcode,
-              },
-            ],
-          });
-        } else {
-          acc[indexFavorableType].qcodedata.push({
-            average_per_qcode: val.avg_per_qcode,
-            count_respondent: val.count_respondent,
-            percentage_all_favorabletype: val.percentage_all_favorabletype,
-            question: val.qcode.question,
-            qcode: val.qcode.new_qcode,
-          });
-        }
-        return acc;
-      }, []);
-
-      if (!result.length) {
+      if (!summarizeResult.length) {
         throw new NotFoundException('No Data For That Company');
       }
       return {
-        factor_name: result[0].factor.factorname,
-        average_per_factor: result[0].avg_per_factor,
-        favorabledata: favorableData,
+        factor_name: result[0].factor_factorname as string,
+        average_per_factor: result[0].avg_respondentanswer_factor as number,
+        favorabledata: summarizeResult,
       };
     } catch (error) {
       throw error;
