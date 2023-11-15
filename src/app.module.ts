@@ -51,6 +51,7 @@ import { OwnershipStatusModule } from './modules/master-ownership-status/master-
 import { SurveyValidationModule } from './modules/survey-validation/survey-validation.module';
 import { MonitoringValidationModule } from './modules/monitoring-validation/monitoring-validation.module';
 import { ValidateSurveyResultModule } from './modules/validate-survey-result/validate-survey-result.module';
+import { PowerbiEmbeddingModule } from './modules/powerbi-embedding/powerbi-embedding.module';
 
 const ApiModules = [
   SharedModule,
@@ -109,6 +110,7 @@ const ApiModules = [
     PredRelativeImportanceModule,
     MasterEngagementModule,
     SpmInvitedRespondentsModule,
+    PowerbiEmbeddingModule,
   ],
   controllers: [AppController],
   providers: [

@@ -26,7 +26,6 @@ export class AuthGuard implements CanActivate {
     if (!headerAuth) {
       throw new UnauthorizedException('You are not authorized');
     }
-    console.log('getting here');
 
     const res = await this.apiService.getUserInfo(headerAuth.split(' ')[1]);
 
@@ -34,12 +33,15 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('You are not authorized');
     }
 
-    request.userinfo = res.body;
-
     const userInfoEmail = res.body.email;
 
     const emailUser = await this.userService.getMasterUserEmail(userInfoEmail);
 
+    request.userinfo = emailUser;
+
+    if (emailUser && emailUser.isdelete == 'true') {
+      throw new UnauthorizedException('You are not authorized');
+    }
     if (!emailUser) {
       throw new UnauthorizedException('You are not authorized');
     }
