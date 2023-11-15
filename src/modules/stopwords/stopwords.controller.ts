@@ -75,6 +75,20 @@ export class StopwordsController {
     return result;
   }
 
+  @Post('/createManyStopwords')
+  @ApiOkResponse({ type: StopwordsDto })
+  async createManyStopwords(@Body() stopwords: AddStopwordsDto[]) {
+    const duplicate = await this.stopwordsService.checkManyDuplicateStopwords(
+      stopwords,
+    );
+
+    if (duplicate.anyDuplicate && duplicate.countDuplicate > 0) {
+      return { isDuplicate: true };
+    }
+
+    return await this.stopwordsService.createManyStopwords(stopwords);
+  }
+
   @Patch('/updateStopwords')
   @ApiOkResponse({ type: StopwordsDto })
   async updateStopwords(

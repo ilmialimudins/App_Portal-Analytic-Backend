@@ -89,6 +89,25 @@ export class ReplaceWordcloudController {
     return result;
   }
 
+  @Post('/createManyReplacewordcloud')
+  @ApiOkResponse({ type: ReplaceWordcloudDto })
+  async createManyReplacewordcloud(
+    @Body() replacewordcloud: AddReplaceWordcloudDto[],
+  ) {
+    const duplicate =
+      await this.replaceWordcloudService.checkManyDuplicateReplacewordcloud(
+        replacewordcloud,
+      );
+
+    if (duplicate.anyDuplicate && duplicate.countDuplicate > 0) {
+      return { isDuplicate: true };
+    }
+
+    return await this.replaceWordcloudService.createManyReplacewordcloud(
+      replacewordcloud,
+    );
+  }
+
   @Patch('/updateReplaceWordcloud')
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async updateReplaceWordcloud(

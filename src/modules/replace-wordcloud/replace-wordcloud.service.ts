@@ -8,6 +8,7 @@ import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
 import * as excel from 'exceljs';
 import { addTable } from 'src/common/utils/addExcelTable';
 import { v4 as uuidv4 } from 'uuid';
+import { removeArrObj } from 'src/common/utils/checkDuplicate';
 
 @Injectable()
 export class ReplaceWordcloudService {
@@ -203,6 +204,84 @@ export class ReplaceWordcloudService {
         .execute();
 
       return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createManyReplacewordcloud(replaceWordcloud: AddReplaceWordcloudDto[]) {
+    try {
+      const nowDate = new Date();
+      const nowYear = nowDate.getFullYear();
+
+      const values = replaceWordcloud.map((item) => {
+        return {
+          uuid: uuidv4(),
+          companyid: 475,
+          tahun_survey: nowYear,
+          original_text: item.original_text,
+          replace_text: item.replace_text,
+          isdelete: 'false',
+          createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
+        };
+      });
+
+      const result = await this.replaceWordcloudRepository
+        .createQueryBuilder()
+        .insert()
+        .values([...values])
+        .execute();
+
+      return { insertedRowCount: result.identifiers.length };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private checkJSONDuplicate(
+    array: AddReplaceWordcloudDto[],
+    params: AddReplaceWordcloudDto,
+    index: number,
+  ) {
+    const arrayToFind = removeArrObj(array, index);
+    return arrayToFind.findIndex((item: ReplaceWordcloud) => {
+      return item.original_text === params.original_text;
+    });
+  }
+
+  async checkManyDuplicateReplacewordcloud(
+    replacewordcloud: AddReplaceWordcloudDto[],
+  ) {
+    try {
+      const result = {
+        anyDuplicate: false,
+        countDuplicate: 0,
+        duplicate: [] as AddReplaceWordcloudDto[],
+      };
+
+      const data = await Promise.all(
+        replacewordcloud.map(async (item, index) => {
+          const check = await this.checkOneReplaceWordcloud(item);
+          const value = { ...item, isDuplicate: false };
+          const getDuplicateIndex = this.checkJSONDuplicate(
+            replacewordcloud,
+            item,
+            index,
+          );
+
+          if (getDuplicateIndex > -1 || check) {
+            result.anyDuplicate = true;
+            result.countDuplicate++;
+            result.duplicate.push(item);
+            value.isDuplicate = true;
+          }
+
+          return value;
+        }),
+      );
+
+      return { ...result, data };
     } catch (error) {
       throw error;
     }

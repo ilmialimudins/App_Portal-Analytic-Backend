@@ -8,6 +8,7 @@ import { UpdateStopwordsDto } from './dto/update-stopwords.dto';
 import * as excel from 'exceljs';
 import { addTable } from 'src/common/utils/addExcelTable';
 import { v4 as uuidv4 } from 'uuid';
+import { removeArrObj } from 'src/common/utils/checkDuplicate';
 
 @Injectable()
 export class StopwordsService {
@@ -175,6 +176,80 @@ export class StopwordsService {
         .execute();
 
       return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createManyStopwords(stopwords: AddStopwordsDto[]) {
+    try {
+      const nowDate = new Date();
+      const nowYear = nowDate.getFullYear();
+
+      const values = stopwords.map((item) => {
+        return {
+          uuid: uuidv4(),
+          companyid: 475,
+          stopwords: item.stopwords,
+          tahun_survey: nowYear,
+          isdelete: 'false',
+          createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
+        };
+      });
+
+      const result = await this.stopwordsRepository
+        .createQueryBuilder()
+        .insert()
+        .values([...values])
+        .execute();
+
+      return { insertedRowCount: result.identifiers.length };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private checkJSONDuplicate(
+    array: AddStopwordsDto[],
+    params: AddStopwordsDto,
+    index: number,
+  ) {
+    const arrayToFind = removeArrObj(array, index);
+    return arrayToFind.findIndex((item: Stopwords) => {
+      return item.stopwords === params.stopwords;
+    });
+  }
+
+  async checkManyDuplicateStopwords(stopwords: AddStopwordsDto[]) {
+    try {
+      const result = {
+        anyDuplicate: false,
+        countDuplicate: 0,
+        duplicate: [] as AddStopwordsDto[],
+      };
+      const data = await Promise.all(
+        stopwords.map(async (item, index) => {
+          const check = await this.checkOneStopwords(item);
+          const value = { ...item, isDuplicate: false };
+          const getDuplicateIndex = this.checkJSONDuplicate(
+            stopwords,
+            item,
+            index,
+          );
+
+          if (getDuplicateIndex > -1 || check) {
+            result.anyDuplicate = true;
+            result.countDuplicate++;
+            result.duplicate.push(item);
+            value.isDuplicate = true;
+          }
+
+          return value;
+        }),
+      );
+
+      return { ...result, data };
     } catch (error) {
       throw error;
     }
