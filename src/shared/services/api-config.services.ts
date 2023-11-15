@@ -112,10 +112,6 @@ export class ApiConfigService {
     return this.get('POWERBI_CLIENTSECRET');
   }
 
-  get powerBIRoleName(): string {
-    return this.get('POWERBI_ROLENAME');
-  }
-
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

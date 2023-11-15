@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,12 +10,16 @@ import { Repository } from 'typeorm';
 import { MasterUserDto } from './dto/master-user.dto';
 import { AddMasterUserDto } from './dto/add-master-user.dto';
 import { UpdateMasterUserDto } from './dto/update-master-user.dto';
+import { RoleUserService } from '../role-user/role-user.service';
 
 @Injectable()
 export class MasterUserService {
   constructor(
     @InjectRepository(MasterUser)
     private masterUserRepository: Repository<MasterUser>,
+
+    @Inject(RoleUserService)
+    private roleUserService: RoleUserService,
   ) {}
 
   async getAllMasterUser(
@@ -115,7 +120,9 @@ export class MasterUserService {
     }
   }
 
-  async getMasterUserEmail(email: string): Promise<MasterUserDto | undefined> {
+  async getMasterUserEmail(
+    email: string,
+  ): Promise<(MasterUserDto & { roles: string[] }) | undefined> {
     try {
       const searchableEmail = email.trim().toLocaleLowerCase();
       const user = await this.masterUserRepository
@@ -129,7 +136,12 @@ export class MasterUserService {
         throw new BadRequestException('There is no user found');
       }
 
-      return userResult;
+      const roles = await this.roleUserService.getUserRoles(userResult.userid);
+
+      return {
+        ...userResult,
+        roles: roles.map((item) => item.masterrole.rolename),
+      };
     } catch (error) {
       if (error.status === 401) {
         throw new UnauthorizedException('You are not authorize');

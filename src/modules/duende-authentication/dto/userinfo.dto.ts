@@ -2,29 +2,32 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UserInfoDTO {
   @ApiProperty()
-  sub: string;
+  userid: number;
 
   @ApiProperty()
-  auth_time: number;
+  username: string;
 
   @ApiProperty()
-  idp: string;
-
-  @ApiProperty()
-  amr: string;
-
-  @ApiProperty()
-  name: string;
+  fullname: string;
 
   @ApiProperty()
   email: string;
 
   @ApiProperty()
-  email_address: string;
+  companycode: string | null;
 
   @ApiProperty()
-  family_name: string;
+  companyname: string | null;
 
   @ApiProperty()
-  given_name: string;
+  phonenumber: string | null;
+
+  @ApiProperty()
+  npk: string | null;
+
+  @ApiProperty()
+  isdelete: boolean;
+
+  @ApiProperty({ type: () => [] })
+  roles: string[];
 }
