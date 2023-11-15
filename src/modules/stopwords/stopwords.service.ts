@@ -40,7 +40,6 @@ export class StopwordsService {
           'company.companyid',
           'stopwords.stopwords',
           'company.companyeesname',
-          'stopwords.tahun_survey',
           'stopwords.uuid',
         ]);
 
@@ -97,6 +96,7 @@ export class StopwordsService {
       const query = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
         .where('stopwords.stopwords = :stopword', { stopword })
+        .andWhere('stopwords.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;
@@ -167,44 +167,42 @@ export class StopwordsService {
 
   async deleteStopwords(uuid: string) {
     try {
-      await this.stopwordsRepository
+      const query = await this.stopwordsRepository
         .createQueryBuilder()
         .update(Stopwords)
         .set({ isdelete: 'true' })
         .where('uuid = :uuid', { uuid })
         .execute();
 
-      return `Data Berhasil Di Hapus`;
+      return query;
     } catch (error) {
       throw error;
     }
   }
 
-  async generateExcelStopwords(companyname: string, tahun_survey: number) {
+  async generateExcelStopwords() {
     try {
       const query = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
         .leftJoin('stopwords.company', 'company')
         .select([
-          'stopwords.stopwords',
+          'stopwords.id',
+          'company.companyid',
           'company.companyeesname',
-          'stopwords.tahun_survey',
+          'stopwords.stopwords',
           'stopwords.uuid',
         ])
         .where('stopwords.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.companyeesname = :companyname', { companyname })
-        .andWhere('stopwords.tahun_survey = :tahun_survey', { tahun_survey })
         .orderBy('tahun_survey', 'DESC')
         .getMany();
 
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet('Stopwords Data');
 
-      const headerTitle = ['Stopwords', 'Company Name', 'Tahun Survey'];
+      const headerTitle = ['Company Name', 'Stopwords'];
       const tableData = query.map((item) => ({
-        Stopwords: item.stopwords,
         'Company Name': item.company.companyeesname,
-        'Tahun Survey': item.tahun_survey,
+        Stopwords: item.stopwords,
       }));
 
       addTable(

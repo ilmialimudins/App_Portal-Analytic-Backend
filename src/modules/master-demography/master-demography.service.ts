@@ -98,6 +98,7 @@ export class DemographyService {
         .where('demography.demographyalias = :demographyalias', {
           demographyalias,
         })
+        .andWhere('demography.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

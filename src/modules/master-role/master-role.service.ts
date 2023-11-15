@@ -86,6 +86,7 @@ export class MasterRoleService {
       const query = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
         .where('masterrole.rolename = :rolename', { rolename })
+        .andWhere('masterrole.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

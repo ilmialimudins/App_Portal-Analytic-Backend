@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,13 +14,19 @@ import { MasterUserDto } from './dto/master-user.dto';
 import { AddMasterUserDto } from './dto/add-master-user.dto';
 import { UpdateMasterUserDto } from './dto/update-master-user.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { RoleUserService } from '../role-user/role-user.service';
+import { AccessUserService } from '../access-user/access-user.service';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @ApiTags('Master User')
 @Controller('masteruser')
 export class MasterUserController {
-  constructor(private masteruserService: MasterUserService) {}
+  constructor(
+    private masteruserService: MasterUserService,
+    private roleUserService: RoleUserService,
+    private accessUserService: AccessUserService,
+  ) {}
 
   @Get('/')
   @ApiCreatedResponse({ type: MasterUserDto })
@@ -55,9 +60,9 @@ export class MasterUserController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
-      return { username: username, email: email, npk: npk };
+      return { isDuplicate: false };
     }
   }
 
@@ -84,9 +89,19 @@ export class MasterUserController {
     return this.masteruserService.updateMasterUser(userid, masteruser);
   }
 
-  @Delete('/deleteMasterUser')
+  @Delete('/activeMasterUser')
   @ApiCreatedResponse({ type: MasterUserDto })
-  async deleteMasterUser(@Query('userid') userid: number) {
-    return this.masteruserService.deleteMasterUser(userid);
+  async activeMasterUser(@Query('userid') userid: number) {
+    return this.masteruserService.activeMasterUser(userid);
+  }
+
+  @Delete('/deactiveMasterUser')
+  @ApiCreatedResponse({ type: MasterUserDto })
+  async deactiveMasterUser(@Query('userid') userid: number) {
+    await this.roleUserService.deleteRoleUserByUserId(userid);
+
+    await this.accessUserService.deleteAccessUserByUserId(userid);
+
+    return this.masteruserService.deactiveMasterUser(userid);
   }
 }

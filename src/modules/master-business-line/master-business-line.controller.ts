@@ -7,7 +7,6 @@ import {
   Delete,
   Patch,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { BusinessLineService } from './master-business-line.service';
@@ -63,9 +62,9 @@ export class BusinessLineController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
-      return businessline;
+      return { isDuplicate: false };
     }
   }
 

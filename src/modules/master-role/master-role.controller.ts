@@ -7,7 +7,6 @@ import {
   Patch,
   Delete,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { MasterRoleService } from './master-role.service';
@@ -57,9 +56,9 @@ export class MasterRoleController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
-      return rolename;
+      return { isDuplicate: false };
     }
   }
 

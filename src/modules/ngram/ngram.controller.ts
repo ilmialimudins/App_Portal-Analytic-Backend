@@ -64,9 +64,9 @@ export class NgramController {
     const result = await this.ngramService.checkDuplicateNgram(ngram);
 
     if (result) {
-      return { message: 'Duplicate Entry' };
+      return { isDuplicate: true };
     } else {
-      return ngram;
+      return { isDuplicate: false };
     }
   }
 

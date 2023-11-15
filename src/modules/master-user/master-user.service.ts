@@ -44,6 +44,7 @@ export class MasterUserService {
           'npk',
           'phonenumber',
           'companyname',
+          'isdelete',
         ]);
 
       if (username) {
@@ -53,15 +54,12 @@ export class MasterUserService {
       }
 
       const data = await query
-        .andWhere('masteruser.isdelete = :isdelete', { isdelete: false })
         .orderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await query
-        .andWhere('masteruser.isdelete = :isdelete', { isdelete: false })
-        .getCount();
+      const itemCount = await query.getCount();
 
       const pageCount = Math.ceil(itemCount / take);
       const hasPreviousPage = page > 1;
@@ -189,12 +187,27 @@ export class MasterUserService {
     }
   }
 
-  async deleteMasterUser(userid: number) {
+  async activeMasterUser(userid: number) {
     try {
       const query = await this.masterUserRepository
         .createQueryBuilder()
         .update(MasterUser)
-        .set({ isdelete: 'true' })
+        .set({ isdelete: 'Active' })
+        .where('userid = :userid', { userid })
+        .execute();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deactiveMasterUser(userid: number) {
+    try {
+      const query = await this.masterUserRepository
+        .createQueryBuilder()
+        .update(MasterUser)
+        .set({ isdelete: 'Deactive' })
         .where('userid = :userid', { userid })
         .execute();
 

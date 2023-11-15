@@ -145,6 +145,7 @@ export class NgramService {
     try {
       const query = await this.NgramRepository.createQueryBuilder('ngram')
         .where('ngram.ngram = :ngram', { ngram })
+        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;
@@ -176,13 +177,13 @@ export class NgramService {
 
   async deleteNgram(uuid: string) {
     try {
-      await this.NgramRepository.createQueryBuilder()
+      const query = await this.NgramRepository.createQueryBuilder()
         .update(Ngram)
         .set({ isdelete: 'true' })
         .where('uuid = :uuid', { uuid })
         .execute();
 
-      return 'Data Berhasil Di Hapus';
+      return query;
     } catch (error) {
       throw error;
     }

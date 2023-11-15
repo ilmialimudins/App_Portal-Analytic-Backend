@@ -8,5 +8,6 @@ import { AccessUserController } from './access-user.controller';
   imports: [TypeOrmModule.forFeature([AccessUser])],
   providers: [AccessUserService],
   controllers: [AccessUserController],
+  exports: [AccessUserService],
 })
 export class AccessUserModule {}

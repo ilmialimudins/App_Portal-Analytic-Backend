@@ -117,14 +117,14 @@ export class MasterReportService {
 
   async deleteMasterReport(reportid: number) {
     try {
-      await this.masterReportRepository
+      const query = await this.masterReportRepository
         .createQueryBuilder()
         .update(MasterReport)
         .set({ isdelete: 'true' })
         .where('reportid = :reportid', { reportid })
         .execute();
 
-      return `Data berhasil di hapus`;
+      return query;
     } catch (error) {
       throw error;
     }

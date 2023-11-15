@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -65,9 +64,9 @@ export class DemographyController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
-      return demographyalias;
+      return { isDuplicate: false };
     }
   }
 

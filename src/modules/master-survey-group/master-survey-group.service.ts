@@ -5,12 +5,16 @@ import { Repository } from 'typeorm';
 import { SurveyGroupDto } from './dto/master-survey-group.dto';
 import { AddSurveyGroupDto } from './dto/add-master-survey-group.dto';
 import { UpdateSurveyGroupDto } from './dto/update-master-survey-group.dto';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Injectable()
 export class SurveyGroupService {
   constructor(
     @InjectRepository(SurveyGroup)
     private surveyGroupRepository: Repository<SurveyGroup>,
+
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
   ) {}
 
   async getAllSurveyGroup(
@@ -27,6 +31,11 @@ export class SurveyGroupService {
     hasNextPage: boolean;
   }> {
     try {
+      const company = await this.companyRepository
+        .createQueryBuilder('company')
+        .select('company.surveygroupid')
+        .getMany();
+
       const offset = (page - 1) * take;
 
       let query = this.surveyGroupRepository
@@ -49,6 +58,13 @@ export class SurveyGroupService {
         .limit(take)
         .getRawMany();
 
+      const dataWithStatus = data.map((item) => ({
+        ...item,
+        status: company.find((c) => c.surveygroupid === item.surveygroupid)
+          ? 'isUsed'
+          : 'isNotUsed',
+      }));
+
       const itemCount = await query
         .andWhere('surveygroup.isdelete = :isdelete', { isdelete: false })
         .getCount();
@@ -58,7 +74,7 @@ export class SurveyGroupService {
       const hasNextPage = page < pageCount;
 
       return {
-        data,
+        data: dataWithStatus,
         page,
         take,
         itemCount,
@@ -91,6 +107,7 @@ export class SurveyGroupService {
       const query = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .where('surveygroup.surveygroupdesc = :surveygroup', { surveygroup })
+        .andWhere('surveygroup.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

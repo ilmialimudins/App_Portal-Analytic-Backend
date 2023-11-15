@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -55,9 +54,9 @@ export class LocationController {
     const result = await this.locationService.checkDuplicateLocation(location);
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
-      return location;
+      return { isDuplicate: false };
     }
   }
 

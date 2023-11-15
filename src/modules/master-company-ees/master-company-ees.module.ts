@@ -8,6 +8,6 @@ import { CompanyController } from './master-company-ees.controller';
   imports: [TypeOrmModule.forFeature([Company])],
   providers: [CompanyService],
   controllers: [CompanyController],
-  exports: [CompanyService],
+  exports: [CompanyService, TypeOrmModule.forFeature([Company])],
 })
 export class CompanyModule {}

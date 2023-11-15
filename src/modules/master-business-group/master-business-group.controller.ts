@@ -7,7 +7,6 @@ import {
   Query,
   UseGuards,
   Delete,
-  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
@@ -63,9 +62,9 @@ export class BusinessGroupController {
     );
 
     if (result) {
-      throw new BadRequestException('Duplicate Entry');
+      return { isDuplicate: true };
     } else {
-      return businessgroup;
+      return { isDuplicate: false };
     }
   }
 

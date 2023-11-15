@@ -5,12 +5,16 @@ import { LocationDto } from './dto/master-location.dto';
 import { Location } from './master-location.entity';
 import { AddLocationDto } from './dto/add-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { Company } from '../master-company-ees/master-company-ees.entity';
 
 @Injectable()
 export class LocationService {
   constructor(
     @InjectRepository(Location)
     private locationRepository: Repository<Location>,
+
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
   ) {}
 
   async getAllLocation(
@@ -27,6 +31,11 @@ export class LocationService {
     hasNextPage: boolean;
   }> {
     try {
+      const company = await this.companyRepository
+        .createQueryBuilder('company')
+        .select('company.locationid')
+        .getMany();
+
       const offset = (page - 1) * take;
 
       let query = this.locationRepository
@@ -46,6 +55,13 @@ export class LocationService {
         .limit(take)
         .getRawMany();
 
+      const dataWithStatus = data.map((item) => ({
+        ...item,
+        status: company.find((c) => c.locationid === item.locationid)
+          ? 'isUsed'
+          : 'isNotUsed',
+      }));
+
       const itemCount = await query
         .andWhere('location.isdelete = :isdelete', { isdelete: false })
         .getCount();
@@ -55,7 +71,7 @@ export class LocationService {
       const hasNextPage = page < pageCount;
 
       return {
-        data,
+        data: dataWithStatus,
         page,
         take,
         itemCount,
@@ -86,6 +102,7 @@ export class LocationService {
       const query = await this.locationRepository
         .createQueryBuilder('location')
         .where('location.locationdesc = :location', { location })
+        .andWhere('location.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;
