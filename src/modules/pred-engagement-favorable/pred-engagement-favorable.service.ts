@@ -125,6 +125,7 @@ export class PredEngagementFavorableService {
               parseInt(qcode.sum_neutral) +
               parseInt(qcode.sum_unfavorable);
 
+            console.log(qcode);
             return {
               average_per_qcode:
                 parseInt(qcode[`sum_${item}`]) /
@@ -132,8 +133,8 @@ export class PredEngagementFavorableService {
               percentage_all_favorabletype:
                 parseInt(qcode[`sum_${item}`]) / totalsum,
               count_respondent: qcode.count_respondent,
-              question: qcode.question,
-              qcode: qcode.qcode,
+              question: qcode.qcode_question,
+              qcode: qcode.qcode_qcode,
             };
           }),
         };
