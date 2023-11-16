@@ -125,7 +125,6 @@ export class PredEngagementFavorableService {
               parseInt(qcode.sum_neutral) +
               parseInt(qcode.sum_unfavorable);
 
-            console.log(qcode);
             return {
               average_per_qcode:
                 parseInt(qcode[`sum_${item}`]) /

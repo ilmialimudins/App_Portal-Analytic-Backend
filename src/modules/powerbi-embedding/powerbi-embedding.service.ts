@@ -2,6 +2,8 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as superagent from 'superagent';
 import { ApiConfigService } from 'src/shared/services/api-config.services';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { PowerBIEmbedUrlDto } from '../duende-authentication/dto/powerbi-get-embedurl.dto';
+import { PowerBIEmbedTokenDto } from '../duende-authentication/dto/powerbi-embed-token.dto';
 
 @Injectable()
 export class PowerbiEmbeddingService {
@@ -92,6 +94,46 @@ export class PowerbiEmbeddingService {
       if (error.status === 401) {
         throw new UnauthorizedException('You are not authorize');
       }
+      throw error;
+    }
+  }
+
+  public async getPowerBIMetadata(
+    workspaceid: string,
+    reportid: string,
+    userInfo: UserInfoDTO,
+  ) {
+    try {
+      const resLogin = await this.powerBILogin();
+
+      const resToken = resLogin.body.access_token;
+
+      const resEmbedUrl = await this.powerBIEmbedDetail(
+        workspaceid,
+        reportid,
+        resToken,
+      );
+
+      const getEmbedUrl: PowerBIEmbedUrlDto = resEmbedUrl.body;
+
+      const resDatasetid = resEmbedUrl.body.datasetId;
+
+      const resEmbedToken = await this.powerBIEmbedToken(
+        resDatasetid,
+        reportid,
+        resToken,
+        userInfo,
+      );
+
+      const getEmbedToken: PowerBIEmbedTokenDto = resEmbedToken.body;
+
+      const response = {
+        embedUrl: getEmbedUrl,
+        embedToken: getEmbedToken,
+      };
+
+      return response;
+    } catch (error) {
       throw error;
     }
   }
