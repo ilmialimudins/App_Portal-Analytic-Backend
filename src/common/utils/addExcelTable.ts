@@ -131,3 +131,57 @@ export const addTableInvitedTable = <T extends object>(
     });
   });
 };
+
+export const addTableValidate = <T extends object>(
+  objTable: ObjectTable<T>,
+  sheet: excel.Worksheet,
+) => {
+  const { rowHeaderNum, rowDataNum, headerTitle, tableData } = objTable;
+
+  headerTitle.forEach((item, index) => {
+    const col = sheet.getCell(
+      `${numberToExcelColumn(index + 1)}${rowHeaderNum}`,
+    );
+    const column = sheet.getColumn(numberToExcelColumn(index + 1));
+    column.width = item.length + 3;
+    col.value = item;
+    col.style = {
+      ...middleStyle,
+      font: {
+        size: 11,
+        bold: false,
+      },
+    };
+    col.border = border;
+  });
+
+  tableData.forEach((row, rowIndex) => {
+    const rowNums = rowDataNum + rowIndex;
+    const arrayHeaders = Object.keys(row);
+    arrayHeaders.forEach((headerKey, colIndex) => {
+      const cell = sheet.getCell(
+        `${numberToExcelColumn(colIndex + 1)}${rowNums}`,
+      );
+      cell.value = isNaN(row[headerKey]) ? row[headerKey] : +row[headerKey];
+      cell.style = {
+        font: {
+          size: 10,
+        },
+      };
+      cell.protection = {
+        locked: isNaN(row[headerKey]) ? true : false,
+      };
+      cell.border = border;
+    });
+  });
+};
+
+function numberToExcelColumn(num: number): string {
+  let excelCol = '';
+  while (num > 0) {
+    const remainder = (num - 1) % 26;
+    excelCol = String.fromCharCode(65 + remainder) + excelCol;
+    num = Math.floor((num - 1) / 26);
+  }
+  return excelCol;
+}

@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ValidateSurveyResult } from './validate-survey-result.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
 import { UpdateValidateSurveyResultDto } from './dto/update-validate-survey-result.dto';
 import { CheckingCompleteSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
+import * as excel from 'exceljs';
+import { addTableValidate } from 'src/common/utils/addExcelTable';
 
 @Injectable()
 export class ValidateSurveyResultService {
@@ -14,6 +16,8 @@ export class ValidateSurveyResultService {
 
     @InjectRepository(CheckingCompleteSurvey)
     private checkingCompleteSurveyRepository: Repository<CheckingCompleteSurvey>,
+
+    private readonly manager: EntityManager,
   ) {}
 
   async getAllValidateSurveyResult(
@@ -166,8 +170,14 @@ export class ValidateSurveyResultService {
   }
 
   async updateDateVersion(surveyid: number, company: string) {
+    const queryRunner = this.manager.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      const query = await this.valdiateSurveyResultRepository
+      const managerValidate = this.manager.getRepository(ValidateSurveyResult);
+      const query = await managerValidate
         .createQueryBuilder()
         .update(ValidateSurveyResult)
         .set({
@@ -177,9 +187,14 @@ export class ValidateSurveyResultService {
         .andWhere('company = :company', { company })
         .execute();
 
+      await queryRunner.commitTransaction();
+
       return query;
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw error;
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -215,6 +230,152 @@ export class ValidateSurveyResultService {
         .execute();
 
       return { validatesurveyresult, checkcompletesurvey };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async generateExcelValidateSurveyResult() {
+    try {
+      const query = await this.valdiateSurveyResultRepository
+        .createQueryBuilder('validatesurveyresult')
+        .leftJoin('validatesurveyresult.surveyvalidation', 'surveyvalidation')
+        .select([
+          'validatesurveyresult.id',
+          'surveyvalidation.validation',
+          'validatesurveyresult.respondentid',
+          'validatesurveyresult.surveyid',
+          'validatesurveyresult.businessline',
+          'validatesurveyresult.company',
+          'validatesurveyresult.locationname',
+          'validatesurveyresult.jobtitle',
+          'validatesurveyresult.branch',
+          'validatesurveyresult.plant',
+          'validatesurveyresult.jobsites',
+          'validatesurveyresult.directorate',
+          'validatesurveyresult.division',
+          'validatesurveyresult.department',
+          'validatesurveyresult.grade',
+          'validatesurveyresult.age',
+          'validatesurveyresult.tahunlahir',
+          'validatesurveyresult.tahunmasuk_astra',
+          'validatesurveyresult.tahunmasuk_perusahaan',
+          'validatesurveyresult.tahunsurvey',
+          'validatesurveyresult.agegroup',
+          'validatesurveyresult.agegeneration',
+          'validatesurveyresult.serviceyears',
+          'validatesurveyresult.statuskaryawan',
+          'validatesurveyresult.functionname',
+          'validatesurveyresult.region',
+          'validatesurveyresult.area',
+          'validatesurveyresult.salesoffice',
+          'validatesurveyresult.kebun',
+          'validatesurveyresult.gender',
+          'validatesurveyresult.entryyear_difference',
+          'validatesurveyresult.fillingtime',
+          'validatesurveyresult.similaranswer',
+          'validatesurveyresult.completeanswer',
+          'validatesurveyresult.age_this_year',
+          'validatesurveyresult.age_when_entering_company',
+        ])
+        .where('validatesurveyresult.row_status = :row_status', {
+          row_status: false,
+        })
+        .andWhere('validatesurveyresult.surveyid = surveyvalidation.surveyid')
+        .andWhere('validatesurveyresult.company = surveyvalidation.company')
+        .orderBy('validatesurveyresult.sourcecreatedmodifiedtime', 'DESC')
+        .getMany();
+
+      const workbook = new excel.Workbook();
+      const worksheet = workbook.addWorksheet('Validate Survey Result Data');
+
+      const headerTitle = [
+        'Validation',
+        'Respondent Id',
+        'Surveyid',
+        'Business Line',
+        'Company',
+        'Location',
+        'Job Title',
+        'Branch',
+        'Plant',
+        'Job Sites',
+        'Directorate',
+        'Division',
+        'Department',
+        'Grade',
+        'Age',
+        'Birth Year',
+        'Entry Year (Astra)',
+        'Entry Year (Company)',
+        'Survey Year',
+        'Age Group',
+        'Age Generation',
+        'Service Year',
+        'Employee Status',
+        'Function',
+        'Region',
+        'Area',
+        'Sales Office',
+        'Kebun',
+        'Gender',
+        'Entry Year Difference',
+        'Filling Time',
+        'Similar Answer',
+        'Complete Answer',
+        'Age This Year',
+        'Age When Entering Company',
+      ];
+      const tableData = query.map((item) => ({
+        Validation: item.surveyvalidation.validation,
+        'Respondent Id': item.respondentid,
+        Surveyid: item.surveyid,
+        'Business Line': item.businessline,
+        Company: item.company,
+        Location: item.locationname,
+        'Job Title': item.jobtitle,
+        Branch: item.branch,
+        Plant: item.plant,
+        'Job Sites': item.jobsites,
+        Directorate: item.directorate,
+        Division: item.division,
+        Department: item.department,
+        Grade: item.grade,
+        Age: item.age,
+        'Birth Year': item.tahunlahir,
+        'Entry Year (Astra)': item.tahunmasuk_astra,
+        'Entry Year (Company)': item.tahunmasuk_perusahaan,
+        'Survey Year': item.tahunsurvey,
+        'Age Group': item.agegroup,
+        'Age Generation': item.agegeneration,
+        'Service Year': item.serviceyears,
+        'Employee Status': item.statuskaryawan,
+        Function: item.functionname,
+        Region: item.region,
+        Area: item.area,
+        'Sales Office': item.salesoffice,
+        Kebun: item.kebun,
+        Gender: item.gender,
+        'Entry Year Difference': item.entryyear_difference,
+        'Filling Time': item.fillingtime,
+        'Similar Answer': item.similaranswer,
+        'Complete Answer': item.completeanswer,
+        'Age This Year': item.age_this_year,
+        'Age When Entering Company': item.age_when_entering_company,
+      }));
+
+      addTableValidate(
+        {
+          columnStart: 'A',
+          rowHeaderNum: 1,
+          rowDataNum: 2,
+          headerTitle: headerTitle,
+          tableData: tableData,
+        },
+        worksheet,
+      );
+
+      return workbook;
     } catch (error) {
       throw error;
     }
