@@ -21,7 +21,7 @@ export class MasterMenu extends AbstractEntity<MasterMenuDto> {
   parentid: number;
 
   @Column({ type: 'int', name: 'sequence', nullable: true })
-  sequence: number;
+  sequence: string;
 
   @Column({ type: 'varchar', name: 'url', nullable: true })
   url: string;

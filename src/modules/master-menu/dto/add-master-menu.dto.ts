@@ -15,7 +15,7 @@ export class AddMasterMenuDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
-  readonly sequence: number;
+  readonly sequence: string;
 
   @ApiPropertyOptional()
   @IsOptional()
