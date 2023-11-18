@@ -16,7 +16,7 @@ export class MasterMenuDto extends AbstractDto {
   parentid: number;
 
   @ApiProperty()
-  sequence: number;
+  sequence: string;
 
   @ApiProperty()
   url: string;

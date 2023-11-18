@@ -114,7 +114,7 @@ export class PredEngagementFavorableService {
         .orderBy('qcode.qcode')
         .getRawMany();
 
-      const favorableType = ['unfavorable', 'neutral', 'favorable'];
+      const favorableType = ['favorable', 'neutral', 'unfavorable'];
 
       const summarizeResult: FavorableDataDTO[] = favorableType.map((item) => {
         return {

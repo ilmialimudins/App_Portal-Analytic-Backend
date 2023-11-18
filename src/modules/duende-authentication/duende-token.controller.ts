@@ -1,7 +1,7 @@
-import { Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { DuendeAuthenticationService } from './duende-authentication.service';
-import { TokenDto } from './dto/token.dto';
+import { GetTokenBodyDTO, TokenDto } from './dto/token.dto';
 
 @ApiTags('Token')
 @Controller('duende-token')
@@ -11,8 +11,8 @@ export class DuendeTokenController {
   ) {}
 
   @Post('/getToken')
-  async getToken(@Query('authcode') authcode: string) {
-    const res = await this.duendeAuthenticationService.getToken(authcode);
+  async getToken(@Body() body: GetTokenBodyDTO) {
+    const res = await this.duendeAuthenticationService.getToken(body);
 
     const getToken: TokenDto = res.body;
 

@@ -6,9 +6,12 @@ import { MasterMenuDto } from './dto/master-menu.dto';
 import { AddMasterMenuDto } from './dto/add-master-menu.dto';
 import { UpdateMasterMenuDto } from './dto/update-master-menu.dto';
 import { MasterUserService } from '../master-user/master-user.service';
-import { NavbarMenuDTO } from './dto/navbar-menu.dto';
+import { ListMenuDTO, NavbarMenuDTO } from './dto/navbar-menu.dto';
 import { BadRequestException } from '@nestjs/common';
-import generateNavbarMenu from 'src/common/utils/generateMenuNavbar';
+import {
+  constructAllMenu,
+  generateNavbarMenu,
+} from 'src/common/utils/generateMenuNavbar';
 import { RoleMenuService } from '../role-menu/role-menu.service';
 import { RoleUserService } from '../role-user/role-user.service';
 
@@ -42,7 +45,8 @@ export class MasterMenuService {
         ])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .orderBy('parentid', 'ASC')
-        .getMany();
+        .addOrderBy('sequence', 'ASC')
+        .getRawMany();
 
       return data;
     } catch (error) {
@@ -178,11 +182,28 @@ export class MasterMenuService {
 
       const listRole = roles.map((item) => item.masterrole.rolename);
 
-      const listMenuByRole = await this.roleMenuService.getMenuByListRole(
-        listRole,
-      );
+      const listMenuByRole = (
+        await this.roleMenuService.getMenuByListRole(listRole)
+      ).map<ListMenuDTO>((item) => {
+        const { menuid, menuname, parentid, issection, sequence, url } =
+          item.mastermenu;
+        return {
+          menuid,
+          menuname,
+          parentid,
+          issection,
+          sequence,
+          url,
+        };
+      });
 
-      const navbarMenu = generateNavbarMenu(listMenuByRole, 0);
+      const allMenu = await this.getAllMasterMenu();
+      const constructMenuData = constructAllMenu(listMenuByRole, allMenu);
+
+      const navbarMenu = generateNavbarMenu(
+        [...Object.values(constructMenuData), ...listMenuByRole],
+        0,
+      );
 
       return {
         name: user.username,

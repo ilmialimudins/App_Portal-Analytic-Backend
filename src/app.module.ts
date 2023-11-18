@@ -94,7 +94,7 @@ const ApiModules = [
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ApiConfigService) => {
-        return configService.mssqlConfig;
+        return { ...configService.mssqlConfig };
       },
       inject: [ApiConfigService],
     }),
