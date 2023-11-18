@@ -12,11 +12,12 @@ export class DuendeTokenController {
 
   @Post('/getToken')
   async getToken(@Body() body: GetTokenBodyDTO) {
-    const res = await this.duendeAuthenticationService.getToken(body);
+    console.log(body);
+    // const res = await this.duendeAuthenticationService.getToken(body);
 
-    const getToken: TokenDto = res.body;
+    // const getToken: TokenDto = res.body;
 
-    return getToken;
+    return 'getToken';
   }
 
   @Post('/refreshToken')
