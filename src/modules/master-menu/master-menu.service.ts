@@ -200,8 +200,10 @@ export class MasterMenuService {
       const allMenu = await this.getAllMasterMenu();
       const constructMenuData = constructAllMenu(listMenuByRole, allMenu);
 
-      console.log(constructMenuData);
-      const navbarMenu = generateNavbarMenu(listMenuByRole, 0);
+      const navbarMenu = generateNavbarMenu(
+        [...Object.values(constructMenuData), ...listMenuByRole],
+        0,
+      );
 
       return {
         name: user.username,

@@ -16,3 +16,11 @@ export class TokenDto {
   @ApiProperty()
   refresh_token: string;
 }
+
+export class GetTokenBodyDTO {
+  @ApiProperty()
+  authCode: string;
+
+  @ApiProperty()
+  redirect_uri: string;
+}

@@ -25,11 +25,11 @@ const constructAllMenu = (
   listRoleMenu: ListMenuDTO[],
   allMenu: MasterMenu[],
 ) => {
-  let result: Record<string, ListMenuDTO> = {};
+  const result: Record<string, ListMenuDTO> = {};
 
   listRoleMenu.forEach((item) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parentMenu: ListMenuDTO[] = [];
+    const parentMenu: Record<string, ListMenuDTO> = {};
 
     let currentMenuID: number = item.parentid;
 
@@ -41,20 +41,14 @@ const constructAllMenu = (
       });
 
       if (parentRecord) {
-        parentMenu.unshift(parentRecord);
+        parentMenu[parentRecord.menuid] = parentRecord;
         currentMenuID = parentRecord.parentid;
       } else {
         break;
       }
     }
 
-    const data = parentMenu.reduce((acc, item) => {
-      return (acc[item.menuid] = item);
-    }, {});
-
-    console.log(data);
-
-    result = { ...data };
+    Object.assign(result, parentMenu);
   });
 
   return result;
