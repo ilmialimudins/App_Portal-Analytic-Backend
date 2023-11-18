@@ -1,7 +1,11 @@
 import { Body, Controller, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { DuendeAuthenticationService } from './duende-authentication.service';
-import { GetTokenBodyDTO, TokenDto } from './dto/token.dto';
+import {
+  GetTokenBodyDTO,
+  GetTokenByRefreshBodyDTO,
+  TokenDto,
+} from './dto/token.dto';
 
 @ApiTags('Token')
 @Controller('duende-token')
@@ -12,7 +16,6 @@ export class DuendeTokenController {
 
   @Post('/getToken')
   async getToken(@Body() body: GetTokenBodyDTO) {
-    console.log(body);
     const res = await this.duendeAuthenticationService.getToken(body);
 
     const getToken: TokenDto = res.body;
@@ -21,7 +24,9 @@ export class DuendeTokenController {
   }
 
   @Post('/refreshToken')
-  async refreshToken(@Query('refreshToken') refreshToken: string) {
+  async refreshToken(
+    @Body() { refresh_token: refreshToken }: GetTokenByRefreshBodyDTO,
+  ) {
     const resRefresh = await this.duendeAuthenticationService.refreshToken(
       refreshToken,
     );

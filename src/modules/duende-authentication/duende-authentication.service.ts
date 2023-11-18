@@ -35,7 +35,6 @@ export class DuendeAuthenticationService {
         client_secret: this.configuration.duendeClientSecret,
       };
 
-      console.log(data);
       const res = await superagent
         .post(this.configuration.duendeAuthority + '/connect/token')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -45,7 +44,6 @@ export class DuendeAuthenticationService {
 
       return res;
     } catch (error) {
-      console.log(error);
       if (error.status === 401) {
         throw new UnauthorizedException('You are not authorized');
       }

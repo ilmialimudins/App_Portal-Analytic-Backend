@@ -27,3 +27,9 @@ export class GetTokenBodyDTO {
   @IsString()
   redirect_uri: string;
 }
+
+export class GetTokenByRefreshBodyDTO {
+  @ApiProperty()
+  @IsString()
+  refresh_token: string;
+}
