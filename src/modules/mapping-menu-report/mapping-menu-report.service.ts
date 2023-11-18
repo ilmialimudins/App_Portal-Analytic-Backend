@@ -116,4 +116,51 @@ export class MappingMenuReportService {
       throw error;
     }
   }
+
+  async getMenuReportByMenuCode(menuCode: string) {
+    try {
+      const data = await this.mappingMenuReportRepository.find({
+        relations: {
+          masterreport: {
+            masterworkspace: true,
+          },
+          mastermenu: true,
+          mastersection: true,
+        },
+
+        select: {
+          menuid: true,
+          mastermenu: {
+            menucode: true,
+            menuname: true,
+          },
+          reportid: true,
+          masterreport: {
+            reportname: true,
+            reportpowerbiiid: true,
+            datasetpowerbiid: true,
+            masterworkspace: {
+              workspacepowerbiid: true,
+            },
+          },
+          mastersection: {
+            sectionname: true,
+            sectioncodepowerbiid: true,
+          },
+        },
+
+        where: {
+          mastermenu: {
+            menucode: menuCode,
+          },
+        },
+      });
+
+      console.log(data);
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
