@@ -1,6 +1,7 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ApiConfigService } from 'src/shared/services/api-config.services';
 import * as superagent from 'superagent';
+import { GetTokenBodyDTO } from './dto/token.dto';
 
 @Injectable()
 export class DuendeAuthenticationService {
@@ -23,7 +24,7 @@ export class DuendeAuthenticationService {
     }
   }
 
-  async getToken(authCode: string): Promise<superagent.Response> {
+  async getToken(body: GetTokenBodyDTO): Promise<superagent.Response> {
     try {
       const res = await superagent
         .post(this.configuration.duendeAuthority + '/connect/token')
@@ -31,8 +32,8 @@ export class DuendeAuthenticationService {
         .send({
           client_id: this.configuration.duendeClientId,
           grant_type: 'authorization_code',
-          code: authCode,
-          redirect_uri: this.configuration.duendeRedirectUrl,
+          code: body.authCode,
+          redirect_uri: body.redirect_uri,
           code_verifier: this.configuration.duendeCodeVerifier,
           client_secret: this.configuration.duendeClientSecret,
         });
