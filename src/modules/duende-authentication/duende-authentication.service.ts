@@ -26,16 +26,21 @@ export class DuendeAuthenticationService {
 
   async getToken(body: GetTokenBodyDTO): Promise<superagent.Response> {
     try {
+      const data = {
+        client_id: this.configuration.duendeClientId,
+        grant_type: 'authorization_code',
+        code: body.authCode,
+        redirect_uri: body.redirect_uri,
+        code_verifier: this.configuration.duendeCodeVerifier,
+        client_secret: this.configuration.duendeClientSecret,
+      };
+
+      console.log(data);
       const res = await superagent
         .post(this.configuration.duendeAuthority + '/connect/token')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
-          client_id: this.configuration.duendeClientId,
-          grant_type: 'authorization_code',
-          code: body.authCode,
-          redirect_uri: body.redirect_uri,
-          code_verifier: this.configuration.duendeCodeVerifier,
-          client_secret: this.configuration.duendeClientSecret,
+          ...data,
         });
 
       return res;

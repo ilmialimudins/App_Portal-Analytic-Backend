@@ -8,5 +8,6 @@ import { MappingMenuReportController } from './mapping-menu-report.controller';
   imports: [TypeOrmModule.forFeature([MappingMenuReport])],
   providers: [MappingMenuReportService],
   controllers: [MappingMenuReportController],
+  exports: [MappingMenuReportService],
 })
 export class MappingMenuReportModule {}

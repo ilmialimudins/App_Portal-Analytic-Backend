@@ -4,6 +4,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { MappingMenuReportService } from '../mapping-menu-report/mapping-menu-report.service';
+
 import { PowerbiEmbeddingService } from './powerbi-embedding.service';
 
 @ApiBearerAuth()
@@ -13,6 +15,7 @@ import { PowerbiEmbeddingService } from './powerbi-embedding.service';
 export class PowerbiEmbeddingController {
   constructor(
     private readonly powerbiEmbeddingService: PowerbiEmbeddingService,
+    private readonly mappingMenuReportServices: MappingMenuReportService,
   ) {}
 
   @Get('/')
@@ -26,5 +29,10 @@ export class PowerbiEmbeddingController {
       reportid,
       userInfo,
     );
+  }
+
+  @Get('/general/pbi-metadata')
+  async getMetaDataPbiPerMenu(@Query('menucode') menucode: string) {
+    return this.mappingMenuReportServices.getMenuReportByMenuCode(menucode);
   }
 }

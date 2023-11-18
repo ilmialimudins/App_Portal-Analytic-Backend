@@ -98,6 +98,8 @@ export class PowerbiEmbeddingService {
     }
   }
 
+  private async checkRole() {}
+
   public async getPowerBIMetadata(
     workspaceid: string,
     reportid: string,
