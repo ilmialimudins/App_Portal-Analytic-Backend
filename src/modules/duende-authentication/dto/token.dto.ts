@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class TokenDto {
   @ApiProperty()
@@ -19,8 +20,10 @@ export class TokenDto {
 
 export class GetTokenBodyDTO {
   @ApiProperty()
+  @IsString()
   authCode: string;
 
   @ApiProperty()
+  @IsString()
   redirect_uri: string;
 }
