@@ -45,6 +45,7 @@ export class MasterMenuService {
         ])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
         .orderBy('parentid', 'ASC')
+        .addOrderBy('sequence', 'ASC')
         .getRawMany();
 
       return data;

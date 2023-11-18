@@ -4,7 +4,6 @@ import {
   ListMenuDTO,
 } from 'src/modules/master-menu/dto/navbar-menu.dto';
 import { MasterMenu } from 'src/modules/master-menu/master-menu.entity';
-import { RoleMenu } from 'src/modules/role-menu/role-menu.entity';
 
 const generateNavbarMenu = (listmenu: ListMenuDTO[], parent: number) => {
   const filteredRole = listmenu.filter((menu) => menu.parentid == parent);
@@ -26,11 +25,11 @@ const constructAllMenu = (
   listRoleMenu: ListMenuDTO[],
   allMenu: MasterMenu[],
 ) => {
-  const result: string[][] = [];
+  let result: Record<string, ListMenuDTO> = {};
 
   listRoleMenu.forEach((item) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parentMenu: any[] = [];
+    const parentMenu: ListMenuDTO[] = [];
 
     let currentMenuID: number = item.parentid;
 
@@ -49,10 +48,16 @@ const constructAllMenu = (
       }
     }
 
-    result.push(parentMenu);
+    const data = parentMenu.reduce((acc, item) => {
+      return (acc[item.menuid] = item);
+    }, {});
+
+    console.log(data);
+
+    result = { ...data };
   });
 
-  return result.flat(2);
+  return result;
 };
 
 export { generateNavbarMenu, constructAllMenu };
