@@ -42,6 +42,7 @@ export class DuendeAuthenticationService {
         .send({
           ...data,
         });
+      console.log(res);
 
       return res;
     } catch (error) {
