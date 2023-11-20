@@ -33,3 +33,9 @@ export class GetTokenByRefreshBodyDTO {
   @IsString()
   refresh_token: string;
 }
+
+export class GetTokenByRevokeTokenDTO {
+  @ApiProperty()
+  @IsString()
+  token: string;
+}

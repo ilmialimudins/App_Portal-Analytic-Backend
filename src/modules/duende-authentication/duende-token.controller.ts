@@ -1,9 +1,10 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { DuendeAuthenticationService } from './duende-authentication.service';
 import {
   GetTokenBodyDTO,
   GetTokenByRefreshBodyDTO,
+  GetTokenByRevokeTokenDTO,
   TokenDto,
 } from './dto/token.dto';
 
@@ -37,7 +38,13 @@ export class DuendeTokenController {
   }
 
   @Post('/revokeToken')
-  async revokeToken(@Query('access_token') access_token: string) {
-    return this.duendeAuthenticationService.revokeToken(access_token);
+  async revokeToken(@Body() { token: accessToken }: GetTokenByRevokeTokenDTO) {
+    const resRevoke = await this.duendeAuthenticationService.revokeToken(
+      accessToken,
+    );
+
+    const getRevoke: TokenDto = resRevoke.body;
+
+    return getRevoke;
   }
 }
