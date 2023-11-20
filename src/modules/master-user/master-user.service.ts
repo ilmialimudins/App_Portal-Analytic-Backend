@@ -164,7 +164,7 @@ export class MasterUserService {
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
-          isdelete: 'false',
+          isdelete: 'Active',
           createdtime: new Date(),
           sourcecreatedmodifiedtime: new Date(),
         })
@@ -219,7 +219,7 @@ export class MasterUserService {
       const query = await this.masterUserRepository
         .createQueryBuilder()
         .update(MasterUser)
-        .set({ isdelete: 'Deactive' })
+        .set({ isdelete: 'Inactive' })
         .where('userid = :userid', { userid })
         .execute();
 

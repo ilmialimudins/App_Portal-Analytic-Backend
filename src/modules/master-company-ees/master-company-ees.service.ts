@@ -241,7 +241,7 @@ export class CompanyService {
       const query = await this.companyRepository
         .createQueryBuilder()
         .update(Company)
-        .set({ isdelete: 'Deactive' })
+        .set({ isdelete: 'Incative' })
         .where('companyid = :companyid', { companyid })
         .execute();
 
