@@ -131,7 +131,7 @@ export class PredEngagementFavorableService {
                 parseInt(qcode[`count_${item}`]),
               percentage_all_favorabletype:
                 parseInt(qcode[`sum_${item}`]) / totalsum,
-              count_respondent: qcode.count_respondent,
+              count_respondent: qcode[`count_${item}`],
               question: qcode.qcode_question,
               qcode: qcode.qcode_qcode,
             };
