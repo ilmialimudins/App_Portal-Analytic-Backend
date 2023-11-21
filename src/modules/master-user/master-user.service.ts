@@ -59,11 +59,9 @@ export class MasterUserService {
       }
 
       const data = await query
-        .orderBy({
-          'masteruser.sourcecreatedmodifiedtime': 'DESC',
-          'masteruser.isdelete': 'ASC',
-          'masteruser.fullname': 'ASC',
-        })
+        .orderBy('masteruser.isdelete', 'ASC')
+        .addOrderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
+        .addOrderBy('masteruser.fullname', 'ASC')
         .offset(offset)
         .limit(take)
         .getRawMany();
