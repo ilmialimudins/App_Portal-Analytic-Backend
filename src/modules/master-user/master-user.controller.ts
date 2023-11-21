@@ -46,6 +46,12 @@ export class MasterUserController {
     return this.masteruserService.getAllMasterUser(page, take, username);
   }
 
+  @Get('/getAllUserActive')
+  @ApiCreatedResponse({ type: MasterUserDto })
+  async getAllUserActive() {
+    return this.masteruserService.getAllUserActive();
+  }
+
   @Get('/checkDuplicateMasterUser')
   @ApiCreatedResponse({ type: MasterUserDto })
   async checkDuplicateMasterUser(

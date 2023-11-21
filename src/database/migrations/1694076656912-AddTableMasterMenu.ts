@@ -31,12 +31,13 @@ export class AddTableMasterMenu1693988032415 implements MigrationInterface {
           },
           {
             name: 'sequence',
-            type: 'int',
+            type: 'varchar',
             isNullable: true,
           },
           {
             name: 'url',
             type: 'varchar',
+            length: '1000',
             isNullable: true,
           },
           {

@@ -95,6 +95,20 @@ export class CompanyService {
     }
   }
 
+  async getAllCompanyActive() {
+    try {
+      const query = await this.companyRepository
+        .createQueryBuilder('company')
+        .where('company.isdelete = :isdelete', { isdelete: 'Active' })
+        .orderBy('company.companyeesname', 'ASC')
+        .getMany();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getCompanyId(companyid: number): Promise<CompanyDto | undefined> {
     try {
       const query = await this.companyRepository.findOne({

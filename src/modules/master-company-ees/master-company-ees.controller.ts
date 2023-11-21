@@ -45,6 +45,12 @@ export class CompanyController {
     return this.companyService.getAllCompany(page, take, companyname);
   }
 
+  @Get('/getAllCompanyActive')
+  @ApiOkResponse({ type: CompanyDto })
+  async getAllCompanyActive() {
+    return this.companyService.getAllCompanyActive();
+  }
+
   @Get('/getCompanyId')
   @ApiCreatedResponse({ type: CompanyDto })
   async getAllCompanyById(
