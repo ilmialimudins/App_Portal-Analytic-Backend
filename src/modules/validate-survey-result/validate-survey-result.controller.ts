@@ -1,9 +1,23 @@
-import { Body, Controller, Delete, Get, Patch, Query } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { ValidateSurveyResultService } from './validate-survey-result.service';
 import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
 import { UpdateValidateSurveyResultDto } from './dto/update-validate-survey-result.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { Response as ExpressResponse } from 'express';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Validate Survey Result')
 @Controller('validatesurveyresult')
 export class ValidateSurveyResultController {
@@ -76,5 +90,23 @@ export class ValidateSurveyResultController {
       this.validateSurveyResultService.deleteRespondentIncomplete(respondentid);
 
     return deletedResult;
+  }
+
+  @Post('/generateExcelValidateSurveyResult')
+  @ApiCreatedResponse({ type: ValidateSurveyResultDto })
+  async generateExcelValidateSurveyResult(@Res() res: ExpressResponse) {
+    const workbook =
+      await this.validateSurveyResultService.generateExcelValidateSurveyResult();
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheethtml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=Validate_Survey_Result.xslx',
+    );
+
+    await workbook.xlsx.write(res);
   }
 }
