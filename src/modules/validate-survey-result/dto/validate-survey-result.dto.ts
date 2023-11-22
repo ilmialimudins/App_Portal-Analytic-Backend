@@ -52,7 +52,7 @@ export class ValidateSurveyResultDto extends AbstractDto {
   locationname: string;
 
   @ApiProperty()
-  age: string;
+  age: number;
 
   @ApiProperty()
   agegeneration: string;
