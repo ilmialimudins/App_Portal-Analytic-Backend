@@ -2,11 +2,14 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ApiConfigService } from 'src/shared/services/api-config.services';
 import * as superagent from 'superagent';
 import { GetTokenBodyDTO } from './dto/token.dto';
+import { MasterUserService } from '../master-user/master-user.service';
 
 @Injectable()
 export class DuendeAuthenticationService {
   constructor(
     @Inject(ApiConfigService) private configuration: ApiConfigService,
+
+    @Inject(MasterUserService) private userService: MasterUserService,
   ) {}
 
   async getUserInfo(bearer: string): Promise<superagent.Response> {
@@ -41,6 +44,20 @@ export class DuendeAuthenticationService {
         .send({
           ...data,
         });
+
+      const bearer = res.body.access_token;
+
+      const userInfo = await this.getUserInfo(bearer);
+
+      const emailUserInfo = userInfo.body.email;
+
+      const emailUser = await this.userService.getMasterUserEmail(
+        emailUserInfo,
+      );
+
+      if (!emailUser) {
+        throw new Error('Email has not been registered');
+      }
 
       return res;
     } catch (error) {
