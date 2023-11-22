@@ -66,11 +66,9 @@ export class CompanyService {
       }
 
       const data = await query
-        .orderBy({
-          'company.sourcecreatedmodifiedtime': 'DESC',
-          'company.isdelete': 'ASC',
-          'company.companyeesname': 'ASC',
-        })
+        .orderBy('company.isdelete', 'ASC')
+        .addOrderBy('company.sourcecreatedmodifiedtime', 'DESC')
+        .addOrderBy('company.companyeesname', 'ASC')
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -90,6 +88,20 @@ export class CompanyService {
         hasPreviousPage,
         hasNextPage,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllCompanyActive() {
+    try {
+      const query = await this.companyRepository
+        .createQueryBuilder('company')
+        .where('company.isdelete = :isdelete', { isdelete: 'Active' })
+        .orderBy('company.companyeesname', 'ASC')
+        .getMany();
+
+      return query;
     } catch (error) {
       throw error;
     }

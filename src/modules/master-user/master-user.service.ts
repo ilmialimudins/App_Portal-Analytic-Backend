@@ -59,7 +59,9 @@ export class MasterUserService {
       }
 
       const data = await query
-        .orderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
+        .orderBy('masteruser.isdelete', 'ASC')
+        .addOrderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
+        .addOrderBy('masteruser.fullname', 'ASC')
         .offset(offset)
         .limit(take)
         .getRawMany();
@@ -79,6 +81,20 @@ export class MasterUserService {
         hasPreviousPage,
         hasNextPage,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllUserActive() {
+    try {
+      const query = await this.masterUserRepository
+        .createQueryBuilder('masteruser')
+        .where('masteruser.isdelete = :isdelete', { isdelete: 'Active' })
+        .orderBy('masteruser.email', 'ASC')
+        .getMany();
+
+      return query;
     } catch (error) {
       throw error;
     }
