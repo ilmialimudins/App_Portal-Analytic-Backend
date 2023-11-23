@@ -7,6 +7,11 @@ import { UpdateValidateSurveyResultDto } from './dto/update-validate-survey-resu
 import { CheckingCompleteSurvey } from '../checking-complete-survey/checking-complete-survey.entity';
 import * as excel from 'exceljs';
 import { addTableValidate } from 'src/common/utils/addExcelTable';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  AddValidateSurveyResultDto,
+  DownloadValidateSurveyResultDto,
+} from './dto/add-validate-survey-result.dto';
 
 @Injectable()
 export class ValidateSurveyResultService {
@@ -129,6 +134,71 @@ export class ValidateSurveyResultService {
     }
   }
 
+  async createManyValidateSurveyResult(
+    validatesurveyresult: AddValidateSurveyResultDto[],
+  ) {
+    try {
+      const values = validatesurveyresult.map((item) => {
+        return {
+          uuid: uuidv4(),
+          dateversion: new Date(),
+          surveyid: item.surveyid,
+          respondentid: item.respondentid,
+          businesslinecode: item.businesslinecode,
+          businessline: item.businessline,
+          company: item.company,
+          division: item.division,
+          department: item.department,
+          branch: item.branch,
+          directorate: item.directorate,
+          education: item.education,
+          grade: item.grade,
+          jobtitle: item.jobtitle,
+          locationname: item.locationname,
+          age: item.age,
+          agegeneration: item.agegeneration,
+          agegroupcode: item.agegroupcode,
+          agegroup: item.agegroup,
+          serviceyearscode: item.serviceyearscode,
+          serviceyears: item.serviceyears,
+          gender: item.gender,
+          region: item.region,
+          area: item.area,
+          plant: item.plant,
+          kebun: item.kebun,
+          jobsites: item.jobsites,
+          statuskaryawan: item.statuskaryawan,
+          functionname: item.functionname,
+          salesoffice: item.salesoffice,
+          latest: item.latest,
+          tahunlahir: item.tahunlahir,
+          tahunmasuk_perusahaan: item.tahunmasuk_perusahaan,
+          tahunmasuk_astra: item.tahunmasuk_astra,
+          tahunsurvey: item.tahunsurvey,
+          entryyear_difference: item.entryyear_difference,
+          fillingtime: item.fillingtime,
+          similaranswer: item.similaranswer,
+          completeanswer: item.completeanswer,
+          age_this_year: item.age_this_year,
+          age_when_entering_company: item.age_when_entering_company,
+          row_status: 'false',
+          createdtime: new Date(),
+          sourcecreatedmodifiedtime: new Date(),
+        };
+      });
+
+      const result = await this.valdiateSurveyResultRepository
+        .createQueryBuilder()
+        .insert()
+        .values([...values])
+        .execute();
+
+      return { insertedRowCount: result.identifiers.length };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateValidateSurveyResult(
     id: number,
     validatesurveyresult: UpdateValidateSurveyResultDto,
@@ -235,7 +305,9 @@ export class ValidateSurveyResultService {
     }
   }
 
-  async generateExcelValidateSurveyResult() {
+  async generateExcelValidateSurveyResult(
+    body: DownloadValidateSurveyResultDto,
+  ) {
     try {
       const query = await this.valdiateSurveyResultRepository
         .createQueryBuilder('validatesurveyresult')
@@ -281,8 +353,12 @@ export class ValidateSurveyResultService {
         .where('validatesurveyresult.row_status = :row_status', {
           row_status: false,
         })
-        .andWhere('validatesurveyresult.surveyid = surveyvalidation.surveyid')
-        .andWhere('validatesurveyresult.company = surveyvalidation.company')
+        .andWhere('validatesurveyresult.surveyid = :surveyid', {
+          surveyid: body.surveyid,
+        })
+        .andWhere('validatesurveyresult.company = :company', {
+          company: body.company,
+        })
         .orderBy('validatesurveyresult.sourcecreatedmodifiedtime', 'DESC')
         .getMany();
 

@@ -28,13 +28,13 @@ export class AddTableValidateSurveyResult1696991219412
           },
           {
             name: 'surveyid',
-            type: 'bigint',
+            type: 'varchar',
             isNullable: true,
           },
           {
             name: 'respondentid',
             type: 'bigint',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'businesslinecode',

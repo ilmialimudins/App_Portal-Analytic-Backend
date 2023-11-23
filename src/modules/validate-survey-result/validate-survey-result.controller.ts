@@ -15,6 +15,10 @@ import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
 import { UpdateValidateSurveyResultDto } from './dto/update-validate-survey-result.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Response as ExpressResponse } from 'express';
+import {
+  AddValidateSurveyResultDto,
+  DownloadValidateSurveyResultDto,
+} from './dto/add-validate-survey-result.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -40,6 +44,16 @@ export class ValidateSurveyResultController {
   }> {
     return this.validateSurveyResultService.getAllValidateSurveyResult(
       searchParams,
+    );
+  }
+
+  @Post('/createManyValidateSurveyResult')
+  @ApiCreatedResponse({ type: ValidateSurveyResultDto })
+  async createManyValidateSurveyResult(
+    @Body() validatesurveyresult: AddValidateSurveyResultDto[],
+  ) {
+    return this.validateSurveyResultService.createManyValidateSurveyResult(
+      validatesurveyresult,
     );
   }
 
@@ -94,19 +108,25 @@ export class ValidateSurveyResultController {
 
   @Post('/generateExcelValidateSurveyResult')
   @ApiCreatedResponse({ type: ValidateSurveyResultDto })
-  async generateExcelValidateSurveyResult(@Res() res: ExpressResponse) {
+  async generateExcelValidateSurveyResult(
+    @Body() body: DownloadValidateSurveyResultDto,
+    @Res() res: ExpressResponse,
+  ) {
     const workbook =
-      await this.validateSurveyResultService.generateExcelValidateSurveyResult();
+      await this.validateSurveyResultService.generateExcelValidateSurveyResult(
+        body,
+      );
 
     res.setHeader(
       'Content-Type',
-      'application/vnd.openxmlformats-officedocument.spreadsheethtml.sheet',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
     res.setHeader(
       'Content-Disposition',
-      'attachment; filename=Validate_Survey_Result.xslx',
+      `attachment; filename=ValidateSurveyResult.xlsx`,
     );
 
     await workbook.xlsx.write(res);
+    res.end();
   }
 }

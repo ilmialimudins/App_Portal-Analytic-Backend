@@ -72,8 +72,8 @@ export class ValidateSurveyResult extends AbstractEntity<ValidateSurveyResultDto
   @Column({ type: 'varchar', name: 'locationname', nullable: true })
   locationname: string;
 
-  @Column({ type: 'varchar', name: 'age', nullable: true })
-  age: string;
+  @Column({ type: 'int', name: 'age', nullable: true })
+  age: number;
 
   @Column({ type: 'varchar', name: 'agegeneration', nullable: true })
   agegeneration: string;
