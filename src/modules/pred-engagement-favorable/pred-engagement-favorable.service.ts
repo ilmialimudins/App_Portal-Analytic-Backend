@@ -80,7 +80,7 @@ export class PredEngagementFavorableService {
           'favorable.avg_respondentanswer_factor as avg_respondentanswer_factor',
           'factor.factorcode',
           'factor.factorname',
-          'qcode.qcode',
+          'qcode.new_qcode',
           'qcode.question',
           'SUM ( favorable.sum_unfavorable ) AS sum_unfavorable',
           'SUM ( favorable.sum_neutral ) as sum_neutral',
@@ -109,9 +109,9 @@ export class PredEngagementFavorableService {
         .addGroupBy('favorable.demographyvalue')
         .addGroupBy('factor.factorcode')
         .addGroupBy('factor.factorname')
-        .addGroupBy('qcode.qcode')
+        .addGroupBy('qcode.new_qcode')
         .addGroupBy('qcode.question')
-        .orderBy('qcode.qcode')
+        .orderBy('qcode.new_qcode')
         .getRawMany();
 
       const favorableType = ['favorable', 'neutral', 'unfavorable'];
