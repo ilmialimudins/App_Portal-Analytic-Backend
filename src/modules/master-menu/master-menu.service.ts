@@ -185,8 +185,7 @@ export class MasterMenuService {
       const listMenuByRole = (
         await this.roleMenuService.getMenuByListRole(listRole)
       ).map<ListMenuDTO>((item) => {
-        const { menuid, menuname, parentid, issection, sequence, url } =
-          item.mastermenu;
+        const { menuid, menuname, parentid, issection, sequence, url } = item;
         return {
           menuid,
           menuname,

@@ -13,6 +13,9 @@ export class MappingMenuReportService {
     private mappingMenuReportRepository: Repository<MappingMenuReport>,
   ) {}
 
+  public getMainRepo() {
+    return this.mappingMenuReportRepository;
+  }
   async getAllMappingMenuReport() {
     try {
       const data = await this.mappingMenuReportRepository
@@ -155,8 +158,6 @@ export class MappingMenuReportService {
           },
         },
       });
-
-      console.log(data);
 
       return data;
     } catch (error) {

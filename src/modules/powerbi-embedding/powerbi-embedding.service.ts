@@ -1,14 +1,31 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as superagent from 'superagent';
 import { ApiConfigService } from 'src/shared/services/api-config.services';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { PowerBIEmbedUrlDto } from '../duende-authentication/dto/powerbi-get-embedurl.dto';
 import { PowerBIEmbedTokenDto } from '../duende-authentication/dto/powerbi-embed-token.dto';
+import { MappingMenuReportService } from '../mapping-menu-report/mapping-menu-report.service';
+import { RoleMenuService } from '../role-menu/role-menu.service';
+import { RoleUserService } from '../role-user/role-user.service';
 
 @Injectable()
 export class PowerbiEmbeddingService {
   constructor(
     @Inject(ApiConfigService) private configuration: ApiConfigService,
+
+    @Inject(MappingMenuReportService)
+    private mappingMenuReport: MappingMenuReportService,
+
+    @Inject(RoleMenuService)
+    private roleMenuService: RoleMenuService,
+
+    @Inject(RoleUserService)
+    private roleUserService: RoleUserService,
   ) {}
   private async powerBILogin(): Promise<superagent.Response> {
     try {
@@ -98,7 +115,55 @@ export class PowerbiEmbeddingService {
     }
   }
 
-  private async checkRole() {}
+  public async checkRole(
+    workspaceid: string,
+    reportid: string,
+    userid: number,
+  ) {
+    try {
+      const resultMenu = await this.mappingMenuReport.getMainRepo().findOne({
+        relations: {
+          masterreport: true,
+        },
+        select: {
+          menuid: true,
+          mappingmenureportid: true,
+        },
+        where: {
+          masterreport: {
+            reportpowerbiiid: reportid,
+            masterworkspace: {
+              workspacepowerbiid: workspaceid,
+            },
+          },
+        },
+
+        order: {
+          mappingmenureportid: 'ASC',
+        },
+      });
+
+      if (!resultMenu) {
+        throw new NotFoundException('No mapping menu report found');
+      }
+
+      const getRoleUser = await this.roleUserService.getUserRoles(userid);
+      const getRoleMenu = await this.roleMenuService.getRoleByMenu(
+        resultMenu.menuid,
+        getRoleUser.map((item) => item.roleid),
+      );
+
+      if (!getRoleMenu.length) {
+        throw new UnauthorizedException(
+          'You are not allowed to show this dashboard',
+        );
+      }
+
+      return resultMenu;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   public async getPowerBIMetadata(
     workspaceid: string,
@@ -115,6 +180,8 @@ export class PowerbiEmbeddingService {
         reportid,
         resToken,
       );
+
+      await this.checkRole(workspaceid, reportid, userInfo.userid);
 
       const getEmbedUrl: PowerBIEmbedUrlDto = resEmbedUrl.body;
 

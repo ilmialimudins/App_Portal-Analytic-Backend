@@ -89,6 +89,18 @@ export class RoleMenuService {
     }
   }
 
+  async getRoleByMenu(menuid: number, roleids: number[]) {
+    try {
+      const query = await this.roleMenuRepository.find({
+        where: { menuid: menuid, roleid: In(roleids) },
+      });
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteRoleMenu(rolemenuid: number) {
     try {
       const query = await this.roleMenuRepository
@@ -106,16 +118,45 @@ export class RoleMenuService {
 
   async getMenuByListRole(rolelist: string[]) {
     try {
-      const result = await this.roleMenuRepository.find({
-        where: {
-          masterrole: { rolename: In(rolelist) },
-        },
-        relations: {
-          masterrole: true,
-          mastermenu: true,
-        },
-      });
+      // menuid, menuname, parentid, issection, sequence, url;
+      // const result = await this.roleMenuRepository.find({
+      //   where: {
+      //     masterrole: { rolename: In(rolelist) },
+      //   },
+      //   select: {
+      //     mastermenu: {
+      //       menuid: true,
+      //       menuname: true,
+      //       parentid: true,
+      //       issection: true,
+      //       sequence: true,
+      //       url: true,
+      //     },
+      //   },
+      //   relations: {
+      //     masterrole: true,
+      //     mastermenu: true,
+      //   },
+      // });
 
+      const result = await this.roleMenuRepository
+        .createQueryBuilder('rolemenu')
+        .select([
+          'DISTINCT mastermenu.menuid as menuid',
+          'mastermenu.menuname as menuname',
+          'mastermenu.parentid as parentid',
+          'mastermenu.issection as issection',
+          'mastermenu.sequence as sequence',
+          'mastermenu.url as url',
+        ])
+        .leftJoin('rolemenu.masterrole', 'masterrole')
+        .leftJoin('rolemenu.mastermenu', 'mastermenu')
+        .where('masterrole.rolename IN (:...roleNames)', {
+          roleNames: rolelist,
+        })
+        .getRawMany();
+
+      console.log(result);
       return result;
     } catch (error) {
       throw error;
