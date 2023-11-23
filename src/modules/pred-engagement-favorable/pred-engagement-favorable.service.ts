@@ -131,7 +131,7 @@ export class PredEngagementFavorableService {
                 parseInt(qcode[`count_${item}`]) / qcode.count_respondent,
               count_respondent: qcode[`count_${item}`],
               question: qcode.qcode_question,
-              qcode: qcode.qcode_qcode,
+              qcode: qcode.qcode_new_qcode,
             };
           }),
         };
