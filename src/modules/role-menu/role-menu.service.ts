@@ -89,6 +89,18 @@ export class RoleMenuService {
     }
   }
 
+  async getRoleByMenu(menuid: number, roleids: number[]) {
+    try {
+      const query = await this.roleMenuRepository.find({
+        where: { menuid: menuid, roleid: In(roleids) },
+      });
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteRoleMenu(rolemenuid: number) {
     try {
       const query = await this.roleMenuRepository
