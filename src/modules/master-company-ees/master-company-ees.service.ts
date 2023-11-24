@@ -60,8 +60,8 @@ export class CompanyService {
 
       if (companyname) {
         query = query.where(
-          'company.companyeesname LIKE :companyname OR LOWER(company.companympsname) LIKE :companyname',
-          { companyname: `%${companyname}%` },
+          'LOWER(company.companyeesname) LIKE :companyname OR LOWER(company.companympsname) LIKE :companyname',
+          { companyname: `%${companyname.toLowerCase()}%` },
         );
       }
 

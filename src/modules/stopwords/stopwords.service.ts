@@ -52,7 +52,7 @@ export class StopwordsService {
 
       const data = await query
         .andWhere('stopwords.isdelete = :isdelete', { isdelete: false })
-        .orderBy('stopwrods.sourcecreatedmodifiedtime', 'DESC')
+        .orderBy('stopwords.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
