@@ -22,6 +22,7 @@ import { UpdateMasterMenuDto } from './dto/update-master-menu.dto';
 import { NavbarMenuDTO } from './dto/navbar-menu.dto';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { generateMasterMenu } from 'src/common/utils/generateMenuNavbar';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -33,7 +34,10 @@ export class MasterMenuController {
   @Get('/')
   @ApiCreatedResponse({ type: MasterMenuDto })
   async getMasterMenu() {
-    return this.masterMenuService.getAllMasterMenu();
+    return generateMasterMenu(
+      await this.masterMenuService.getAllMasterMenu(),
+      0,
+    );
   }
 
   @Get('/checkDuplicateMenu')

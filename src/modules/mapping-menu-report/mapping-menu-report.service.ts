@@ -164,4 +164,42 @@ export class MappingMenuReportService {
       throw error;
     }
   }
+
+  async getOneMenuReportByMenuID(menuid: number) {
+    try {
+      const result = await this.mappingMenuReportRepository.findOne({
+        where: {
+          menuid: menuid,
+        },
+        relations: {
+          masterreport: {
+            masterworkspace: true,
+          },
+          mastersection: true,
+          mastermenu: true,
+        },
+        select: {
+          mastermenu: {
+            menuname: true,
+            url: true,
+          },
+          masterreport: {
+            reportpowerbiiid: true,
+            masterworkspace: {
+              workspacepowerbiid: true,
+            },
+            datasetpowerbiid: true,
+            mastersection: {
+              sectioncodepowerbiid: true,
+              sectionname: true,
+            },
+          },
+        },
+      });
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
