@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, EntityManager } from 'typeorm';
+import { ITransactionMetadata } from './dto/transaction-meta';
+// import { ITransactionMetadata } from './dto/transaction-meta';
 
 @Injectable()
 export abstract class BaseTransaction<TransactionInput, TransactionOutput> {
   constructor(private readonly datasouce: DataSource) {}
 
+  protected metadata: ITransactionMetadata;
   protected abstract execute(
     data: TransactionInput,
     manager: EntityManager,
@@ -36,5 +39,10 @@ export abstract class BaseTransaction<TransactionInput, TransactionOutput> {
     manager: EntityManager,
   ): Promise<TransactionOutput> {
     return this.execute(data, manager);
+  }
+
+  public setMetadata(payload: ITransactionMetadata) {
+    this.metadata = payload;
+    return this;
   }
 }

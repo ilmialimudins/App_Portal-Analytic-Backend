@@ -262,7 +262,7 @@ export class SpmInvitedRespondentsService {
           [`"${strings.join(',')}"`],
         );
       });
-      console.log(data);
+
       return workbook;
     } catch (error) {
       throw error;

@@ -118,27 +118,6 @@ export class RoleMenuService {
 
   async getMenuByListRole(rolelist: string[]) {
     try {
-      // menuid, menuname, parentid, issection, sequence, url;
-      // const result = await this.roleMenuRepository.find({
-      //   where: {
-      //     masterrole: { rolename: In(rolelist) },
-      //   },
-      //   select: {
-      //     mastermenu: {
-      //       menuid: true,
-      //       menuname: true,
-      //       parentid: true,
-      //       issection: true,
-      //       sequence: true,
-      //       url: true,
-      //     },
-      //   },
-      //   relations: {
-      //     masterrole: true,
-      //     mastermenu: true,
-      //   },
-      // });
-
       const result = await this.roleMenuRepository
         .createQueryBuilder('rolemenu')
         .select([
@@ -156,7 +135,6 @@ export class RoleMenuService {
         })
         .getRawMany();
 
-      console.log(result);
       return result;
     } catch (error) {
       throw error;

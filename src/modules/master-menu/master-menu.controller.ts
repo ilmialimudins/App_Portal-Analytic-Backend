@@ -23,6 +23,7 @@ import { NavbarMenuDTO } from './dto/navbar-menu.dto';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { generateMasterMenu } from 'src/common/utils/generateMenuNavbar';
+import { ListMasterMenuDTO } from './dto/maintain-mastermenu.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -32,7 +33,7 @@ export class MasterMenuController {
   constructor(private masterMenuService: MasterMenuService) {}
 
   @Get('/')
-  @ApiCreatedResponse({ type: MasterMenuDto })
+  @ApiOkResponse({ type: [ListMasterMenuDTO] })
   async getMasterMenu() {
     return generateMasterMenu(
       await this.masterMenuService.getAllMasterMenu(),
@@ -58,8 +59,14 @@ export class MasterMenuController {
     return this.masterMenuService.getAllMasterMenuParent();
   }
 
+  @Get('/getmastermenu-detail')
+  @ApiOkResponse({})
+  async getMenuDetail(@Query('menuid') menuid: number) {
+    return this.masterMenuService.getMasterMenuId(menuid);
+  }
+
   @Get('getLastMasterMenuCode')
-  @ApiCreatedResponse({ type: MasterMenuDto })
+  @ApiOkResponse({ type: MasterMenuDto })
   async getLastMasterMenuCode() {
     return this.masterMenuService.getLastMasterMenuCode();
   }
@@ -72,8 +79,11 @@ export class MasterMenuController {
 
   @Post('/createMasterMenu')
   @ApiCreatedResponse({ type: MasterMenuDto })
-  async createMasterMenu(@Body() mastermenu: AddMasterMenuDto) {
-    return this.masterMenuService.createMasterMenu(mastermenu);
+  async createMasterMenu(
+    @Body() mastermenu: AddMasterMenuDto,
+    @UserInfo() userInfo: UserInfoDTO,
+  ) {
+    return this.masterMenuService.createMasterMenu(mastermenu, userInfo);
   }
 
   @Patch('/updateMasterMenu')
