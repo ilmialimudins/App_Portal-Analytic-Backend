@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  DataMenuDTO,
+  ListMasterMenuDTO,
   ListMenuDTO,
-} from 'src/modules/master-menu/dto/navbar-menu.dto';
+} from 'src/modules/master-menu/dto/maintain-mastermenu.dto';
+import { DataMenuDTO } from 'src/modules/master-menu/dto/navbar-menu.dto';
 import { MasterMenu } from 'src/modules/master-menu/master-menu.entity';
 
 const generateNavbarMenu = (listmenu: ListMenuDTO[], parent: number) => {
@@ -21,9 +22,22 @@ const generateNavbarMenu = (listmenu: ListMenuDTO[], parent: number) => {
 
   return result;
 };
+
+const generateMasterMenu = (listMenu: ListMenuDTO[], parent: number) => {
+  const filteredRole = listMenu.filter((menu) => menu.parentid == parent);
+  const result: ListMasterMenuDTO[] = [];
+
+  for (const item of filteredRole) {
+    const childrenMenu = generateMasterMenu(listMenu, item.menuid);
+    result.push({ ...item, children: childrenMenu });
+  }
+
+  return result;
+};
+
 const constructAllMenu = (
   listRoleMenu: ListMenuDTO[],
-  allMenu: MasterMenu[],
+  allMenu: ListMenuDTO[],
 ) => {
   const result: Record<string, ListMenuDTO> = {};
 
@@ -54,4 +68,4 @@ const constructAllMenu = (
   return result;
 };
 
-export { generateNavbarMenu, constructAllMenu };
+export { generateNavbarMenu, constructAllMenu, generateMasterMenu };
