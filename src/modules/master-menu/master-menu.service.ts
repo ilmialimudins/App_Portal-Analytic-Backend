@@ -16,6 +16,8 @@ import { RoleMenuService } from '../role-menu/role-menu.service';
 import { RoleUserService } from '../role-user/role-user.service';
 import { ListMenuDTO } from './dto/maintain-mastermenu.dto';
 import { MappingMenuReportService } from '../mapping-menu-report/mapping-menu-report.service';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { AddMasterMenuTransaction } from './add-master-menu.transaction';
 
 @Injectable()
 export class MasterMenuService {
@@ -34,6 +36,9 @@ export class MasterMenuService {
 
     @Inject(MappingMenuReportService)
     private mappingMenuReportService: MappingMenuReportService,
+
+    @Inject(AddMasterMenuTransaction)
+    private addMasterMenuTransactionService: AddMasterMenuTransaction,
   ) {}
 
   async getAllMasterMenu() {
@@ -54,7 +59,15 @@ export class MasterMenuService {
         .addOrderBy('sequence', 'ASC')
         .getRawMany();
 
-      const mappingMenu = await Promise.all(
+      return await this.concatMenuURLIsSection(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async concatMenuURLIsSection(data: ListMenuDTO[]) {
+    try {
+      return Promise.all(
         data.map(async (menu) => {
           if (menu.issection === 0) {
             return menu;
@@ -73,8 +86,6 @@ export class MasterMenuService {
           return { ...menu, url: `${menu.url}${mappingUrlReport}` };
         }),
       );
-
-      return mappingMenu;
     } catch (error) {
       throw error;
     }
@@ -137,25 +148,32 @@ export class MasterMenuService {
     }
   }
 
-  async createMasterMenu(mastermenu: AddMasterMenuDto) {
-    try {
-      const query = await this.masterMenuRepository
-        .createQueryBuilder('mastermenu')
-        .insert()
-        .into(MasterMenu)
-        .values({
-          menuname: mastermenu.menuname,
-          parentid: mastermenu.parentid,
-          sequence: mastermenu.sequence,
-          url: mastermenu.url,
-          issection: mastermenu.issection,
-          isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
-        })
-        .execute();
+  private incrementMenuCode(menuCode: string) {
+    const numericPart = parseInt(menuCode.substring(2));
 
-      return query;
+    const newNumericPart = numericPart + 1;
+
+    const newMenuCode =
+      menuCode.substring(0, 2) + newNumericPart.toString().padStart(5, '0');
+
+    return newMenuCode;
+  }
+
+  async createMasterMenu(mastermenu: AddMasterMenuDto, userInfo: UserInfoDTO) {
+    try {
+      const lastMenuCode = await this.getLastMasterMenuCode();
+
+      const nextMenuCode = lastMenuCode
+        ? this.incrementMenuCode(lastMenuCode.menucode)
+        : null;
+
+      const transac = await this.addMasterMenuTransactionService
+        .setMetadata({
+          userinfo: userInfo,
+        })
+        .run({ ...mastermenu, menucode: nextMenuCode });
+
+      return transac;
     } catch (error) {
       throw error;
     }
@@ -208,7 +226,7 @@ export class MasterMenuService {
 
       const listRole = roles.map((item) => item.masterrole.rolename);
 
-      const listMenuByRole = (
+      let listMenuByRole = (
         await this.roleMenuService.getMenuByListRole(listRole)
       ).map<ListMenuDTO>((item) => {
         const {
@@ -230,6 +248,7 @@ export class MasterMenuService {
           url,
         };
       });
+      listMenuByRole = await this.concatMenuURLIsSection(listMenuByRole);
 
       const allMenu = await this.getAllMasterMenu();
       const constructMenuData = constructAllMenu(listMenuByRole, allMenu);

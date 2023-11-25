@@ -6,6 +6,7 @@ import { MasterMenuController } from './master-menu.controller';
 import { RoleMenuModule } from '../role-menu/role-menu.module';
 import { RoleUserModule } from '../role-user/role-user.module';
 import { MappingMenuReportModule } from '../mapping-menu-report/mapping-menu-report.module';
+import { AddMasterMenuTransaction } from './add-master-menu.transaction';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { MappingMenuReportModule } from '../mapping-menu-report/mapping-menu-rep
     RoleUserModule,
     MappingMenuReportModule,
   ],
-  providers: [MasterMenuService],
+  providers: [MasterMenuService, AddMasterMenuTransaction],
   controllers: [MasterMenuController],
 })
 export class MasterMenuModule {}

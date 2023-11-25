@@ -1,29 +1,39 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class AddMasterMenuDto {
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
   @IsString()
   readonly menuname: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
   @IsNumber()
   readonly parentid: number;
+
+  @ApiProperty()
+  @IsString()
+  readonly sequence: string;
+
+  @ApiProperty()
+  @IsString()
+  readonly url: string;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly issection: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
-  readonly sequence: string;
+  readonly reportid?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  readonly sectionid?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly url: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
-  readonly issection: number;
+  readonly menucode?: string | null;
 }
