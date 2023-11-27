@@ -25,7 +25,7 @@ export class MasterUserService {
   async getAllMasterUser(
     page: number,
     take: number,
-    username?: string,
+    user?: string,
   ): Promise<{
     data: MasterUserDto[];
     page: number;
@@ -52,10 +52,11 @@ export class MasterUserService {
           'isdelete',
         ]);
 
-      if (username) {
-        query = query.where('LOWER(masteruser.username) LIKE :username', {
-          username: `%${username.toLowerCase()}%`,
-        });
+      if (user) {
+        query = query.where(
+          'LOWER(masteruser.username) LIKE :user OR LOWER(masteruser.fullname) LIKE :user LOWER(masteruser.email) LIKE :user ',
+          { user: `%${user.toLowerCase()}%` },
+        );
       }
 
       const data = await query

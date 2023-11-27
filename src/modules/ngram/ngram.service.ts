@@ -156,6 +156,18 @@ export class NgramService {
 
   async updateNgram(uuid: string, ngram: UpdateNgramDto) {
     try {
+      const findNgram = await this.NgramRepository.findOne({ where: { uuid } });
+
+      if (!findNgram) {
+        return { message: 'Data yang ingin diupdate tidak ditemukan.' };
+      }
+
+      if (findNgram.ngram === ngram.ngram) {
+        return {
+          message: 'Data yang ingin diupdate sudah memiliki nilai yang sama.',
+        };
+      }
+
       const query = await this.NgramRepository.createQueryBuilder()
         .update(Ngram)
         .set({

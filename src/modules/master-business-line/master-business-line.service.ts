@@ -144,8 +144,6 @@ export class BusinessLineService {
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
         })
         .execute();
 

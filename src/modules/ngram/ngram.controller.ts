@@ -78,10 +78,6 @@ export class NgramController {
   ) {
     const result = await this.ngramService.updateNgram(uuid, Ngram);
 
-    if (result.affected === 0) {
-      throw new Error('Duplicate Entry');
-    }
-
     return result;
   }
 

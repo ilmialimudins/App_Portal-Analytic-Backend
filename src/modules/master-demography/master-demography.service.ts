@@ -95,13 +95,16 @@ export class DemographyService {
     try {
       const query = await this.demographyRepository
         .createQueryBuilder('demography')
-        .where('demography.demographyalias = :demographyalias', {
-          demographyalias,
-        })
+        .select('demography.demographyalias')
         .andWhere('demography.isdelete = :isdelete', { isdelete: false })
-        .getOne();
+        .getMany();
 
-      return query;
+      const findDuplicate = query.filter((item) => {
+        const alias = item.demographyalias.split('/');
+        return alias.some((alias) => alias.trim() === demographyalias);
+      });
+
+      return findDuplicate;
     } catch (error) {
       throw error;
     }
