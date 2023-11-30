@@ -3,6 +3,7 @@ import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { LocationDto } from './dto/master-location.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { TableProperty } from '../mps/table-mps-property/table-mps-property.entity';
 
 @Entity('ms_location')
 @UseDto(LocationDto)
@@ -24,4 +25,7 @@ export class Location extends AbstractEntity<LocationDto> {
 
   @OneToMany(() => Company, (company) => company.locationid)
   company: Company[];
+
+  @OneToMany(() => TableProperty, (property) => property.locationid)
+  property: TableProperty[];
 }

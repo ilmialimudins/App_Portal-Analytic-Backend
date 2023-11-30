@@ -24,6 +24,7 @@ import { PredEngagementFavorable } from '../pred-engagement-favorable/pred-engag
 import { PredEngagementValue } from '../pred-engagement-value/pred-engagement-value.entity';
 import { PredPredictionEngagement } from '../pred-prediction-engagement/pred-prediction-engagement.entity';
 import { PredRelativeImportance } from '../pred-relative-importance/pred-relative-importance.entity';
+import { TableProperty } from '../mps/table-mps-property/table-mps-property.entity';
 
 @Entity('ms_company')
 @UseDto(CompanyDto)
@@ -162,4 +163,7 @@ export class Company extends AbstractEntity<CompanyDto> {
     (relativeimportance) => relativeimportance.company,
   )
   relativeimportance: PredRelativeImportance[];
+
+  @OneToMany(() => TableProperty, (property) => property.companyid)
+  property: TableProperty[];
 }
