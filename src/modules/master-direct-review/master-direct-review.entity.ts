@@ -3,6 +3,7 @@ import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { DirectReviewDto } from './dto/master-direct-review.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { TableProperty } from '../mps/table-mps-property/table-mps-property.entity';
 
 @Entity('ms_directreview')
 @UseDto(DirectReviewDto)
@@ -21,4 +22,7 @@ export class DirectReview extends AbstractEntity<DirectReviewDto> {
 
   @OneToMany(() => Company, (company) => company.directreviewid)
   company: Company[];
+
+  @OneToMany(() => TableProperty, (property) => property.directreviewid)
+  property: TableProperty[];
 }
