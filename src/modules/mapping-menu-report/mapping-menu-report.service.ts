@@ -156,6 +156,7 @@ export class MappingMenuReportService {
           mastermenu: {
             menucode: menuCode,
           },
+          isdelete: 'false',
         },
       });
 
@@ -170,6 +171,7 @@ export class MappingMenuReportService {
       const result = await this.mappingMenuReportRepository.findOne({
         where: {
           menuid: menuid,
+          isdelete: 'false',
         },
         relations: {
           masterreport: {

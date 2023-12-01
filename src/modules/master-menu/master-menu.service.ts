@@ -18,6 +18,7 @@ import { ListMenuDTO } from './dto/maintain-mastermenu.dto';
 import { MappingMenuReportService } from '../mapping-menu-report/mapping-menu-report.service';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { AddMasterMenuTransaction } from './add-master-menu.transaction';
+import { EditMasterMenuTransaction } from './edit-master-menu.transaction';
 
 @Injectable()
 export class MasterMenuService {
@@ -39,6 +40,9 @@ export class MasterMenuService {
 
     @Inject(AddMasterMenuTransaction)
     private addMasterMenuTransactionService: AddMasterMenuTransaction,
+
+    @Inject(EditMasterMenuTransaction)
+    private editMasterMenuTransactionService: EditMasterMenuTransaction,
   ) {}
 
   async getAllMasterMenu() {
@@ -55,8 +59,9 @@ export class MasterMenuService {
           'issection',
         ])
         .where('mastermenu.isdelete = :isdelete', { isdelete: false })
-        .orderBy('parentid', 'ASC')
-        .addOrderBy('sequence', 'ASC')
+        .orderBy('sequence', 'ASC')
+        .addOrderBy('parentid', 'ASC')
+        .addOrderBy('menuid', 'ASC')
         .getRawMany();
 
       return await this.concatMenuURLIsSection(data);
@@ -179,19 +184,14 @@ export class MasterMenuService {
     }
   }
 
-  async updateMasterMenu(menuid: number, mastermenu: UpdateMasterMenuDto) {
+  async updateMasterMenu(
+    mastermenu: UpdateMasterMenuDto,
+    userInfo: UserInfoDTO,
+  ) {
     try {
-      const query = await this.masterMenuRepository
-        .createQueryBuilder()
-        .update(MasterMenu)
-        .set({
-          menuname: mastermenu.menuname,
-          url: mastermenu.url,
-        })
-        .where('menuid = :menuid', { menuid })
-        .execute();
-
-      return query;
+      return await this.editMasterMenuTransactionService
+        .setMetadata({ userinfo: userInfo })
+        .run(mastermenu);
     } catch (error) {
       throw error;
     }
