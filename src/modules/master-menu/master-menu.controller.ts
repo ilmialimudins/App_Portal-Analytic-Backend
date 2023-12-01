@@ -89,10 +89,10 @@ export class MasterMenuController {
   @Patch('/updateMasterMenu')
   @ApiCreatedResponse({ type: MasterMenuDto })
   async updateMasterMenu(
-    @Query('menuid') menuid: number,
     @Body() mastermenu: UpdateMasterMenuDto,
+    @UserInfo() userInfo: UserInfoDTO,
   ) {
-    return this.masterMenuService.updateMasterMenu(menuid, mastermenu);
+    return this.masterMenuService.updateMasterMenu(mastermenu, userInfo);
   }
 
   @Delete('/deleteMasterMenu')

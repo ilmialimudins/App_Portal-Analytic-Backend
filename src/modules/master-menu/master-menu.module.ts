@@ -7,6 +7,7 @@ import { RoleMenuModule } from '../role-menu/role-menu.module';
 import { RoleUserModule } from '../role-user/role-user.module';
 import { MappingMenuReportModule } from '../mapping-menu-report/mapping-menu-report.module';
 import { AddMasterMenuTransaction } from './add-master-menu.transaction';
+import { EditMasterMenuTransaction } from './edit-master-menu.transaction';
 
 @Module({
   imports: [
@@ -15,7 +16,11 @@ import { AddMasterMenuTransaction } from './add-master-menu.transaction';
     RoleUserModule,
     MappingMenuReportModule,
   ],
-  providers: [MasterMenuService, AddMasterMenuTransaction],
+  providers: [
+    MasterMenuService,
+    AddMasterMenuTransaction,
+    EditMasterMenuTransaction,
+  ],
   controllers: [MasterMenuController],
 })
 export class MasterMenuModule {}

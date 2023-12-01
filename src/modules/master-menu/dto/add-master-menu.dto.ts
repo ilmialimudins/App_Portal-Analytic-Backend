@@ -35,5 +35,5 @@ export class AddMasterMenuDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly menucode?: string | null;
+  readonly menucode: string | null;
 }
