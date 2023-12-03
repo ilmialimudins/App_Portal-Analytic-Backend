@@ -12,7 +12,7 @@ import { MasterNewHire } from '../master-mps-newhire/master-mps-newhire.entity';
 import { TableProperty } from '../table-mps-property/table-mps-property.entity';
 import { MasterGender } from '../master-mps-gender/master-mps-gender.entity';
 
-@Entity('tbl_mps_outsourcingpergender')
+@Entity('tbl_mps_outsourcepergender')
 @UseDto(TableOutsourcingPerGenderDto)
 export class TableOutsourcingPerGender extends AbstractEntity<TableOutsourcingPerGenderDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })

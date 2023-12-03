@@ -18,6 +18,11 @@ import { MPSGenderAgeService } from '../table-mps-genderage/mps-genderage.servic
 import { MPSTenureService } from '../master-mps-tenure/mps-tenure.service';
 import { MPSTurnOverTerminationTypeService } from '../table-mps-turnoverterminationtype/mps-turnoverterminationtype.service';
 import { MPSEmployeeByGenderService } from '../table-mps-employeebygender/mps-employeebygender.service';
+import { MPSApplicantPerGenderService } from '../table-mps-applicantpergender/mps-applicantpergender.service';
+import { MPSNewEmployeePerGenderService } from '../table-mps-newemployeepergender/mps-newemployeepergender.service';
+import { MPSOutsourcingPerGenderService } from '../table-mps-outsourcingpergender/mps-outsourcingpergender.service';
+import { MPSTraningHourJobGroupService } from '../table-mps-traininghourjobgroup/mps-traininghourjobgroup.service';
+import { MPSTraningHourGenderService } from '../table-mps-traininghourgender/mps-traninghourgender.service';
 
 export class DownloadMPSService {
   private middleStyle: Partial<excel.Style>;
@@ -44,6 +49,21 @@ export class DownloadMPSService {
 
     @Inject(MPSEmployeeByGenderService)
     private employeeByGenderService: MPSEmployeeByGenderService,
+
+    @Inject(MPSApplicantPerGenderService)
+    private applicantPerGenderService: MPSApplicantPerGenderService,
+
+    @Inject(MPSNewEmployeePerGenderService)
+    private newEmployeePerGenderService: MPSNewEmployeePerGenderService,
+
+    @Inject(MPSOutsourcingPerGenderService)
+    private outsourcingPerGenderService: MPSOutsourcingPerGenderService,
+
+    @Inject(MPSTraningHourJobGroupService)
+    private trainingHourJobGroupService: MPSTraningHourJobGroupService,
+
+    @Inject(MPSTraningHourGenderService)
+    private trainingHourGenderService: MPSTraningHourGenderService,
   ) {
     this.middleStyle = {
       alignment: { horizontal: 'center', vertical: 'middle' },
@@ -118,6 +138,22 @@ export class DownloadMPSService {
       await this.generateExcelTableTurnOverTerminationType(propertyid, sheet);
 
       await this.generateExcelTableEmployeeByGender(propertyid, sheet);
+
+      /** Employee Outsource By Gender*/
+      await this.generateNewHire(propertyid, sheet, 'Outsource', 20, 21);
+      /** Employee Outsource By Gender End */
+
+      /** Employee NewEmployee By Gender*/
+      await this.generateNewHire(propertyid, sheet, 'NewEmployee', 26, 27);
+      /** Employee NewEmployee By Gender End */
+
+      /** Employee Applicant By Gender*/
+      await this.generateNewHire(propertyid, sheet, 'Applicant', 32, 33);
+      /** Employee Applicant By Gender End */
+
+      await this.generateExcelTableTrainingHourJobGroup(propertyid, sheet);
+
+      await this.generateExcelTableTraningHourGender(propertyid, sheet);
 
       await sheet.protect('secret', {});
 
@@ -686,6 +722,143 @@ export class DownloadMPSService {
         rowDataNum: 15,
         headerTitle: ['Gender', 'Total'],
         tableData: data.rows,
+      },
+      sheet,
+    );
+  }
+
+  private async generateNewHire(
+    propertyid: number,
+    sheet: excel.Worksheet,
+    type: 'Outsource' | 'NewEmployee' | 'Applicant',
+    rowHeader: number,
+    rowBody: number,
+  ) {
+    let dataNewHireGender;
+    let titleCell;
+    if (type === 'Outsource') {
+      dataNewHireGender =
+        await this.outsourcingPerGenderService.getOutsourcingPerGenderByProperty(
+          propertyid,
+        );
+
+      titleCell = sheet.getCell('C19');
+      titleCell.value = 'Jumlah Pekerja Outsource';
+    } else if (type === 'NewEmployee') {
+      dataNewHireGender =
+        await this.newEmployeePerGenderService.getNewEmployeePerGenderByProperty(
+          propertyid,
+        );
+
+      titleCell = sheet.getCell('C25');
+      titleCell.value = 'Penerimaan Karyawan Baru (Karyawan Tetap)';
+    } else {
+      dataNewHireGender =
+        await this.applicantPerGenderService.getApplicantPerGenderByProperty(
+          propertyid,
+        );
+
+      titleCell = sheet.getCell('C31');
+      titleCell.value = 'Jumlah Pelamar Kerja (yang diundang test)';
+    }
+
+    titleCell.font = {
+      bold: true,
+    };
+    const genderData = await this.newEmployeePerGenderService.genders();
+
+    const rows = genderData.map((gender) => {
+      let total: number | null = null;
+
+      const index = dataNewHireGender.findIndex(
+        (item) => item.genderid === gender.genderid,
+      );
+
+      if (index > -1) {
+        total = dataNewHireGender[index].total;
+      }
+
+      return { label: gender.gender, total: total };
+    });
+
+    const totalRowNums = rowBody + rows.length;
+
+    const totalCell = sheet.getCell(`C${totalRowNums}`);
+    totalCell.value = 'Total';
+    totalCell.font = {
+      bold: true,
+    };
+    totalCell.border = this.border;
+    const totalSum = sheet.getCell(`D${totalRowNums}`);
+    totalSum.value = {
+      formula: `SUM(D${rowBody}:D${totalRowNums - 1})`,
+      date1904: false,
+    };
+    totalSum.border = this.border;
+
+    addTable(
+      {
+        columnStart: 'C',
+        rowHeaderNum: rowHeader,
+        rowDataNum: rowBody,
+        headerTitle: ['Gender', 'Total'],
+        tableData: rows,
+      },
+      sheet,
+    );
+  }
+
+  private async generateExcelTableTrainingHourJobGroup(
+    propertyid: number,
+    sheet: excel.Worksheet,
+  ) {
+    const rows = await this.trainingHourJobGroupService.getDataForExcelTable(
+      propertyid,
+    );
+
+    const titleCell = sheet.getCell('C37');
+    titleCell.value = 'Data Pelatihan * Karyawan Berdasarkan Kelompok Jabatan';
+    titleCell.font = {
+      bold: true,
+    };
+
+    addTable(
+      {
+        columnStart: 'C',
+        rowHeaderNum: 38,
+        rowDataNum: 39,
+        headerTitle: [
+          'Kelompok Jabatan',
+          'Jumlah Pekerja',
+          'Jumlah Jam Pelatihan *',
+        ],
+        tableData: rows,
+      },
+      sheet,
+    );
+  }
+
+  private async generateExcelTableTraningHourGender(
+    propertyid: number,
+    sheet: excel.Worksheet,
+  ) {
+    const rows = await this.trainingHourGenderService.getDataForExcelTable(
+      propertyid,
+    );
+
+    const titleCell = sheet.getCell('H35');
+    titleCell.value = 'Data Pelatihan * Karyawan Berdasarkan Gender';
+    titleCell.font = {
+      bold: true,
+    };
+
+    addTable(
+      {
+        columnStart: 'H',
+        rowHeaderNum: 36,
+        rowDataNum: 37,
+        headerTitle: ['Gender', 'Jumlah Pekerja', 'Jumlah Jam Pelatihan *'],
+        tableData: rows,
       },
       sheet,
     );
