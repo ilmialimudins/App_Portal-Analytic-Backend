@@ -11,6 +11,11 @@ import { MPSGenderAgeModule } from '../table-mps-genderage/mps-genderage.module'
 import { MPSTenureModule } from '../master-mps-tenure/mps-tenure.module';
 import { MPSTurnOverTerminationTypeModule } from '../table-mps-turnoverterminationtype/mps-turnoverterminationtype.module';
 import { MPSEmployeeByGenderModule } from '../table-mps-employeebygender/mps-employeebygender.module';
+import { MPSApplicantPerGenderModule } from '../table-mps-applicantpergender/mps-applicantpergender.module';
+import { MPSOutsourcingPerGenderModule } from '../table-mps-outsourcingpergender/mps-outsourcingpergender.module';
+import { MPSNewEmployeePerGenderModule } from '../table-mps-newemployeepergender/mps-newemployeepergender.module';
+import { MPSTrainingHourJobGroupModule } from '../table-mps-traininghourjobgroup/mps-traininghourjobgroup.module';
+import { MPSTraningHourGenderModule } from '../table-mps-traininghourgender/mps-traninghourgender.module';
 
 @Module({
   imports: [
@@ -22,6 +27,11 @@ import { MPSEmployeeByGenderModule } from '../table-mps-employeebygender/mps-emp
     MPSTenureModule,
     MPSTurnOverTerminationTypeModule,
     MPSEmployeeByGenderModule,
+    MPSApplicantPerGenderModule,
+    MPSOutsourcingPerGenderModule,
+    MPSNewEmployeePerGenderModule,
+    MPSTrainingHourJobGroupModule,
+    MPSTraningHourGenderModule,
   ],
   controllers: [MPSPropertyController],
   providers: [DownloadMPSService, MPSPropertyService],
