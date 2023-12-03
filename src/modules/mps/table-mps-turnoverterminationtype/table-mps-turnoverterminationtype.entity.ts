@@ -13,7 +13,7 @@ import { MasterGrade } from '../master-mps-grade/master-mps-grade.entity';
 import { TableProperty } from '../table-mps-property/table-mps-property.entity';
 import { MasterTerminationType } from '../master-mps-terminationtype/master-mps-terminationtype.entity';
 
-@Entity('tbl_mps_turnoverterminationtype')
+@Entity('tbl_mps_turnoverperterminationtype')
 @UseDto(TableTurnOverTerminationTypeDto)
 export class TableTurnOverTerminationType extends AbstractEntity<TableTurnOverTerminationTypeDto> {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })

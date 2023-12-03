@@ -52,6 +52,8 @@ import { SurveyValidationModule } from './modules/survey-validation/survey-valid
 import { MonitoringValidationModule } from './modules/monitoring-validation/monitoring-validation.module';
 import { ValidateSurveyResultModule } from './modules/validate-survey-result/validate-survey-result.module';
 import { PowerbiEmbeddingModule } from './modules/powerbi-embedding/powerbi-embedding.module';
+import { MPSPropertyModule } from './modules/mps/table-mps-property/mps-property.module';
+import { MasterMPSGenderModule } from './modules/mps/master-mps-gender/master-mps-gender.module';
 
 const ApiModules = [
   SharedModule,
@@ -84,6 +86,8 @@ const ApiModules = [
   MonitoringValidationModule,
   FactorModule,
   PredEngagamentValueModule,
+  MPSPropertyModule,
+  MasterMPSGenderModule,
 ];
 
 @Module({

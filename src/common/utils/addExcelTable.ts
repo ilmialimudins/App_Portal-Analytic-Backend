@@ -1,4 +1,5 @@
 import excel from 'exceljs';
+import alphabet from 'src/constants/alphabet';
 
 export interface ObjectTable<T> {
   columnStart: string;
@@ -7,8 +8,6 @@ export interface ObjectTable<T> {
   headerTitle: string[];
   tableData: T[];
 }
-
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const middleStyle: Partial<excel.Style> = {
   alignment: { horizontal: 'center', vertical: 'middle' },
