@@ -48,7 +48,6 @@ export class MPSTraningHourJobGroupService {
       propertyid,
     );
 
-    console.log(trainingHourJobGroupData);
     const jobGroupData = await this.findJobGroup();
 
     const rows = jobGroupData.map((jobgroup) => {
