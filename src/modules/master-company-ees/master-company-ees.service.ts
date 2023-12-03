@@ -111,6 +111,9 @@ export class CompanyService {
     try {
       const query = await this.companyRepository.findOne({
         where: { companyid: companyid },
+        relations: {
+          location: true,
+        },
       });
 
       return query?.toDto();
