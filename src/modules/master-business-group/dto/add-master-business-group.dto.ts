@@ -11,4 +11,14 @@ export class AddBusinessGroupDto {
   @IsOptional()
   @IsString()
   readonly businessgroupdesc: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

@@ -132,6 +132,14 @@ export class SurveyGroupService {
 
   async createSurveyGroup(surveygroup: AddSurveyGroupDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.surveyGroupRepository
         .createQueryBuilder('surveygroup')
         .insert()
@@ -139,9 +147,11 @@ export class SurveyGroupService {
         .values({
           surveygroupcode: surveygroup.surveygroupcode,
           surveygroupdesc: surveygroup.surveygroupdesc,
+          createdby: surveygroup.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -162,6 +172,7 @@ export class SurveyGroupService {
         .set({
           surveygroupcode: surveygroup.surveygroupcode,
           surveygroupdesc: surveygroup.surveygroupdesc,
+          updatedby: surveygroup.updatedby,
         })
         .where('surveygroupid = :surveygroupid', { surveygroupid })
         .execute();

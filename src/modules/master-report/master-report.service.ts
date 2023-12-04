@@ -69,6 +69,14 @@ export class MasterReportService {
 
   async createMasterReport(masterreport: AddMasterReportDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = this.masterReportRepository
         .createQueryBuilder('masterreport')
         .insert()
@@ -79,9 +87,11 @@ export class MasterReportService {
           reportpowerbiiid: masterreport.reportpowerbiid,
           datasetpowerbiid: masterreport.datasetpowerbiid,
           reporturl: masterreport.reporturl,
+          createdby: masterreport.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -105,6 +115,7 @@ export class MasterReportService {
           reportpowerbiiid: masterreport.reportpowerbiid,
           datasetpowerbiid: masterreport.datasetpowerbiid,
           reporturl: masterreport.reporturl,
+          updatedby: masterreport.updatedby,
         })
         .where('reportid = :reportid', { reportid })
         .execute();

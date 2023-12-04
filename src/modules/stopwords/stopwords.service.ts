@@ -124,8 +124,13 @@ export class StopwordsService {
 
   async createStopwords(stopwords: AddStopwordsDto) {
     try {
-      const nowDate = new Date();
-      const nowYear = nowDate.getFullYear();
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
 
       const query = await this.stopwordsRepository
         .createQueryBuilder('stopwords')
@@ -135,10 +140,12 @@ export class StopwordsService {
           uuid: uuidv4(),
           companyid: 475,
           stopwords: stopwords.stopwords,
-          tahun_survey: nowYear,
+          tahun_survey: year,
+          createdby: stopwords.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -155,6 +162,7 @@ export class StopwordsService {
         .update(Stopwords)
         .set({
           stopwords: stopwords.stopwords,
+          updatedby: stopwords.updatedby,
         })
         .where('uuid = :uuid', { uuid })
         .andWhere('stopwords != :stopwords', { stopwords: stopwords.stopwords })
@@ -183,18 +191,25 @@ export class StopwordsService {
 
   async createManyStopwords(stopwords: AddStopwordsDto[]) {
     try {
-      const nowDate = new Date();
-      const nowYear = nowDate.getFullYear();
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
 
       const values = stopwords.map((item) => {
         return {
           uuid: uuidv4(),
           companyid: 475,
           stopwords: item.stopwords,
-          tahun_survey: nowYear,
+          tahun_survey: year,
+          createdby: item.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         };
       });
 

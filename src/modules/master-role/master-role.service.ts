@@ -111,6 +111,14 @@ export class MasterRoleService {
 
   async createMasterRole(masterrole: AddMasterRoleDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.masterRoleRepository
         .createQueryBuilder('masterrole')
         .insert()
@@ -118,9 +126,11 @@ export class MasterRoleService {
         .values({
           rolename: masterrole.rolename,
           roledesc: masterrole.roledesc,
+          createdby: masterrole.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -138,6 +148,7 @@ export class MasterRoleService {
         .set({
           rolename: masterrole.rolename,
           roledesc: masterrole.roledesc,
+          updatedby: masterrole.updatedby,
         })
         .where('roleid = :roleid', { roleid })
         .execute();

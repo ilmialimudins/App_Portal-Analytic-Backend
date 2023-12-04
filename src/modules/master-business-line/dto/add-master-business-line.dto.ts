@@ -11,4 +11,14 @@ export class AddBusinessLineDto {
   @IsOptional()
   @IsString()
   readonly businesslinedesc: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

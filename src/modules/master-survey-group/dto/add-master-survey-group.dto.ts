@@ -11,4 +11,14 @@ export class AddSurveyGroupDto {
   @IsOptional()
   @IsString()
   readonly surveygroupdesc: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

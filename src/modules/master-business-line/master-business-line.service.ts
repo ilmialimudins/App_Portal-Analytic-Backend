@@ -136,6 +136,14 @@ export class BusinessLineService {
 
   async createBusinessLine(businessline: AddBusinessLineDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = this.businessLineRepository
         .createQueryBuilder('businessline')
         .insert()
@@ -143,7 +151,11 @@ export class BusinessLineService {
         .values({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
+          createdby: businessline.createdby,
           isdelete: 'false',
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -164,6 +176,7 @@ export class BusinessLineService {
         .set({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
+          updatedby: businessline.updatedby,
         })
         .where('businesslineid =:businesslineid', { businesslineid })
         .execute();

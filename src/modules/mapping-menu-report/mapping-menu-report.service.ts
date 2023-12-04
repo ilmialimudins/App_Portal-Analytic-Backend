@@ -57,6 +57,14 @@ export class MappingMenuReportService {
 
   async createMappingMenuReport(mappingmenureport: AddMappingMenuReportDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = this.mappingMenuReportRepository
         .createQueryBuilder('mappingmenureport')
         .insert()
@@ -67,8 +75,9 @@ export class MappingMenuReportService {
           sectionid: mappingmenureport.sectionid,
           createdby: mappingmenureport.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -90,7 +99,7 @@ export class MappingMenuReportService {
           menuid: mappingmenureport.menuid,
           reportid: mappingmenureport.reportid,
           sectionid: mappingmenureport.sectionid,
-          createdby: mappingmenureport.createdby,
+          updatedby: mappingmenureport.updatedby,
         })
         .where('mappingmenureportid = :mappingmenureportid', {
           mappingmenureportid,
