@@ -20,10 +20,10 @@ export class TablePropertyDto extends AbstractDto {
   locationid: number;
 
   @ApiProperty()
-  month: string;
+  month: number;
 
   @ApiProperty()
-  year: string;
+  year: number;
 
   @ApiProperty()
   isdelete: string;

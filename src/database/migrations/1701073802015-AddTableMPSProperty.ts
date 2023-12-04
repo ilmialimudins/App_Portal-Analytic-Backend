@@ -41,12 +41,12 @@ export class AddTableMPSProperty1701073802015 implements MigrationInterface {
           },
           {
             name: 'month',
-            type: 'varchar',
+            type: 'int',
             isNullable: true,
           },
           {
             name: 'year',
-            type: 'varchar',
+            type: 'int',
             isNullable: true,
           },
           {

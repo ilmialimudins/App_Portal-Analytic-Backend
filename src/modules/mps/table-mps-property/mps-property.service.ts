@@ -16,8 +16,8 @@ export class MPSPropertyService {
       return this.mpsPropertyRepo.findOne({
         where: {
           companyid: data.companyid,
-          year: data.year.toString(),
-          month: data.month.toString(),
+          year: data.year,
+          month: data.month,
         },
         relations: {
           company: true,
