@@ -169,6 +169,14 @@ export class MasterUserService {
 
   async createMasterUser(masteruser: AddMasterUserDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.masterUserRepository
         .createQueryBuilder('masteruser')
         .insert()
@@ -181,9 +189,11 @@ export class MasterUserService {
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
+          createdby: masteruser.createdby,
           isdelete: 'Active',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -206,6 +216,7 @@ export class MasterUserService {
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
+          updatedby: masteruser.updatedby,
         })
         .where('userid = :userid', { userid })
         .execute();

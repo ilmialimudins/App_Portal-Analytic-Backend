@@ -134,6 +134,14 @@ export class BusinessGroupService {
 
   async createBusinessGroup(businessgroup: AddBusinessGroupDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.businessGroupRepository
         .createQueryBuilder('businessgroup')
         .insert()
@@ -141,9 +149,11 @@ export class BusinessGroupService {
         .values({
           businessgroupcode: businessgroup.businessgroupcode,
           businessgroupdesc: businessgroup.businessgroupdesc,
+          createdby: businessgroup.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -164,6 +174,7 @@ export class BusinessGroupService {
         .set({
           businessgroupcode: businessgroup.businessgroupcode,
           businessgroupdesc: businessgroup.businessgroupdesc,
+          updatedby: businessgroup.updatedby,
         })
         .where('businessgroupid = :businessgroupid', { businessgroupid })
         .execute();

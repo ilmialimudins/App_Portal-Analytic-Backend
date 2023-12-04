@@ -53,7 +53,6 @@ export class AccessUserService {
 
       const data = await query
         .andWhere('accessuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.isdelete = :isdelete', { isdelete: false })
         .orderBy('masteruser.sourcecreatedmodifiedtime', 'DESC')
         .offset(offset)
         .limit(take)
@@ -61,7 +60,6 @@ export class AccessUserService {
 
       const itemCount = await query
         .andWhere('accessuser.isdelete = :isdelete', { isdelete: false })
-        .andWhere('company.isdelete = :isdelete', { isdelete: false })
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -100,6 +98,14 @@ export class AccessUserService {
 
   async createAccessUser(accessuser: AddAccessUserDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.accessUserRepository
         .createQueryBuilder('accessuser')
         .insert()
@@ -107,10 +113,11 @@ export class AccessUserService {
         .values({
           companyid: accessuser.companyid,
           userid: accessuser.userid,
-          isdelete: 'false',
           createdby: accessuser.createdby,
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          isdelete: 'false',
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -131,7 +138,7 @@ export class AccessUserService {
         .set({
           companyid: accessuser.companyid,
           userid: accessuser.userid,
-          createdby: accessuser.createdby,
+          updatedby: accessuser.updatedby,
         })
         .where('aksesuserid = :accessuserid', { accessuserid })
         .execute();

@@ -254,12 +254,14 @@ export class SurveyValidationService {
 
   async updateValidation(id: number) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
       const query = await this.surveyValidationRepository
         .createQueryBuilder()
         .update(SurveyValidation)
         .set({
           validation: '1',
-          validateddate: new Date(),
+          validateddate: createNow,
         })
         .where('id = :id', { id })
         .execute();

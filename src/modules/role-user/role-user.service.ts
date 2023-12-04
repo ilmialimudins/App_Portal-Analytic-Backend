@@ -105,6 +105,14 @@ export class RoleUserService {
 
   async createRoleUser(roleuser: AddRoleUserDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.roleUserRepository
         .createQueryBuilder('roleuser')
         .insert()
@@ -112,10 +120,11 @@ export class RoleUserService {
         .values({
           roleid: roleuser.roleid,
           userid: roleuser.userid,
-          isdelete: 'false',
           createdby: roleuser.createdby,
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          isdelete: 'false',
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -133,7 +142,7 @@ export class RoleUserService {
         .set({
           roleid: roleuser.roleid,
           userid: roleuser.userid,
-          createdby: roleuser.createdby,
+          updatedby: roleuser.updatedby,
         })
         .where('roleuserid = :roleuserid', { roleuserid })
         .execute();

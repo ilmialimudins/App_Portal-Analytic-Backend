@@ -36,4 +36,14 @@ export class AddMasterUserDto {
   @IsOptional()
   @IsString()
   readonly email: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

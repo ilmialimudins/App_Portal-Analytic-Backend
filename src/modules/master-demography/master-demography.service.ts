@@ -127,6 +127,14 @@ export class DemographyService {
 
   async createDemography(demography: AddDemographyDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.demographyRepository
         .createQueryBuilder('demography')
         .insert()
@@ -134,9 +142,11 @@ export class DemographyService {
         .values({
           demographyalias: demography.demographyalias,
           desc: 'Non-Default',
+          createdby: demography.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -156,6 +166,7 @@ export class DemographyService {
         .update(Demography)
         .set({
           demographyalias: demography.demographyalias,
+          updatedby: demography.updatedby,
         })
         .where('demographyid =:demographyid', { demographyid })
         .execute();

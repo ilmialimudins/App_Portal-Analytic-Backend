@@ -50,6 +50,14 @@ export class RoleMenuService {
 
   async createRoleMenu(rolemenu: AddRoleMenuDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.roleMenuRepository
         .createQueryBuilder('rolemenu')
         .insert()
@@ -57,10 +65,11 @@ export class RoleMenuService {
         .values({
           roleid: rolemenu.roleid,
           menuid: rolemenu.menuid,
-          isdelete: 'false',
           createdby: rolemenu.createdby,
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          isdelete: 'false',
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -78,7 +87,7 @@ export class RoleMenuService {
         .set({
           roleid: rolemenu.roleid,
           menuid: rolemenu.menuid,
-          createdby: rolemenu.createdby,
+          updatedby: rolemenu.updatedby,
         })
         .where('rolemenuid = :rolemenuid', { rolemenuid })
         .execute();

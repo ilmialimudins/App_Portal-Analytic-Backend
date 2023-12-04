@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReplaceWordcloud } from './replace-wordcloud.entity';
-import { Brackets, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
@@ -121,9 +121,6 @@ export class ReplaceWordcloudService {
         .where('replacewordcloud.original_text = :original_text', {
           original_text: replaceWordcloud.original_text,
         })
-        .where('replacewordcloud.replace_text = :replace_text', {
-          replace_text: replaceWordcloud.replace_text,
-        })
         .andWhere('replacewordcloud.uuid != :uuid', {
           uuid: replaceWordcloud.uuid || '',
         })
@@ -137,8 +134,13 @@ export class ReplaceWordcloudService {
 
   async createReplaceWordcloud(replacewordcloud: AddReplaceWordcloudDto) {
     try {
-      const nowDate = new Date();
-      const nowYear = nowDate.getFullYear();
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
 
       const query = await this.replaceWordcloudRepository
         .createQueryBuilder('replacewordcloud')
@@ -147,12 +149,14 @@ export class ReplaceWordcloudService {
         .values({
           uuid: uuidv4(),
           companyid: 475,
-          tahun_survey: nowYear,
+          tahun_survey: year,
           original_text: replacewordcloud.original_text,
           replace_text: replacewordcloud.replace_text,
+          createdby: replacewordcloud.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -173,19 +177,12 @@ export class ReplaceWordcloudService {
         .set({
           original_text: replaceWordcloud.original_text,
           replace_text: replaceWordcloud.replace_text,
+          updatedby: replaceWordcloud.updatedby,
         })
         .where('uuid = :uuid', { uuid })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where(
-              'original_text != :original_text OR replace_text != :replace_text',
-              {
-                original_text: replaceWordcloud.original_text,
-                replace_text: replaceWordcloud.replace_text,
-              },
-            );
-          }),
-        )
+        .andWhere('original_text != :original_text', {
+          original_text: replaceWordcloud.original_text,
+        })
         .execute();
 
       return query;
@@ -211,19 +208,26 @@ export class ReplaceWordcloudService {
 
   async createManyReplacewordcloud(replaceWordcloud: AddReplaceWordcloudDto[]) {
     try {
-      const nowDate = new Date();
-      const nowYear = nowDate.getFullYear();
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
 
       const values = replaceWordcloud.map((item) => {
         return {
           uuid: uuidv4(),
           companyid: 475,
-          tahun_survey: nowYear,
+          tahun_survey: year,
           original_text: item.original_text,
           replace_text: item.replace_text,
+          createdby: item.createdby,
           isdelete: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         };
       });
 

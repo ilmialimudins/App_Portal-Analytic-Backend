@@ -138,6 +138,14 @@ export class ValidateSurveyResultService {
     validatesurveyresult: AddValidateSurveyResultDto[],
   ) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const values = validatesurveyresult.map((item) => {
         return {
           uuid: uuidv4(),
@@ -181,9 +189,11 @@ export class ValidateSurveyResultService {
           completeanswer: item.completeanswer,
           age_this_year: item.age_this_year,
           age_when_entering_company: item.age_when_entering_company,
+          createdby: item.createdby,
           row_status: 'false',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         };
       });
 
@@ -227,8 +237,7 @@ export class ValidateSurveyResultService {
           tahunlahir: validatesurveyresult.tahunlahir,
           tahunmasuk_astra: validatesurveyresult.tahunmasuk_astra,
           tahunmasuk_perusahaan: validatesurveyresult.tahunmasuk_perusahaan,
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          updatedby: validatesurveyresult.updatedby,
         })
         .where('id = :id', { id })
         .execute();
