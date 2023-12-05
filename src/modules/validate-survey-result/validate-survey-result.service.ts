@@ -249,6 +249,8 @@ export class ValidateSurveyResultService {
   }
 
   async updateDateVersion(surveyid: number, company: string) {
+    const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
     const queryRunner = this.manager.connection.createQueryRunner();
 
     await queryRunner.connect();
@@ -260,7 +262,7 @@ export class ValidateSurveyResultService {
         .createQueryBuilder()
         .update(ValidateSurveyResult)
         .set({
-          dateversion: new Date(),
+          dateversion: createNow,
         })
         .where('surveyid = :surveyid', { surveyid })
         .andWhere('company = :company', { company })
@@ -362,8 +364,8 @@ export class ValidateSurveyResultService {
         .where('validatesurveyresult.row_status = :row_status', {
           row_status: false,
         })
-        .andWhere('validatesurveyresult.surveyid = :surveyid', {
-          surveyid: body.surveyid,
+        .andWhere('validatesurveyresult.tahunsurvey = :tahunsurvey', {
+          tahunsurvey: body.tahunsurvey,
         })
         .andWhere('validatesurveyresult.company = :company', {
           company: body.company,

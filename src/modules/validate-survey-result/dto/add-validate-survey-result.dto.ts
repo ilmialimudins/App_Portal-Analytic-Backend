@@ -220,8 +220,8 @@ export class AddValidateSurveyResultDto {
 export class DownloadValidateSurveyResultDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  readonly surveyid: string;
+  @IsNumber()
+  readonly tahunsurvey: number;
 
   @ApiPropertyOptional()
   @IsOptional()
