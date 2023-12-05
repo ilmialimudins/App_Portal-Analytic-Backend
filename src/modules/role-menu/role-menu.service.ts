@@ -133,6 +133,9 @@ export class RoleMenuService {
         .where('masterrole.rolename IN (:...roleNames)', {
           roleNames: rolelist,
         })
+        .orderBy('mastermenu.sequence', 'ASC')
+        .addOrderBy('parentid', 'ASC')
+        .addOrderBy('menuid', 'ASC')
         .getRawMany();
 
       return result;
