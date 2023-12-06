@@ -67,11 +67,11 @@ export class TableProperty extends AbstractEntity<TablePropertyDto> {
   })
   location: Location;
 
-  @Column({ type: 'varchar', name: 'month', nullable: true })
-  month: string;
+  @Column({ type: 'int', name: 'month', nullable: true })
+  month: number;
 
-  @Column({ type: 'varchar', name: 'year', nullable: true })
-  year: string;
+  @Column({ type: 'int', name: 'year', nullable: true })
+  year: number;
 
   @Column({ type: 'varchar', name: 'isdelete', nullable: true })
   isdelete: string;
