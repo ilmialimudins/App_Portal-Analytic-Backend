@@ -1,10 +1,26 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Response as ExpressResponse } from 'express';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  ParseFilePipeBuilder,
+  Post,
+  Req,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Response as ExpressResponse, Request } from 'express';
 
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { DownloadMPSDTO } from './dto/download-mps.dto';
 import { DownloadMPSService } from './download-mps.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CustomUploadFileValidator } from 'src/common/validator/customfiletype.validator';
+import { excelFileType } from 'src/constants/filetype';
+import { UploadMPSDTO } from './dto/upload-mps.dto';
+import diskStorage from 'src/common/utils/diskStorage';
 
 @ApiBearerAuth()
 @ApiTags('Man Power Statistics')
@@ -37,5 +53,35 @@ export class MPSPropertyController {
     await workbook.xlsx.write(res);
 
     res.end();
+  }
+
+  @Post('/upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Data MPS',
+    type: UploadMPSDTO,
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage(),
+    }),
+  )
+  async uploadMPSProperty(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addValidator(
+          new CustomUploadFileValidator({ fileType: excelFileType }),
+        )
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Req() request: Request,
+  ) {
+    console.log(file);
+    console.log(request.body);
+
+    return 'jancuk';
   }
 }
