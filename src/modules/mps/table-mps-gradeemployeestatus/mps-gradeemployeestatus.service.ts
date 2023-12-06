@@ -88,4 +88,72 @@ export class MPSGradeEmployeeStatusService {
     };
     return gradeEmployeeStatusTable;
   }
+
+  async getGradeEmployeeStatusData(propertyid: number) {
+    const grades = await this.getAllGrade();
+    const employeeStatus = await this.getAllEmployeeStatus();
+    const genders = await this.masterMPSGenderService.getAllMPSGender();
+    const gradeEmployeeStatus = await this.getGradeEmployeeStatus(propertyid);
+
+    const mapGenderStatus = employeeStatus
+      .map((status) => {
+        return genders.map((gender) => ({
+          genderid: gender.genderid,
+          gender: gender.gender,
+          employeestatusid: status.employeestatusid,
+          employeestatus: status.employeestatus,
+        }));
+      })
+      .flat(2);
+
+    const rows = grades.map((grade) => {
+      const newObj = mapGenderStatus.reduce((acc, curr) => {
+        let val: number | null;
+
+        const index = gradeEmployeeStatus.findIndex((item) => {
+          return (
+            item.gradeid == grade.gradeid &&
+            item.employeestatusid == curr.employeestatusid
+          );
+        });
+
+        if (index > -1) {
+          val = gradeEmployeeStatus[index].total;
+        } else {
+          val = null;
+        }
+
+        return Object.assign(acc, {
+          [`${curr.employeestatus.toLowerCase()}_${curr.gender.toLowerCase()}`]:
+            val,
+        });
+      }, {});
+
+      return { grade: grade.grade, ...newObj };
+    });
+
+    const columns = employeeStatus.map((status) => {
+      return {
+        title: status.employeestatus,
+        editable: true,
+        childern: genders.map((gender) => {
+          return {
+            title: gender.gender,
+            editable: true,
+            dataIndex: `${status.employeestatus.toLowerCase()}_${gender.gender.toLowerCase()}`,
+          };
+        }),
+      };
+    });
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: [
+        { title: 'Golongan', dataIndex: 'golongan', editable: false },
+        ...columns,
+      ],
+    };
+  }
 }
