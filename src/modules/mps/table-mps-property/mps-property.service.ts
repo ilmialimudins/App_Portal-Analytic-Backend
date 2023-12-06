@@ -16,14 +16,46 @@ export class MPSPropertyService {
       return this.mpsPropertyRepo.findOne({
         where: {
           companyid: data.companyid,
-          year: data.year.toString(),
-          month: data.month.toString(),
+          year: data.year,
+          month: data.month,
         },
         relations: {
           company: true,
           location: true,
         },
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getPropertyByParams(companyid: number, month: number, year: number) {
+    try {
+      const result = await this.mpsPropertyRepo
+        .createQueryBuilder('property')
+        .leftJoin('property.company', 'company')
+        .leftJoin('company.cla', 'cla')
+        .leftJoin('company.directreview', 'directreview')
+        .leftJoin('company.location', 'location')
+        .select([
+          'property.propertyid as propertyid',
+          'company.companyid as companyid',
+          'cla.claid as claid',
+          'directreview.directreviewid as directreviewid',
+          'location.locationid as locationid',
+          'company.companympsname as companyname',
+          'cla.cladesc as cladesc',
+          'directreview.directreviewdesc as directreviewdesc',
+          'location.locationdesc as locationdesc',
+          'property.month as month',
+          'property.year as year',
+        ])
+        .where('property.companyid = :companyid', { companyid: companyid })
+        .andWhere('property.month = :month', { month: month })
+        .andWhere('property.year = :year', { year: year })
+        .getRawOne();
+
+      return result;
     } catch (error) {
       throw error;
     }

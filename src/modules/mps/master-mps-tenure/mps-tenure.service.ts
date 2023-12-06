@@ -75,4 +75,50 @@ export class MPSTenureService {
 
     return { rows, masterGenders, gendersNum: masterGenders.length };
   }
+
+  async getTenure(propertyid: number) {
+    const masterTenure = await this.getAllMasterTenure();
+    const tenureByProperty = await this.getTenureByProperty(propertyid);
+    const masterGenders = await this.masterGenderSerivce.getAllMPSGender();
+
+    const rows = masterTenure.map((tenure) => {
+      const newObj = masterGenders.reduce((o, key) => {
+        let val: number | null;
+
+        const index = tenureByProperty.findIndex((item) => {
+          return (
+            item.genderid === key.genderid && item.tenureid === tenure.tenureid
+          );
+        });
+
+        if (index > -1) {
+          val = tenureByProperty[index].total;
+        } else {
+          val = null;
+        }
+        return Object.assign(o, {
+          [key.gender.toLowerCase()]: val,
+        });
+      }, {});
+      return { tenure: tenure.tenure, ...newObj };
+    });
+
+    const columns = masterGenders.map((gen) => {
+      return {
+        title: gen.gender,
+        dataIndex: gen.gender.toLowerCase(),
+        editable: true,
+      };
+    });
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: [
+        { title: 'Masa Kerja', dataIndex: 'tenure', editable: false },
+        ...columns,
+      ],
+    };
+  }
 }

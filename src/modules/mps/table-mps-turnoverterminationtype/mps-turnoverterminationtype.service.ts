@@ -114,4 +114,77 @@ export class MPSTurnOverTerminationTypeService {
 
     return terminationTypeTable;
   }
+
+  async getTurnOverTermination(propertyid: number) {
+    const masterGrade = await this.getAllGrade();
+    const masterTermination = await this.getAllTurnOver();
+    const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+    const turnOverTermination = await this.getTurnOverTerminationByPropertyId(
+      propertyid,
+    );
+
+    const mappedTerminationGender = masterTermination
+      .map((tmt) => {
+        return masterGender.map((gender) => ({
+          genderid: gender.genderid,
+          gender: gender.gender,
+          terminationtypeid: tmt.terminationtypeid,
+          terminationtype: tmt.terminationtype,
+        }));
+      })
+      .flat(2);
+
+    const rows = masterGrade.map((grade) => {
+      const newObj = mappedTerminationGender.reduce((o, key) => {
+        let val: number | null;
+
+        const index = turnOverTermination.findIndex((item) => {
+          return (
+            item.terminationtypeid === key.terminationtypeid &&
+            item.gradeid === grade.gradeid &&
+            item.genderid === key.genderid
+          );
+        });
+
+        if (index > -1) {
+          val = turnOverTermination[index].total;
+        } else {
+          val = null;
+        }
+        return Object.assign(o, {
+          [`${key.terminationtype.toLowerCase()}_${key.gender.toLowerCase()}`]:
+            val,
+        });
+      }, {});
+      return { grade: grade.grade, ...newObj };
+    });
+
+    const columns = masterTermination.map((tmt) => {
+      return {
+        title: tmt.terminationtype,
+        editable: true,
+        childern: masterGender.map((gender) => {
+          return {
+            title: gender.gender,
+            editable: true,
+            dataIndex: `${tmt.terminationtype
+              .split(' ')
+              .join('')
+              .toLowerCase()}_${gender.gender.toLowerCase()}`,
+          };
+        }),
+      };
+    });
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: [
+        { title: 'Golongan', dataIndex: 'golongan', editable: false },
+        ...columns,
+      ],
+    };
+  }
 }

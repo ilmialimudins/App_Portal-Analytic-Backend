@@ -44,4 +44,37 @@ export class MPSNewEmployeePerGenderService {
   public async genders() {
     return this.masterMPSGenderService.getAllMPSGender();
   }
+
+  async getNewEmployeePerGender(propertyid: number) {
+    const getApplicant = await this.getNewEmployeePerGenderByProperty(
+      propertyid,
+    );
+    const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+    const rows = masterGender.map((x) => {
+      let total: number | null = null;
+
+      const index = getApplicant.findIndex(
+        (item) => item.genderid === x.genderid,
+      );
+
+      if (index > -1) {
+        total = getApplicant[index].total;
+      }
+
+      return { label: x.gender, total: total };
+    });
+
+    const columns = [
+      { title: 'Gender', dataIndex: 'gender', editable: false },
+      { title: 'Total', dataIndex: 'total', editable: true },
+    ];
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: columns,
+    };
+  }
 }

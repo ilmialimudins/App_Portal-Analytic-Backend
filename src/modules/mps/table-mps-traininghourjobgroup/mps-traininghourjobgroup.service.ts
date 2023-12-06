@@ -68,4 +68,45 @@ export class MPSTraningHourJobGroupService {
 
     return rows;
   }
+
+  async getTrainingHourJobGroupData(propertyid: number) {
+    const trainingHourJobGroupData = await this.getTrainingHourJobGroup(
+      propertyid,
+    );
+
+    const jobGroupData = await this.findJobGroup();
+
+    const rows = jobGroupData.map((jobgroup) => {
+      let totalemployee: number | null = null;
+      let totaltraininghour: number | null = null;
+
+      const index = trainingHourJobGroupData.findIndex(
+        (item) => item.jobgroupid === jobgroup.jobgroupid,
+      );
+
+      if (index > -1) {
+        totalemployee = trainingHourJobGroupData[index].totalemployee;
+        totaltraininghour = trainingHourJobGroupData[index].totaltraininghour;
+      }
+
+      return { label: jobgroup.jobgroup, totalemployee, totaltraininghour };
+    });
+
+    const columns = [
+      { title: 'Kelompok Karyawan', dataIndex: 'jobgroup', editable: false },
+      { title: 'Total Karyawan', dataIndex: 'totalemployee', editable: true },
+      {
+        title: 'Total Jam Pelatihan',
+        dataIndex: 'totaltraininghour',
+        editable: true,
+      },
+    ];
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: columns,
+    };
+  }
 }
