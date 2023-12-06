@@ -65,8 +65,14 @@ export class SurveyValidationController {
 
   @Get('/getIncompleteResponse')
   @ApiCreatedResponse({ type: SurveyValidationDto })
-  async getIncompleteResponse() {
-    return this.surveyValidationService.getIncompleteResponse();
+  async getIncompleteResponse(
+    @Query('surveyid') surveyid: string,
+    @Query('company') company: string,
+  ) {
+    return this.surveyValidationService.getIncompleteResponse(
+      surveyid,
+      company,
+    );
   }
 
   @Patch('/updateSurveyValidation')

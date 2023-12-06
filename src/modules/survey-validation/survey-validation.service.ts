@@ -42,8 +42,7 @@ export class SurveyValidationService {
           'surveyvalidation.dateversion',
           'surveyvalidation.username',
           'complete.status',
-        ])
-        .distinct(true);
+        ]);
 
       if (company && dateversion && username) {
         query = query
@@ -90,8 +89,6 @@ export class SurveyValidationService {
         .andWhere('surveyvalidation.validation = :validation', {
           validation: '0',
         })
-        .andWhere('surveyvalidation.company = complete.company')
-        .andWhere('surveyvalidation.surveyid = complete.surveyid')
         .orderBy('dateversion', 'DESC')
         .offset(offset)
         .limit(take)
@@ -101,8 +98,6 @@ export class SurveyValidationService {
         .andWhere('surveyvalidation.validation = :validation', {
           validation: '0',
         })
-        .andWhere('surveyvalidation.company = complete.company')
-        .andWhere('surveyvalidation.surveyid = complete.surveyid')
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -229,7 +224,7 @@ export class SurveyValidationService {
     }
   }
 
-  async getIncompleteResponse() {
+  async getIncompleteResponse(surveyid: string, company: string) {
     try {
       const query = await this.surveyValidationRepository
         .createQueryBuilder('surveyvalidation')
@@ -242,8 +237,8 @@ export class SurveyValidationService {
         .where('surveyvalidation.validation = :validation', {
           validation: '0',
         })
-        .andWhere('surveyvalidation.company = complete.company')
-        .andWhere('surveyvalidation.surveyid = complete.surveyid')
+        .andWhere('complete.surveyid = :surveyid', { surveyid })
+        .andWhere('complete.company = :company', { company })
         .getRawMany();
 
       return query;
