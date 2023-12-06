@@ -54,7 +54,7 @@ export class MasterUserService {
 
       if (user) {
         query = query.where(
-          'LOWER(masteruser.username) LIKE :user OR LOWER(masteruser.fullname) LIKE :user LOWER(masteruser.email) LIKE :user ',
+          'LOWER(masteruser.email) LIKE :user OR LOWER(masteruser.username) LIKE :user OR LOWER(masteruser.fullname) LIKE :user ',
           { user: `%${user.toLowerCase()}%` },
         );
       }
