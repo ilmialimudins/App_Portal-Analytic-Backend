@@ -6,4 +6,14 @@ export class AddDemographyDto {
   @IsOptional()
   @IsString()
   readonly demographyalias: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

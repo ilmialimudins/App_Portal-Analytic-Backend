@@ -16,4 +16,9 @@ export class AddRoleMenuDto {
   @IsOptional()
   @IsString()
   readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

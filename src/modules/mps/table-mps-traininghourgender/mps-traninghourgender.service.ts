@@ -61,4 +61,42 @@ export class MPSTraningHourGenderService {
 
     return rows;
   }
+
+  async getTrainingHourGenderData(propertyid: number) {
+    const trainingHourGenderData = await this.getTrainingHourGender(propertyid);
+    const genderData = await this.masterMPSGenderService.getAllMPSGender();
+
+    const rows = genderData.map((gender) => {
+      let totalemployee: number | null = null;
+      let totaltraininghour: number | null = null;
+
+      const index = trainingHourGenderData.findIndex(
+        (item) => item.genderid === gender.genderid,
+      );
+
+      if (index > -1) {
+        totalemployee = trainingHourGenderData[index].totalemployee;
+        totaltraininghour = trainingHourGenderData[index].totaltraininghour;
+      }
+
+      return { label: gender.gender, totalemployee, totaltraininghour };
+    });
+
+    const columns = [
+      { title: 'Gender', dataIndex: 'gender', editable: false },
+      { title: 'Total Karyawan', dataIndex: 'totalemployee', editable: true },
+      {
+        title: 'Total Jam Pelatihan',
+        dataIndex: 'totaltraininghour',
+        editable: true,
+      },
+    ];
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: columns,
+    };
+  }
 }

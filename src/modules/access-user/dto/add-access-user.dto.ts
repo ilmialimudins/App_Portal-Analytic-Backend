@@ -16,4 +16,9 @@ export class AddAccessUserDto {
   @IsOptional()
   @IsString()
   readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

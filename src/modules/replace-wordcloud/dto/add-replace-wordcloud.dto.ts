@@ -16,4 +16,14 @@ export class AddReplaceWordcloudDto {
   @IsOptional()
   @IsString()
   readonly replace_text: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

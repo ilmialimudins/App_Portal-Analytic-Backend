@@ -173,6 +173,14 @@ export class CompanyService {
 
   async createCompany(company: AddCompanyDto) {
     try {
+      const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
+      const year = createNow.getFullYear();
+      const month = createNow.getMonth() + 1;
+      const date = createNow.getDate();
+
+      const createdDate = parseInt(`${year}${month}${date}`);
+
       const query = await this.companyRepository
         .createQueryBuilder('company')
         .insert()
@@ -193,9 +201,11 @@ export class CompanyService {
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
           remark: company.remark,
+          createdby: company.createdby,
           isdelete: 'Active',
-          createdtime: new Date(),
-          sourcecreatedmodifiedtime: new Date(),
+          createdtime: createNow,
+          createddate: createdDate,
+          sourcecreatedmodifiedtime: createNow,
         })
         .execute();
 
@@ -226,6 +236,7 @@ export class CompanyService {
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
           remark: company.remark,
+          updatedby: company.updatedby,
         })
         .where('companyid = :companyid', { companyid })
         .execute();

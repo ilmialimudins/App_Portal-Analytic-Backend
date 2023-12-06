@@ -80,4 +80,52 @@ export class MPSGenderAgeService {
 
     return { rows, masterGenders, gendersNum: masterGenders.length };
   }
+
+  async getGenderAge(propertyid: number) {
+    const masterGenders = await this.masterGenderSerivce.getAllMPSGender();
+    const masterAgeGroup = await this.masterAgeGroupRepo.find();
+
+    const genderAge = await this.getGenderAgeByProperty(propertyid);
+
+    const rows = masterAgeGroup.map((agegroup) => {
+      const newObj = masterGenders.reduce((o, key) => {
+        let val: number | null;
+
+        const index = genderAge.findIndex((item) => {
+          return (
+            item.genderid === key.genderid &&
+            item.agegroupid === agegroup.agegroupid
+          );
+        });
+
+        if (index > -1) {
+          val = genderAge[index].total;
+        } else {
+          val = null;
+        }
+        return Object.assign(o, {
+          [key.gender.toLowerCase()]: val,
+        });
+      }, {});
+      return { grade: agegroup.agegroup, ...newObj };
+    });
+
+    const columns = masterGenders.map((gender) => {
+      return {
+        title: gender.gender,
+        dataIndex: gender.gender.toLowerCase(),
+        editable: true,
+      };
+    });
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: [
+        { title: 'Umur', dataIndex: 'agegroup', editable: false },
+        ...columns,
+      ],
+    };
+  }
 }

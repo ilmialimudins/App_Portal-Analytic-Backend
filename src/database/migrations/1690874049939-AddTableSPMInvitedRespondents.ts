@@ -38,12 +38,12 @@ export class AddTableSPMInvitedRespondents1690874049939
           },
           {
             name: 'startsurvey',
-            type: 'datetime',
+            type: 'datetime2',
             isNullable: true,
           },
           {
             name: 'closesurvey',
-            type: 'datetime',
+            type: 'datetime2',
             isNullable: true,
           },
           {

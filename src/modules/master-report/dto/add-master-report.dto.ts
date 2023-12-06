@@ -26,4 +26,14 @@ export class AddMasterReportDto {
   @IsOptional()
   @IsString()
   readonly reporturl: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

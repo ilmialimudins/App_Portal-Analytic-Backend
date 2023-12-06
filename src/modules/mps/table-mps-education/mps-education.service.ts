@@ -79,4 +79,51 @@ export class MPSEducationService {
   public async getAllMasterEducation() {
     return this.masterEducationRepo.find();
   }
+
+  async getEducation(propertyid: number) {
+    const getEducation = await this.getEducationByProperty(propertyid);
+    const masterEducation = await this.getAllMasterEducation();
+    const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+    const rows = masterEducation.map((education) => {
+      const newObj = masterGender.reduce((o, key) => {
+        let val: number | null;
+
+        const index = getEducation.findIndex((item) => {
+          return (
+            item.genderid === key.genderid &&
+            item.educationid === education.educationid
+          );
+        });
+
+        if (index > -1) {
+          val = getEducation[index].total;
+        } else {
+          val = null;
+        }
+        return Object.assign(o, {
+          [key.gender.toLowerCase()]: val,
+        });
+      }, {});
+      return { education: education.education, ...newObj };
+    });
+
+    const columns = masterGender.map((gen) => {
+      return {
+        title: gen.gender,
+        dataIndex: gen.gender.toLowerCase(),
+        editable: true,
+      };
+    });
+
+    const dataSource = rows;
+
+    return {
+      dataSource: dataSource,
+      columns: [
+        { title: 'Pendidikan', dataIndex: 'education', editable: false },
+        ...columns,
+      ],
+    };
+  }
 }

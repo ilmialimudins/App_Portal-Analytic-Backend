@@ -16,4 +16,9 @@ export class AddRoleUserDto {
   @IsOptional()
   @IsString()
   readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

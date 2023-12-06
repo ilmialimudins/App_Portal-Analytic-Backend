@@ -96,4 +96,14 @@ export class UpdateValidateSurveyResultDto {
   @IsOptional()
   @IsNumber()
   readonly tahunmasuk_perusahaan: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly createdby: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  readonly updatedby: string;
 }

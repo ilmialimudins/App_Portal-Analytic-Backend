@@ -33,7 +33,7 @@ export class MasterUserController {
   async getMasterUser(
     @Query('page') page: number,
     @Query('take') take: number,
-    @Query('username') username: string,
+    @Query('user') user: string,
   ): Promise<{
     data: MasterUserDto[];
     page: number;
@@ -43,7 +43,7 @@ export class MasterUserController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.masteruserService.getAllMasterUser(page, take, username);
+    return this.masteruserService.getAllMasterUser(page, take, user);
   }
 
   @Get('/getAllUserActive')

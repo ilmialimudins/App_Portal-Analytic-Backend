@@ -176,6 +176,7 @@ export class NgramService {
           n: ngram.n,
           ngram: ngram.ngram,
           ngramfrequency: ngram.ngramfrequency,
+          updatedby: ngram.updatedby,
         })
         .where('uuid = :uuid', { uuid })
         .andWhere('ngram != :ngram', { ngram: ngram.ngram })
