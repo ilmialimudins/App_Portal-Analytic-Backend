@@ -3,13 +3,19 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
+  ParseFilePipeBuilder,
   Post,
   Query,
+  Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Response as ExpressResponse } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { DownloadMPSDTO } from './dto/download-mps.dto';
@@ -26,6 +32,11 @@ import { MPSNewEmployeePerGenderService } from '../table-mps-newemployeepergende
 import { MPSOutsourcingPerGenderService } from '../table-mps-outsourcingpergender/mps-outsourcingpergender.service';
 import { MPSTenureService } from '../master-mps-tenure/mps-tenure.service';
 import { MPSPropertyService } from './mps-property.service';
+import { CustomUploadFileValidator } from 'src/common/validator/customfiletype.validator';
+import { excelFileType } from 'src/constants/filetype';
+import diskStorage from 'src/common/utils/diskStorage';
+import { UploadMPSDTO } from './dto/upload-mps.dto';
+import { UploadMPSService } from './upload-mps.service';
 
 @ApiBearerAuth()
 @ApiTags('Man Power Statistics')
@@ -46,6 +57,7 @@ export class MPSPropertyController {
     private readonly outSourcingPerGenderService: MPSOutsourcingPerGenderService,
     private readonly tenureService: MPSTenureService,
     private readonly propertyService: MPSPropertyService,
+    private readonly uploadMPSService: UploadMPSService,
   ) {}
 
   @Get('/getAllData')
@@ -147,5 +159,33 @@ export class MPSPropertyController {
     await workbook.xlsx.write(res);
 
     res.end();
+  }
+
+  @Post('/upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Data MPS',
+    type: UploadMPSDTO,
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage(),
+    }),
+  )
+  async uploadMPSProperty(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addValidator(
+          new CustomUploadFileValidator({ fileType: excelFileType }),
+        )
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Req() request: Request,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.uploadMPSService.injectDataMPS(request.body as any);
   }
 }

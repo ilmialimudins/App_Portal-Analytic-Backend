@@ -56,7 +56,7 @@ export class PredPredictionEngagementController {
     @Body() body: DownloadPredictionBodyDTO,
   ) {
     const company = await this.masterCompanyService.getCompanyId(
-      parseInt(body.companyid),
+      body.companyid,
     );
 
     const companyName = company?.companyeesname.split(' ').join('_');

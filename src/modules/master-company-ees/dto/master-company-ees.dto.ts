@@ -31,10 +31,10 @@ export class CompanyDto extends AbstractDto {
   isdelete: string;
 
   @ApiProperty()
-  locationid: number;
+  locationid: number | null;
 
   @ApiProperty()
-  locationdesc: string;
+  locationdesc: string | null;
 
   constructor(companyEntity: Company) {
     super(companyEntity, { exludeFields: true });
@@ -48,7 +48,13 @@ export class CompanyDto extends AbstractDto {
     this.remark = companyEntity.remark;
     this.isdelete = companyEntity.isdelete;
 
-    this.locationid = companyEntity.location.locationid;
-    this.locationdesc = companyEntity.location.locationdesc;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    this.locationid = companyEntity.location
+      ? companyEntity.location.locationid
+      : null;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    this.locationdesc = companyEntity.location
+      ? companyEntity.location.locationdesc
+      : null;
   }
 }

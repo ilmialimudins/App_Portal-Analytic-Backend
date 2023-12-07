@@ -251,6 +251,7 @@ export class MasterMenuService {
       listMenuByRole = await this.concatMenuURLIsSection(listMenuByRole);
 
       const allMenu = await this.getAllMasterMenu();
+      console.log(allMenu);
       const constructMenuData = constructAllMenu(listMenuByRole, allMenu);
 
       const navbarMenu = generateNavbarMenu(

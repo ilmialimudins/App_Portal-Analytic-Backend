@@ -11,6 +11,7 @@ function toCamel(o) {
     });
   } else {
     newO = {};
+    console.log(o);
     for (origKey in o) {
       if (o.hasOwnProperty(origKey)) {
         newKey = (

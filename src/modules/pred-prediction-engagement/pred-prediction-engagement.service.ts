@@ -148,7 +148,7 @@ export class PredPredictionEngagementService {
       if (body.isAll) {
         const demographyValue =
           await this.predEngagementValueService.getDemographyValueByDemography({
-            companyid: parseInt(body.companyid),
+            companyid: body.companyid,
             demography: body.demography,
           });
 
@@ -160,7 +160,7 @@ export class PredPredictionEngagementService {
       const dataToGenerate = await Promise.all(
         body.demoraphyvalue.map(async (item) => {
           const data = await this.getDriverAndPrediction({
-            companyid: parseInt(body.companyid),
+            companyid: body.companyid,
             demography: body.demography,
             demographyvalue: item,
           });

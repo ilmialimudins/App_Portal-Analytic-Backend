@@ -276,4 +276,10 @@ export class CompanyService {
       throw error;
     }
   }
+
+  async getCompanyByName(companyname: string) {
+    return this.companyRepository.findOne({
+      where: { companympsname: companyname, isdelete: 'Active' },
+    });
+  }
 }

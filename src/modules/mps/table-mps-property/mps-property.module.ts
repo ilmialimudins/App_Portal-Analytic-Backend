@@ -16,6 +16,7 @@ import { MPSOutsourcingPerGenderModule } from '../table-mps-outsourcingpergender
 import { MPSNewEmployeePerGenderModule } from '../table-mps-newemployeepergender/mps-newemployeepergender.module';
 import { MPSTrainingHourJobGroupModule } from '../table-mps-traininghourjobgroup/mps-traininghourjobgroup.module';
 import { MPSTraningHourGenderModule } from '../table-mps-traininghourgender/mps-traninghourgender.module';
+import { UploadMPSService } from './upload-mps.service';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { MPSTraningHourGenderModule } from '../table-mps-traininghourgender/mps-
     MPSTraningHourGenderModule,
   ],
   controllers: [MPSPropertyController],
-  providers: [DownloadMPSService, MPSPropertyService],
+  providers: [DownloadMPSService, MPSPropertyService, UploadMPSService],
 })
 export class MPSPropertyModule {}
