@@ -6,7 +6,7 @@ export default function diskStorage(): multer.StorageEngine {
     filename: (req, file, cb) => {
       const fileName = file.originalname.split('.')[0];
       const fileExt = file.originalname.split('.')[1];
-      console.log('getting here');
+
       const randomName = Array(4)
         .fill(null)
         .map(() => Math.round(Math.random() * 16).toString(16))

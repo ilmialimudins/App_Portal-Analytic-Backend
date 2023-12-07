@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { TableEmployeeByGender } from './table-mps-employeebygender.entity';
 import { Repository } from 'typeorm';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { EmployeeGender } from '../table-mps-property/dto/upload-mps.dto';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSEmployeeByGenderService {
@@ -94,5 +97,68 @@ export class MPSEmployeeByGenderService {
       dataSource: dataSource,
       columns: columns,
     };
+  }
+
+  public async insertEmployeeGender(
+    employeeByGenderRepo: Repository<TableEmployeeByGender>,
+    propertyid: number,
+    data: EmployeeGender[],
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    try {
+      const now = moment(Date.now()).utcOffset('+0700');
+      const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+      const dataToInsert = data.map((item) => {
+        let genderid;
+        const indexGender = masterGender.findIndex(
+          (x) => x.gender === item.gender,
+        );
+
+        if (indexGender >= 0) genderid = masterGender[indexGender].genderid;
+
+        return {
+          propertyid: propertyid,
+          total: item.total,
+          genderid,
+          createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createddate: parseInt(now.format('YYYYMMDD')),
+          sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createdby: transactionMetadata.userinfo?.username || 'System Inject',
+        };
+      });
+
+      const created = await this.deleteRepoByProperty(
+        employeeByGenderRepo,
+        propertyid,
+      ).then(async () => {
+        return await employeeByGenderRepo
+          .createQueryBuilder()
+          .insert()
+          .values(dataToInsert)
+          .execute();
+      });
+
+      return created.raw.affectedRows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async deleteRepoByProperty(
+    repo: Repository<TableEmployeeByGender>,
+    propertyid: number,
+  ) {
+    try {
+      await repo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }

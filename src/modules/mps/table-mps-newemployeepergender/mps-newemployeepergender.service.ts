@@ -1,8 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
+import * as moment from 'moment';
 import { TableNewEmployeePerGender } from './table-mps-newemployeepergender.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { TableOutsourcingPerGender } from '../table-mps-outsourcingpergender/table-mps-outsourcingpergender.entity';
+import { TableApplicantPerGender } from '../table-mps-applicantpergender/table-mps-applicantpergender.entity';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSNewEmployeePerGenderService {
@@ -76,5 +80,84 @@ export class MPSNewEmployeePerGenderService {
       dataSource: dataSource,
       columns: columns,
     };
+  }
+
+  public async uploadDataEmployee(
+    manager: EntityManager,
+    propertyid: number,
+    data: { gender: string; total: number }[],
+    type: 'Outsource' | 'NewEmployee' | 'Applicant',
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    let repo:
+      | Repository<TableOutsourcingPerGender>
+      | Repository<TableNewEmployeePerGender>
+      | Repository<TableApplicantPerGender>;
+    let newhireid;
+
+    if (type === 'Outsource') {
+      repo = manager.getRepository(TableOutsourcingPerGender);
+      newhireid = 2;
+    } else if (type === 'NewEmployee') {
+      repo = manager.getRepository(TableNewEmployeePerGender);
+      newhireid = 1;
+    } else {
+      repo = manager.getRepository(TableApplicantPerGender);
+      newhireid = 3;
+    }
+
+    const now = moment(Date.now()).utcOffset('+0700');
+    const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+    const dataToInsert = data.map((item) => {
+      let genderid;
+      const indexGender = masterGender.findIndex(
+        (x) => x.gender === item.gender,
+      );
+
+      if (indexGender >= 0) genderid = masterGender[indexGender].genderid;
+
+      return {
+        propertyid: propertyid,
+        total: item.total,
+        genderid,
+        newhireid,
+        createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+        createddate: parseInt(now.format('YYYYMMDD')),
+        sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+        createdby: transactionMetadata.userinfo?.username || 'System Inject',
+      };
+    });
+    const created = await this.deleteRepoByProperty(repo, propertyid).then(
+      async () => {
+        return await repo
+          .createQueryBuilder()
+          .insert()
+          .values(dataToInsert)
+          .execute();
+      },
+    );
+
+    return created.raw.affectedRows;
+  }
+
+  private async deleteRepoByProperty(
+    repo:
+      | Repository<TableOutsourcingPerGender>
+      | Repository<TableNewEmployeePerGender>
+      | Repository<TableApplicantPerGender>,
+    propertyid: number,
+  ) {
+    try {
+      await repo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }

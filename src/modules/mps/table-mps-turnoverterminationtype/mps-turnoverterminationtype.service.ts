@@ -1,10 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { TableTurnOverTerminationType } from './table-mps-turnoverterminationtype.entity';
 import { Repository } from 'typeorm';
 import { MasterTerminationType } from '../master-mps-terminationtype/master-mps-terminationtype.entity';
 import { MasterGrade } from '../master-mps-grade/master-mps-grade.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { TurnOverTerminationType } from '../table-mps-property/dto/upload-mps.dto';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSTurnOverTerminationTypeService {
@@ -186,5 +189,89 @@ export class MPSTurnOverTerminationTypeService {
         ...columns,
       ],
     };
+  }
+
+  public async insertTurnOverTerminationType(
+    turnoverRepo: Repository<TableTurnOverTerminationType>,
+    propertyid: number,
+    data: TurnOverTerminationType[],
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    try {
+      const masterGrade = await this.getAllGrade();
+      const masterTerminationType = await this.getAllTurnOver();
+
+      const now = moment(Date.now()).utcOffset('+0700');
+
+      const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+      const dataToMaintain = data.map((item) => {
+        const indexGrade = masterGrade.findIndex(
+          (grade) => grade.grade === item.grade,
+        );
+        const indexTerminationType = masterTerminationType.findIndex(
+          (terminationtype) =>
+            terminationtype.terminationtype === item.terminationtype,
+        );
+        const indexGender = masterGender.findIndex(
+          (x) => x.gender === item.gender,
+        );
+
+        let gradeid;
+        let terminationtypeid;
+        let genderid;
+
+        if (indexGender >= 0) genderid = masterGender[indexGender].genderid;
+
+        if (indexGrade > -1) gradeid = masterGrade[indexGrade].gradeid;
+        if (indexTerminationType > -1)
+          terminationtypeid =
+            masterTerminationType[indexTerminationType].terminationtypeid;
+
+        return {
+          turnover: item.turnover,
+          gradeid: parseInt(gradeid),
+          terminationtypeid: parseInt(terminationtypeid),
+          propertyid: propertyid,
+          genderid,
+          createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createddate: parseInt(now.format('YYYYMMDD')),
+          sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createdby: transactionMetadata.userinfo?.username || 'System Inject',
+        };
+      });
+
+      const created = await this.deleteRepoByProperty(
+        turnoverRepo,
+        propertyid,
+      ).then(async () => {
+        return await turnoverRepo
+          .createQueryBuilder()
+          .insert()
+          .values(dataToMaintain)
+          .execute();
+      });
+
+      return created.raw.affectedRows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async deleteRepoByProperty(
+    repo: Repository<TableTurnOverTerminationType>,
+    propertyid: number,
+  ) {
+    try {
+      await repo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }

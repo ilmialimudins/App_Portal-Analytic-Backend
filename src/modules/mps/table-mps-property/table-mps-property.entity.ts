@@ -76,6 +76,9 @@ export class TableProperty extends AbstractEntity<TablePropertyDto> {
   @Column({ type: 'varchar', name: 'isdelete', nullable: true })
   isdelete: string;
 
+  @Column({ type: 'datetime', name: 'month_date', nullable: true })
+  month_date: Date;
+
   @OneToMany(
     () => TableApplicantPerGender,
     (applicantpergender) => applicantpergender.propertyid,
