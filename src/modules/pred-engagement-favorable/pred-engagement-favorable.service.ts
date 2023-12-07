@@ -132,6 +132,7 @@ export class PredEngagementFavorableService {
               count_respondent: qcode[`count_${item}`],
               question: qcode.qcode_question,
               qcode: qcode.qcode_new_qcode,
+              average_score: qcode[`sum_${item}`] / qcode[`count_${item}`],
             };
           }),
         };
