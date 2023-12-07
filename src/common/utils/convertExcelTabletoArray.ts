@@ -16,13 +16,15 @@ export const convertTableToArray = (
 
   const colIndexEnd = getIndex(range.colEnd);
 
-  const data = [];
+  const data: (string | number)[][] = [];
 
   for (let i = range.rowStart; i <= range.rowEnd; i++) {
-    const array = [];
+    const array: (string | number)[] = [];
 
     for (let j = colIndexStart; j <= colIndexEnd; j++) {
       const val = sheet.getCell(`${getExcelColumn(j, i)}`).value;
+      console.log(typeof val);
+
       array.push(val as never);
     }
     data.push(array as never);
