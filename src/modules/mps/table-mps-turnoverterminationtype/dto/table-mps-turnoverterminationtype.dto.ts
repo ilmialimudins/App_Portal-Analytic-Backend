@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { TableTurnOverTerminationType } from '../table-mps-turnoverterminationtype.entity';
+import { IsNumber, IsString } from 'class-validator';
 
 export class TableTurnOverTerminationTypeDto extends AbstractDto {
   @ApiProperty()
@@ -37,4 +38,34 @@ export class TableTurnOverTerminationTypeDto extends AbstractDto {
     this.turnover = tableTurnOverTerminationTypeEntity.turnover;
     this.isdelete = tableTurnOverTerminationTypeEntity.isdelete;
   }
+}
+
+export class MPSTurnOverTerminationTypeUpdate {
+  @ApiProperty()
+  @IsNumber()
+  companyid: number;
+
+  @ApiProperty()
+  @IsString()
+  gender: string;
+
+  @ApiProperty()
+  @IsString()
+  grade: string;
+
+  @ApiProperty()
+  @IsString()
+  terminationtype: string;
+
+  @ApiProperty()
+  @IsNumber()
+  turnover: number;
+
+  @ApiProperty()
+  @IsNumber()
+  month: number;
+
+  @ApiProperty()
+  @IsNumber()
+  year: number;
 }
