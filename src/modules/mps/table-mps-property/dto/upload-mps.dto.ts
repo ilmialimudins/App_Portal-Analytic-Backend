@@ -16,3 +16,18 @@ export class UploadBodyNameDTO {
   @IsString()
   originalFileName: string;
 }
+
+export class EducationDTO {}
+export class DataMPSDTO {
+  education: EducationDTO[];
+  genderAge: [];
+  gradeEmployee: [];
+  tenure: [];
+  turnOverTerminationType: [];
+  employeeGender: [];
+  outsourceGender: [];
+  newEmployeeGender: [];
+  applicantGender: [];
+  trainingHourJobGroup: [];
+  trainingHourGender: [];
+}

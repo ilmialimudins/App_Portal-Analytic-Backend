@@ -36,6 +36,7 @@ import { CustomUploadFileValidator } from 'src/common/validator/customfiletype.v
 import { excelFileType } from 'src/constants/filetype';
 import diskStorage from 'src/common/utils/diskStorage';
 import { UploadMPSDTO } from './dto/upload-mps.dto';
+import { UploadMPSService } from './upload-mps.service';
 
 @ApiBearerAuth()
 @ApiTags('Man Power Statistics')
@@ -56,6 +57,7 @@ export class MPSPropertyController {
     private readonly outSourcingPerGenderService: MPSOutsourcingPerGenderService,
     private readonly tenureService: MPSTenureService,
     private readonly propertyService: MPSPropertyService,
+    private readonly uploadMPSService: UploadMPSService,
   ) {}
 
   @Get('/getAllData')
@@ -183,9 +185,7 @@ export class MPSPropertyController {
     file: Express.Multer.File,
     @Req() request: Request,
   ) {
-    console.log(file);
-    console.log(request.body);
-
-    return 'jancuk';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.uploadMPSService.injectDataMPS(request.body as any);
   }
 }
