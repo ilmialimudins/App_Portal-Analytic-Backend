@@ -36,6 +36,12 @@ export class CompanyDto extends AbstractDto {
   @ApiProperty()
   locationdesc: string | null;
 
+  @ApiProperty()
+  claid?: number;
+
+  @ApiProperty()
+  directreviewid?: number;
+
   constructor(companyEntity: Company) {
     super(companyEntity, { exludeFields: true });
     this.companyid = companyEntity.companyid * 1;
@@ -56,5 +62,7 @@ export class CompanyDto extends AbstractDto {
     this.locationdesc = companyEntity.location
       ? companyEntity.location.locationdesc
       : null;
+    this.claid = companyEntity.claid;
+    this.directreviewid = companyEntity.directreviewid;
   }
 }

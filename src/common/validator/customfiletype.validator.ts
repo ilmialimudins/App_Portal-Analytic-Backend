@@ -14,7 +14,6 @@ export class CustomUploadFileValidator extends FileValidator {
   }
 
   public isValid(file: IFile): boolean | Promise<boolean> {
-    console.log('get log validation');
     return this._allowedMimeType.includes(file.mimetype);
   }
 

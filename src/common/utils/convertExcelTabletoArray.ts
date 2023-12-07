@@ -23,11 +23,11 @@ export const convertTableToArray = (
 
     for (let j = colIndexStart; j <= colIndexEnd; j++) {
       const val = sheet.getCell(`${getExcelColumn(j, i)}`).value;
-      console.log(typeof val);
-
-      array.push(val as never);
+      const parseValue =
+        typeof val === 'string' ? val.toString().trim() : (val as number) * 1;
+      array.push(parseValue);
     }
-    data.push(array as never);
+    data.push(array);
   }
 
   return data;

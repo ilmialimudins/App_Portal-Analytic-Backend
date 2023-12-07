@@ -1,12 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as moment from 'moment';
 
 import { MasterEmployeeStatus } from '../master-mps-employeestatus/master-mps-employeestatus.entity';
 import { MasterGrade } from '../master-mps-grade/master-mps-grade.entity';
 
 import { TableGradeEmployeeStatus } from './table-mps-gradeemployeestatus.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { GradeEmployee } from '../table-mps-property/dto/upload-mps.dto';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSGradeEmployeeStatusService {
@@ -155,5 +158,87 @@ export class MPSGradeEmployeeStatusService {
         ...columns,
       ],
     };
+  }
+
+  public async insertGradeEmployeeStatus(
+    gradeEmployeeRepo: Repository<TableGradeEmployeeStatus>,
+    propertyid: number,
+    data: GradeEmployee[],
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    try {
+      const masterGrade = await this.getAllGrade();
+      const masterEmployeeStatus = await this.getAllEmployeeStatus();
+
+      const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+      const now = moment(Date.now()).utcOffset('+0700');
+
+      const dataToMaintain = data.map((item) => {
+        const indexGrade = masterGrade.findIndex(
+          (grade) => grade.grade === item.grade,
+        );
+        const indexEmployeeStatus = masterEmployeeStatus.findIndex(
+          (employeestat) => employeestat.employeestatus === item.employeestatus,
+        );
+
+        const indexGender = masterGender.findIndex(
+          (x) => x.gender === item.gender,
+        );
+        let genderid;
+        let gradeid;
+        let employeestatusid;
+
+        if (indexGender >= 0) genderid = masterGender[indexGender].genderid;
+
+        if (indexGrade > -1) gradeid = masterGrade[indexGrade].gradeid;
+        if (indexEmployeeStatus > -1)
+          employeestatusid =
+            masterEmployeeStatus[indexEmployeeStatus].employeestatusid;
+
+        return {
+          total: item.total,
+          gradeid: parseInt(gradeid),
+          employeestatusid: parseInt(employeestatusid),
+          propertyid: propertyid,
+          genderid: genderid,
+          createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createddate: parseInt(now.format('YYYYMMDD')),
+          sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createdby: transactionMetadata.userinfo?.username || 'System Inject',
+        };
+      });
+
+      const created = await this.deleteRepoByProperty(
+        gradeEmployeeRepo,
+        propertyid,
+      ).then(async () => {
+        return await gradeEmployeeRepo
+          .createQueryBuilder()
+          .insert()
+          .values(dataToMaintain)
+          .execute();
+      });
+
+      return created.raw.affectedRows;
+    } catch (error) {
+      throw error;
+    }
+  }
+  private async deleteRepoByProperty(
+    gradeEmployeeRepo: Repository<TableGradeEmployeeStatus>,
+    propertyid: number,
+  ) {
+    try {
+      await gradeEmployeeRepo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }

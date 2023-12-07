@@ -37,6 +37,9 @@ import { excelFileType } from 'src/constants/filetype';
 import diskStorage from 'src/common/utils/diskStorage';
 import { UploadMPSDTO } from './dto/upload-mps.dto';
 import { UploadMPSService } from './upload-mps.service';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from 'src/modules/duende-authentication/dto/userinfo.dto';
+import { DeleteFileInterceptor } from 'src/interceptors/delete-file-mps.interceptor';
 
 @ApiBearerAuth()
 @ApiTags('Man Power Statistics')
@@ -140,7 +143,6 @@ export class MPSPropertyController {
     @Body() data: DownloadMPSDTO,
     @Res() res: ExpressResponse,
   ) {
-    console.log('get here');
     const { workbook, sheetMetadata } =
       await this.downloadMPSService.downloadMPS(data);
 
@@ -172,6 +174,7 @@ export class MPSPropertyController {
       storage: diskStorage(),
     }),
   )
+  @UseInterceptors(DeleteFileInterceptor)
   async uploadMPSProperty(
     @UploadedFile(
       new ParseFilePipeBuilder()
@@ -184,8 +187,10 @@ export class MPSPropertyController {
     )
     file: Express.Multer.File,
     @Req() request: Request,
+
+    @UserInfo() user: UserInfoDTO,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return this.uploadMPSService.injectDataMPS(request.body as any);
+    return this.uploadMPSService.injectDataMPS(request.body as any, user);
   }
 }

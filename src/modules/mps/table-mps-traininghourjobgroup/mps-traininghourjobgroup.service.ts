@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TableTrainingHourJobGroup } from './table-mps-traininghourjobgroup.entity';
 import { Repository } from 'typeorm';
+import * as moment from 'moment';
+import { TableTrainingHourJobGroup } from './table-mps-traininghourjobgroup.entity';
 import { MasterJobGroup } from '../master-mps-jobgroup/master-mps-jobgroup.entity';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSTraningHourJobGroupService {
@@ -108,5 +110,66 @@ export class MPSTraningHourJobGroupService {
       dataSource: dataSource,
       columns: columns,
     };
+  }
+
+  public async uploadDataTrainingJobGroup(
+    trainingHourJobGroupRepo: Repository<TableTrainingHourJobGroup>,
+    propertyid: number,
+    data: { jobgroup: string; totalemployee: number; totaltraining: number }[],
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    const now = moment(Date.now()).utcOffset('+0700');
+    const masterJobgroup = await this.findJobGroup();
+
+    const dataToInsert = data.map((item) => {
+      let jobgroupid;
+      const indexJobgroup = masterJobgroup.findIndex(
+        (x) => x.jobgroup === item.jobgroup,
+      );
+
+      if (indexJobgroup >= 0)
+        jobgroupid = masterJobgroup[indexJobgroup].jobgroupid;
+
+      return {
+        propertyid: propertyid,
+        totalemployee: item.totalemployee,
+        totaltraininghour: item.totaltraining,
+        jobgroupid,
+        createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+        createddate: parseInt(now.format('YYYYMMDD')),
+        sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+        createdby: transactionMetadata.userinfo?.username || 'System Inject',
+      };
+    });
+
+    const created = await this.deleteRepoByProperty(
+      trainingHourJobGroupRepo,
+      propertyid,
+    ).then(async () => {
+      return await trainingHourJobGroupRepo
+        .createQueryBuilder()
+        .insert()
+        .values(dataToInsert)
+        .execute();
+    });
+
+    return created.raw.affectedRows;
+  }
+
+  private async deleteRepoByProperty(
+    repo: Repository<TableTrainingHourJobGroup>,
+    propertyid: number,
+  ) {
+    try {
+      await repo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }

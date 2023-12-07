@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { TableTenure } from '../table-mps-tenure/table-mps-tenure.entity';
 import { Repository } from 'typeorm';
 import { MasterTenure } from './master-mps-tenure.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { Tenure } from '../table-mps-property/dto/upload-mps.dto';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSTenureService {
@@ -120,5 +123,74 @@ export class MPSTenureService {
         ...columns,
       ],
     };
+  }
+
+  public async insertTenure(
+    tenureRepo: Repository<TableTenure>,
+    propertyid: number,
+    data: Tenure[],
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    try {
+      const masterTenure = await this.getAllMasterTenure();
+
+      const now = moment(Date.now()).utcOffset('+0700');
+      const masterGender = await this.masterGenderSerivce.getAllMPSGender();
+
+      const dataToInsert = data.map((item) => {
+        let tenureid;
+        let genderid;
+        const index = masterTenure.findIndex((x) => x.tenure === item.tenure);
+        const indexGender = masterGender.findIndex(
+          (x) => x.gender === item.gender,
+        );
+
+        if (index >= 0) tenureid = masterTenure[index].tenureid;
+
+        if (indexGender >= 0) genderid = masterGender[indexGender].genderid;
+
+        return {
+          propertyid: propertyid,
+          tenureid: tenureid,
+          total: item.total,
+          genderid,
+          createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createddate: parseInt(now.format('YYYYMMDD')),
+          sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createdby: transactionMetadata.userinfo?.username || 'System Inject',
+        };
+      });
+
+      const created = await this.deleteRepoByProperty(
+        tenureRepo,
+        propertyid,
+      ).then(async () => {
+        return await tenureRepo
+          .createQueryBuilder()
+          .insert()
+          .values(dataToInsert)
+          .execute();
+      });
+
+      return created.raw.affectedRows;
+    } catch (error) {
+      throw error;
+    }
+  }
+  private async deleteRepoByProperty(
+    repo: Repository<TableTenure>,
+    propertyid: number,
+  ) {
+    try {
+      await repo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }

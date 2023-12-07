@@ -5,6 +5,9 @@ import { MasterEducation } from '../master-mps-education/master-mps-education.en
 import { Repository } from 'typeorm';
 
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import * as moment from 'moment';
+import { Education } from '../table-mps-property/dto/upload-mps.dto';
+import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
 @Injectable()
 export class MPSEducationService {
@@ -125,5 +128,78 @@ export class MPSEducationService {
         ...columns,
       ],
     };
+  }
+
+  public async insertEducation(
+    repo: Repository<TableEducation>,
+    propertyid: number,
+    data: Education[],
+    transactionMetadata: ITransactionMetadata,
+  ) {
+    try {
+      const masterEducation = await this.getAllMasterEducation();
+
+      const masterGender = await this.masterMPSGenderService.getAllMPSGender();
+
+      const now = moment(Date.now()).utcOffset('+0700');
+
+      const dataToInsert = data.map((item) => {
+        let educationid;
+        let genderid;
+        const index = masterEducation.findIndex(
+          (x) => x.education === item.education,
+        );
+
+        const indexGender = masterGender.findIndex(
+          (x) => x.gender === item.gender,
+        );
+
+        if (indexGender >= 0) genderid = masterGender[indexGender].genderid;
+
+        if (index >= 0) educationid = masterEducation[index].educationid;
+
+        return {
+          propertyid: propertyid,
+          educationid: educationid,
+          genderid: genderid,
+          total: item.total,
+          createdtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createddate: parseInt(now.format('YYYYMMDD')),
+          sourcecreatedmodifiedtime: now.format('YYYY-MM-DD HH:mm:ss'),
+          createdby: transactionMetadata.userinfo?.username || 'System Inject',
+        };
+      });
+
+      const created = await this.deleteByPropertyRepo(repo, propertyid).then(
+        async () => {
+          return await repo
+            .createQueryBuilder()
+            .insert()
+            .values(dataToInsert)
+            .execute();
+        },
+      );
+
+      return created.raw.affectedRows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async deleteByPropertyRepo(
+    repo: Repository<TableEducation>,
+    propertyid: number,
+  ) {
+    try {
+      await repo
+        .createQueryBuilder()
+        .delete()
+        .where('propertyid = :propertyid', { propertyid })
+        .execute();
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }
