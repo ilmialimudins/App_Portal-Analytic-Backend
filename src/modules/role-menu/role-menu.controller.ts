@@ -14,6 +14,7 @@ import { RoleMenuService } from './role-menu.service';
 import { RoleMenuDto } from './dto/role-menu.dto';
 import { AddRoleMenuDto } from './dto/add-role-menu.dto';
 import { UpdateRoleMenuDto } from './dto/update-role-menu.dto';
+import { GetRoleMenuDTO } from './dto/get-rolemenu-active.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -55,5 +56,11 @@ export class RoleMenuController {
   @ApiCreatedResponse({ type: RoleMenuDto })
   async deleteRoleMenu(@Query('rolemenuid') rolemenuid: number) {
     return this.roleMenuService.deleteRoleMenu(rolemenuid);
+  }
+
+  @Get('/get-rolemenu-active')
+  async getRoleMenuActive(@Query() query: GetRoleMenuDTO) {
+    return this.roleMenuService.getAllMenuActiveByRole(query.roleid);
+    // return query;
   }
 }
