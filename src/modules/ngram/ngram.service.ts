@@ -12,7 +12,7 @@ export class NgramService {
     private NgramRepository: Repository<Ngram>,
   ) {}
 
-  async getAllNgram(
+  async getAllNgramFOR(
     page: number,
     take: number,
     year: number,
@@ -67,6 +67,7 @@ export class NgramService {
       }
 
       const data = await query
+        .andWhere('ngram.qcode = 134')
         .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
         .orderBy('tahun_survey', 'DESC')
         .offset(offset)
@@ -74,6 +75,92 @@ export class NgramService {
         .getRawMany();
 
       const itemCount = await query
+        .andWhere('ngram.qcode = 134')
+        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .getCount();
+
+      const pageCount = Math.ceil(itemCount / take);
+      const hasPreviousPage = page > 1;
+      const hasNextPage = page < pageCount;
+
+      return {
+        data,
+        page,
+        take,
+        itemCount,
+        pageCount,
+        hasPreviousPage,
+        hasNextPage,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllNgramUOR(
+    page: number,
+    take: number,
+    year: number,
+    companyid: number,
+    wordid: number,
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    try {
+      const offset = (page - 1) * take;
+
+      let query = this.NgramRepository.createQueryBuilder('ngram')
+        .leftJoin('ngram.company', 'company')
+        .leftJoin('ngram.word', 'word')
+        .leftJoin('ngram.qcode', 'qcode')
+        .select([
+          'id',
+          'uuid',
+          'company.companyid',
+          'qcode.qcodeid',
+          'word.wordid',
+          'qcode.qcode',
+          'word.word',
+          'ngram.n',
+          'ngram.ngram',
+          'ngram.ngramfrequency',
+          'company.companyeesname',
+          'ngram.tahun_survey',
+        ]);
+
+      if (year && companyid && wordid) {
+        query = query
+          .where('company.companyid = :companyid', { companyid })
+          .andWhere('ngram.tahun_survey = :year', { year })
+          .andWhere('word.wordid = :wordid', { wordid });
+      } else if (year && companyid) {
+        query = query
+          .where('company.companyid = :companyid', { companyid })
+          .andWhere('ngram.tahun_survey = :year', { year });
+      } else if (year) {
+        query = query.where('ngram.tahun_survey = :year', { year });
+      } else if (companyid) {
+        query = query.where('company.companyid = :companyid', { companyid });
+      } else if (wordid) {
+        query = query.where('word.wordid = :wordid', { wordid });
+      }
+
+      const data = await query
+        .andWhere('ngram.qcode = 90')
+        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .orderBy('tahun_survey', 'DESC')
+        .offset(offset)
+        .limit(take)
+        .getRawMany();
+
+      const itemCount = await query
+        .andWhere('ngram.qcode = 90')
         .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
         .getCount();
 

@@ -20,9 +20,9 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 export class NgramController {
   constructor(private ngramService: NgramService) {}
 
-  @Get('/')
+  @Get('/ngramFOR')
   @ApiOkResponse({ type: NgramDto })
-  async getAllNgram(
+  async getAllNgramFOR(
     @Query('page') page: number,
     @Query('take') take: number,
     @Query('year') year: number,
@@ -37,7 +37,39 @@ export class NgramController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.ngramService.getAllNgram(page, take, year, companyid, wordid);
+    return this.ngramService.getAllNgramFOR(
+      page,
+      take,
+      year,
+      companyid,
+      wordid,
+    );
+  }
+
+  @Get('/ngramUOR')
+  @ApiOkResponse({ type: NgramDto })
+  async getAllNgramUOR(
+    @Query('page') page: number,
+    @Query('take') take: number,
+    @Query('year') year: number,
+    @Query('company') companyid: number,
+    @Query('word') wordid: number,
+  ): Promise<{
+    data: NgramDto[];
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> {
+    return this.ngramService.getAllNgramUOR(
+      page,
+      take,
+      year,
+      companyid,
+      wordid,
+    );
   }
 
   @Get('/getNgramId')
