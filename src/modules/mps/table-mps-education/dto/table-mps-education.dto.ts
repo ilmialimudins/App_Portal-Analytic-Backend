@@ -35,10 +35,6 @@ export class TableEducationDto extends AbstractDto {
 
 export class MPSEducationUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   education: string;
 
@@ -49,12 +45,4 @@ export class MPSEducationUpdate {
   @ApiProperty()
   @IsNumber()
   total: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

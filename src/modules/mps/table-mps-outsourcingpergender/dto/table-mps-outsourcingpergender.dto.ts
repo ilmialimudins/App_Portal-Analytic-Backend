@@ -35,26 +35,10 @@ export class TableOutsourcingPerGenderDto extends AbstractDto {
 
 export class MPSOutSourcingPerGenderUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
-  @IsString()
-  newhire: string;
-
-  @ApiProperty()
   @IsString()
   gender: string;
 
   @ApiProperty()
   @IsNumber()
   total: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

@@ -35,10 +35,6 @@ export class TableGenderAgeDto extends AbstractDto {
 
 export class MPSGenderAgeUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   agegroup: string;
 
@@ -49,12 +45,4 @@ export class MPSGenderAgeUpdate {
   @ApiProperty()
   @IsNumber()
   total: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

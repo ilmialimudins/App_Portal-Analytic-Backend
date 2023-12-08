@@ -35,10 +35,6 @@ export class TableTrainingHourJobGroupDto extends AbstractDto {
 
 export class MPSTrainingHourJobGroupUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   jobgroup: string;
 
@@ -49,12 +45,4 @@ export class MPSTrainingHourJobGroupUpdate {
   @ApiProperty()
   @IsNumber()
   totaltraininghour: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

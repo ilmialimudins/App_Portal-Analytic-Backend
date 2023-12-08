@@ -1,7 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { TableProperty } from '../table-mps-property.entity';
-import { IsNumber, IsOptional } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsDefined,
+  IsNotEmptyObject,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
 import { MPSGradeEmployeeStatusUpdate } from '../../table-mps-gradeemployeestatus/dto/table-mps-gradeemployeestatus.dto';
 import { MPSEmployeeByGenderUpdate } from '../../table-mps-employeebygender/dto/table-mps-employeebygender.dto';
 import { MPSOutSourcingPerGenderUpdate } from '../../table-mps-outsourcingpergender/dto/table-mps-outsourcingpergender.dto';
@@ -13,6 +22,7 @@ import { MPSEducationUpdate } from '../../table-mps-education/dto/table-mps-educ
 import { MPSGenderAgeUpdate } from '../../table-mps-genderage/dto/table-mps-genderage.dto';
 import { MPSTrainingHourGenderUpdate } from '../../table-mps-traininghourgender/dto/table-mps-traininghourgender.dto';
 import { MPSTrainingHourJobGroupUpdate } from '../../table-mps-traininghourjobgroup/dto/table-mps-traininghourjobgroup.dto';
+import { Type } from 'class-transformer';
 
 export class TablePropertyDto extends AbstractDto {
   @ApiProperty()
@@ -70,11 +80,6 @@ export class MPSPropertyBody {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
   businessgroupid: number;
 
   @ApiProperty()
@@ -96,6 +101,101 @@ export class MPSPropertyBody {
   @IsOptional()
   @IsNumber()
   locationid: number;
+}
+
+export class UpdateAllDto {
+  @ApiProperty({ type: () => GetOneProperty })
+  @IsObject()
+  @IsDefined()
+  @IsNotEmptyObject()
+  @Type(() => GetOneProperty)
+  @ValidateNested()
+  getOne: GetOneProperty;
+
+  @ApiProperty({ type: () => MPSPropertyBody })
+  @IsObject()
+  @IsDefined()
+  @IsNotEmptyObject()
+  @Type(() => MPSPropertyBody)
+  @ValidateNested()
+  params: MPSPropertyBody;
+
+  @ApiProperty({ type: () => [MPSGradeEmployeeStatusUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSGradeEmployeeStatusUpdate)
+  @ValidateNested({ each: true })
+  gradeemployeestatus: MPSGradeEmployeeStatusUpdate[];
+
+  @ApiProperty({ type: () => [MPSGenderAgeUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSGenderAgeUpdate)
+  @ValidateNested({ each: true })
+  genderage: MPSGenderAgeUpdate[];
+
+  @ApiProperty({ type: () => [MPSOutSourcingPerGenderUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSOutSourcingPerGenderUpdate)
+  @ValidateNested({ each: true })
+  outsourcingpergender: MPSOutSourcingPerGenderUpdate[];
+
+  @ApiProperty({ type: () => [MPSNewEmployeePerGenderUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSNewEmployeePerGenderUpdate)
+  @ValidateNested({ each: true })
+  newemployeepergender: MPSNewEmployeePerGenderUpdate[];
+
+  @ApiProperty({ type: () => [MPSApplicantPerGenderUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSApplicantPerGenderUpdate)
+  @ValidateNested({ each: true })
+  applicantpergender: MPSApplicantPerGenderUpdate[];
+
+  @ApiProperty({ type: () => [MPSTurnOverTerminationTypeUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSTurnOverTerminationTypeUpdate)
+  @ValidateNested({ each: true })
+  turnovertermintationtype: MPSTurnOverTerminationTypeUpdate[];
+
+  @ApiProperty({ type: () => [MPSTenureUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSTenureUpdate)
+  @ValidateNested({ each: true })
+  tenure: MPSTenureUpdate[];
+
+  @ApiProperty({ type: () => [MPSEducationUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSEducationUpdate)
+  @ValidateNested({ each: true })
+  education: MPSEducationUpdate[];
+
+  @ApiProperty({ type: () => [MPSEmployeeByGenderUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSEmployeeByGenderUpdate)
+  @ValidateNested({ each: true })
+  employeebygender: MPSEmployeeByGenderUpdate[];
+
+  @ApiProperty({ type: () => [MPSTrainingHourGenderUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSTrainingHourGenderUpdate)
+  @ValidateNested({ each: true })
+  traininghourgender: MPSTrainingHourGenderUpdate[];
+
+  @ApiProperty({ type: () => [MPSTrainingHourJobGroupUpdate] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => MPSTrainingHourJobGroupUpdate)
+  @ValidateNested({ each: true })
+  traininghourjobgroup: MPSTrainingHourJobGroupUpdate[];
 }
 
 export class MPSUpdateAll {

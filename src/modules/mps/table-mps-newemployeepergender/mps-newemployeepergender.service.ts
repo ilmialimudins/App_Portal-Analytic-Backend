@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import * as moment from 'moment';
@@ -7,6 +7,7 @@ import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.s
 import { TableOutsourcingPerGender } from '../table-mps-outsourcingpergender/table-mps-outsourcingpergender.entity';
 import { TableApplicantPerGender } from '../table-mps-applicantpergender/table-mps-applicantpergender.entity';
 import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
+import { MPSNewEmployeePerGenderUpdate } from './dto/table-mps-newemployeepergender.dto';
 
 @Injectable()
 export class MPSNewEmployeePerGenderService {
@@ -156,6 +157,46 @@ export class MPSNewEmployeePerGenderService {
         .execute();
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateNewEmployeePerGender(
+    propertyid: number,
+    body: MPSNewEmployeePerGenderUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.newEmployeePerGenderRepository
+            .createQueryBuilder('newemployeepergender')
+            .leftJoin('newemployeepergender.newhire', 'newhire')
+            .leftJoin('newemployeepergender.gender', 'gender')
+            .select(['newemployeepergender.id as id'])
+            .where('newemployeepergender.propertyid = :propertyid', {
+              propertyid,
+            })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table new employee per gender, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.newEmployeePerGenderRepository
+            .createQueryBuilder()
+            .update(TableNewEmployeePerGender)
+            .set({ total: item.total })
+            .where('id = :id', { id: record.id })
+            .execute();
+
+          return updateData;
+        }),
+      );
+      return query;
     } catch (error) {
       throw error;
     }

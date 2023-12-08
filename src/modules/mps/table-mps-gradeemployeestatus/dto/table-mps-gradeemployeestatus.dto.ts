@@ -39,10 +39,6 @@ export class TableGradeEmployeeStatusDto extends AbstractDto {
 
 export class MPSGradeEmployeeStatusUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   grade: string;
 
@@ -57,12 +53,4 @@ export class MPSGradeEmployeeStatusUpdate {
   @ApiProperty()
   @IsNumber()
   total: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

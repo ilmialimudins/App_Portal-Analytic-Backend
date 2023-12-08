@@ -35,10 +35,6 @@ export class TableTenureDto extends AbstractDto {
 
 export class MPSTenureUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   tenure: string;
 
@@ -49,12 +45,4 @@ export class MPSTenureUpdate {
   @ApiProperty()
   @IsNumber()
   total: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

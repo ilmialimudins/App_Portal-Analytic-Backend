@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
 import { TableTurnOverTerminationType } from './table-mps-turnoverterminationtype.entity';
@@ -8,6 +8,7 @@ import { MasterGrade } from '../master-mps-grade/master-mps-grade.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
 import { TurnOverTerminationType } from '../table-mps-property/dto/upload-mps.dto';
 import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
+import { MPSTurnOverTerminationTypeUpdate } from './dto/table-mps-turnoverterminationtype.dto';
 
 @Injectable()
 export class MPSTurnOverTerminationTypeService {
@@ -270,6 +271,54 @@ export class MPSTurnOverTerminationTypeService {
         .execute();
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateTurnOverTerminationType(
+    propertyid: number,
+    body: MPSTurnOverTerminationTypeUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.turnOverRepo
+            .createQueryBuilder('turnoverterminationtype')
+            .leftJoin(
+              'turnoverterminationtype.terminationtype',
+              'terminationtype',
+            )
+            .leftJoin('turnoverterminationtype.grade', 'grade')
+            .leftJoin('turnoverterminationtype.gender', 'gender')
+            .select(['turnoverterminationtype.id as id'])
+            .where('turnoverterminationtype.propertyid = :propertyid', {
+              propertyid,
+            })
+            .andWhere('grade.grade = :grade', { grade: item.grade })
+            .andWhere('terminationtype.terminationtype = :terminationtype', {
+              terminationtype: item.terminationtype,
+            })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table turn over termination type , please upload from UI first',
+            );
+          }
+
+          const updateData = await this.turnOverRepo
+            .createQueryBuilder()
+            .update(TableTurnOverTerminationType)
+            .set({ turnover: item.turnover })
+            .where('id = :id', { id: record.id })
+            .execute();
+
+          return updateData;
+        }),
+      );
+      return query;
     } catch (error) {
       throw error;
     }

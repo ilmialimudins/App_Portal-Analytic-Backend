@@ -1,8 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TableApplicantPerGender } from './table-mps-applicantpergender.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { MPSApplicantPerGenderUpdate } from './dto/table-mps-applicantpergender.dto';
 
 @Injectable()
 export class MPSApplicantPerGenderService {
@@ -70,5 +71,45 @@ export class MPSApplicantPerGenderService {
       dataSource: dataSource,
       columns: columns,
     };
+  }
+
+  async updateApplicantPerGender(
+    propertyid: number,
+    body: MPSApplicantPerGenderUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.applicantPerGenderRepository
+            .createQueryBuilder('applicantpergender')
+            .leftJoin('applicantpergender.newhire', 'newhire')
+            .leftJoin('applicantpergender.gender', 'gender')
+            .select(['applicantpergender.id as id'])
+            .where('applicantpergender.propertyid = :propertyid', {
+              propertyid,
+            })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table applicant gender, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.applicantPerGenderRepository
+            .createQueryBuilder()
+            .update(TableApplicantPerGender)
+            .set({ total: item.total })
+            .where('id = :id', { id: record.id })
+            .execute();
+
+          return updateData;
+        }),
+      );
+      return query;
+    } catch (error) {
+      throw error;
+    }
   }
 }

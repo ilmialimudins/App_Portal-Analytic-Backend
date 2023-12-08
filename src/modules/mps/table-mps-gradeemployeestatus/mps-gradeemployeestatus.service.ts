@@ -255,14 +255,12 @@ export class MPSGradeEmployeeStatusService {
             .leftJoin('gradeemployeestatus.grade', 'grade')
             .leftJoin('gradeemployeestatus.gender', 'gender')
             .leftJoin('gradeemployeestatus.employeestatus', 'employeestatus')
-            .select([
-              'gradeemployeestatus.gradeemployeestatusid as gradeemployeestatusid',
-            ])
+            .select(['gradeemployeestatus.id as id'])
             .where('gradeemployeestatus.propertyid = :propertyid', {
               propertyid,
             })
             .andWhere('grade.grade = :grade', { grade: item.grade })
-            .andWhere('employeestatus.employesstatus = :employeestatus', {
+            .andWhere('employeestatus.employeestatus = :employeestatus', {
               employeestatus: item.employeestatus,
             })
             .andWhere('gender.gender = :gender', { gender: item.gender })
@@ -270,7 +268,7 @@ export class MPSGradeEmployeeStatusService {
 
           if (!record) {
             throw new BadRequestException(
-              'Some record is missing in table grade employee, please upload from UI first',
+              'Some record is missing in table grade employee status, please upload from UI first',
             );
           }
 
@@ -280,8 +278,8 @@ export class MPSGradeEmployeeStatusService {
             .set({
               total: item.total,
             })
-            .where('gradeemployeestatusid = :grademployeestatusid', {
-              gradeemployeestatusid: record.gradeemployeestatusid,
+            .where('id = :id', {
+              id: record.id,
             })
             .execute();
 

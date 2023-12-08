@@ -42,10 +42,6 @@ export class TableTurnOverTerminationTypeDto extends AbstractDto {
 
 export class MPSTurnOverTerminationTypeUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   gender: string;
 
@@ -60,12 +56,4 @@ export class MPSTurnOverTerminationTypeUpdate {
   @ApiProperty()
   @IsNumber()
   turnover: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }

@@ -35,10 +35,6 @@ export class TableTrainingHourGenderDto extends AbstractDto {
 
 export class MPSTrainingHourGenderUpdate {
   @ApiProperty()
-  @IsNumber()
-  companyid: number;
-
-  @ApiProperty()
   @IsString()
   gender: string;
 
@@ -49,12 +45,4 @@ export class MPSTrainingHourGenderUpdate {
   @ApiProperty()
   @IsNumber()
   totaltraininghour: number;
-
-  @ApiProperty()
-  @IsNumber()
-  month: number;
-
-  @ApiProperty()
-  @IsNumber()
-  year: number;
 }
