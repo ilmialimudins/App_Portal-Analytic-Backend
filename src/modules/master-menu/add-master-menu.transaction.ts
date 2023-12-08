@@ -33,8 +33,6 @@ export class AddMasterMenuTransaction extends BaseTransaction<
     });
     const newMenu = await masterMenuRepo.save(masterMenu);
 
-    console.log(this.metadata);
-
     if (data.issection && data.reportid && data.sectionid) {
       const mappingMenuReportRepo = manager.getRepository(MappingMenuReport);
 
