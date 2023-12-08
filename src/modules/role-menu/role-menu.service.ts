@@ -1,16 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleMenu } from './role-menu.entity';
 import { In, Repository } from 'typeorm';
 import { AddRoleMenuDto } from './dto/add-role-menu.dto';
 import { UpdateRoleMenuDto } from './dto/update-role-menu.dto';
 import { RoleMenuDto } from './dto/role-menu.dto';
+import { MasterMenuService } from '../master-menu/master-menu.service';
+import { ListMenuDTO } from '../master-menu/dto/maintain-mastermenu.dto';
+import { DataRoleMenuActiveDTO } from './dto/get-rolemenu-active.dto';
 
 @Injectable()
 export class RoleMenuService {
   constructor(
     @InjectRepository(RoleMenu)
     private roleMenuRepository: Repository<RoleMenu>,
+
+    @Inject(forwardRef(() => MasterMenuService))
+    private masterMenuService: MasterMenuService,
   ) {}
 
   async getAllRoleMenu() {
@@ -125,9 +131,9 @@ export class RoleMenuService {
     }
   }
 
-  async getMenuByListRole(rolelist: string[]) {
+  async getMenuByListRole(rolelist: string[], roleids?: number[]) {
     try {
-      const result = await this.roleMenuRepository
+      const query = this.roleMenuRepository
         .createQueryBuilder('rolemenu')
         .select([
           'DISTINCT mastermenu.menuid as menuid',
@@ -138,10 +144,19 @@ export class RoleMenuService {
           'mastermenu.url as url',
         ])
         .leftJoin('rolemenu.masterrole', 'masterrole')
-        .leftJoin('rolemenu.mastermenu', 'mastermenu')
-        .where('masterrole.rolename IN (:...roleNames)', {
+        .leftJoin('rolemenu.mastermenu', 'mastermenu');
+
+      if (roleids?.length) {
+        query.where('masterrole.roleid IN (:...roleids)', {
+          roleids: roleids,
+        });
+      } else {
+        query.where('masterrole.rolename IN (:...roleNames)', {
           roleNames: rolelist,
-        })
+        });
+      }
+
+      const result = await query
         .orderBy('mastermenu.sequence', 'ASC')
         .addOrderBy('parentid', 'ASC')
         .addOrderBy('menuid', 'ASC')
@@ -151,5 +166,46 @@ export class RoleMenuService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async getAllMenuActiveByRole(roleid: number) {
+    const getAllMenu = await this.masterMenuService.getAllMasterMenu();
+    const getRoleMenu = await this.getMenuByListRole([], [roleid]);
+
+    const generateDataMantainRoleMenu = (
+      ListMenuDTO: ListMenuDTO[],
+      AvailableRoleMenu: ListMenuDTO[],
+      parent: number,
+    ) => {
+      const filteredRole = ListMenuDTO.filter(
+        (menu) => menu.parentid == parent,
+      );
+      const result: DataRoleMenuActiveDTO[] = [];
+
+      for (const item of filteredRole) {
+        const childrenMenu = generateDataMantainRoleMenu(
+          ListMenuDTO,
+          AvailableRoleMenu,
+          item.menuid,
+        );
+
+        const isactive = AvailableRoleMenu.some(
+          (role) => role.menuid === item.menuid,
+        );
+        result.push({
+          menuid: item.menuid,
+          menuname: item.menuname,
+          url: item.url ?? '',
+          isactive,
+          children: childrenMenu,
+        });
+      }
+
+      return result;
+    };
+
+    const data = generateDataMantainRoleMenu(getAllMenu, getRoleMenu, 0);
+
+    return data;
   }
 }

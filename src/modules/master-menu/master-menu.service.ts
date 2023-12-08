@@ -7,7 +7,7 @@ import { AddMasterMenuDto } from './dto/add-master-menu.dto';
 import { UpdateMasterMenuDto } from './dto/update-master-menu.dto';
 import { MasterUserService } from '../master-user/master-user.service';
 import { NavbarMenuDTO } from './dto/navbar-menu.dto';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, forwardRef } from '@nestjs/common';
 import {
   constructAllMenu,
   generateNavbarMenu,
@@ -29,7 +29,7 @@ export class MasterMenuService {
     @Inject(MasterUserService)
     private masterUserService: MasterUserService,
 
-    @Inject(RoleMenuService)
+    @Inject(forwardRef(() => RoleMenuService))
     private roleMenuService: RoleMenuService,
 
     @Inject(RoleUserService)

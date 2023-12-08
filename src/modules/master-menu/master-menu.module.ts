@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MasterMenu } from './master-menu.entity';
 import { MasterMenuService } from './master-menu.service';
@@ -12,7 +12,7 @@ import { EditMasterMenuTransaction } from './edit-master-menu.transaction';
 @Module({
   imports: [
     TypeOrmModule.forFeature([MasterMenu]),
-    RoleMenuModule,
+    forwardRef(() => RoleMenuModule),
     RoleUserModule,
     MappingMenuReportModule,
   ],
@@ -22,5 +22,6 @@ import { EditMasterMenuTransaction } from './edit-master-menu.transaction';
     EditMasterMenuTransaction,
   ],
   controllers: [MasterMenuController],
+  exports: [MasterMenuService],
 })
 export class MasterMenuModule {}

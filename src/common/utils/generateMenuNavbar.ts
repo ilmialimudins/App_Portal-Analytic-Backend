@@ -15,7 +15,7 @@ const generateNavbarMenu = (listmenu: ListMenuDTO[], parent: number) => {
     result.push({
       label: item.menuname,
       sequence: item.sequence,
-      url: item.url || '',
+      url: item.url ?? '',
       children: childrenMenu,
     });
   }
