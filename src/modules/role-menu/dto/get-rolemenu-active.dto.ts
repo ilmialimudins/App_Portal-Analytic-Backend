@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsInt, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsInt, IsNumber, IsString } from 'class-validator';
 
 export class GetRoleMenuDTO {
   @ApiProperty()
@@ -26,6 +26,8 @@ export class DataRoleMenuActiveDTO {
   @IsBoolean()
   isactive: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => [DataRoleMenuActiveDTO] })
+  @IsArray()
+  @Type(() => DataRoleMenuActiveDTO)
   children: DataRoleMenuActiveDTO[];
 }

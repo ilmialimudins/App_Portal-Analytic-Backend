@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RoleMenu } from './role-menu.entity';
 import { In, Repository } from 'typeorm';
 import { AddRoleMenuDto } from './dto/add-role-menu.dto';
-import { UpdateRoleMenuDto } from './dto/update-role-menu.dto';
+import { TransactionMaintainRoleMenuDTO } from './dto/update-role-menu.dto';
 import { RoleMenuDto } from './dto/role-menu.dto';
 import { MasterMenuService } from '../master-menu/master-menu.service';
 import { ListMenuDTO } from '../master-menu/dto/maintain-mastermenu.dto';
 import { DataRoleMenuActiveDTO } from './dto/get-rolemenu-active.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { MaintainRoleMenuTransaction } from './maintain-rolemenu.transaction';
 
 @Injectable()
 export class RoleMenuService {
@@ -17,6 +19,9 @@ export class RoleMenuService {
 
     @Inject(forwardRef(() => MasterMenuService))
     private masterMenuService: MasterMenuService,
+
+    @Inject(MaintainRoleMenuTransaction)
+    private maintainMenuTransaction: MaintainRoleMenuTransaction,
   ) {}
 
   async getAllRoleMenu() {
@@ -85,20 +90,12 @@ export class RoleMenuService {
     }
   }
 
-  async updateRoleMenu(rolemenuid: number, rolemenu: UpdateRoleMenuDto) {
+  async updateRoleMenu(
+    data: TransactionMaintainRoleMenuDTO,
+    userinfo: UserInfoDTO,
+  ) {
     try {
-      const query = await this.roleMenuRepository
-        .createQueryBuilder()
-        .update(RoleMenu)
-        .set({
-          roleid: rolemenu.roleid,
-          menuid: rolemenu.menuid,
-          updatedby: rolemenu.updatedby,
-        })
-        .where('rolemenuid = :rolemenuid', { rolemenuid })
-        .execute();
-
-      return query;
+      return this.maintainMenuTransaction.setMetadata({ userinfo }).run(data);
     } catch (error) {
       throw error;
     }
@@ -193,7 +190,10 @@ export class RoleMenuService {
           (role) => role.menuid === item.menuid,
         );
         result.push({
-          menuid: item.menuid,
+          menuid:
+            typeof item.menuid === 'string'
+              ? parseInt(item.menuid)
+              : item.menuid,
           menuname: item.menuname,
           url: item.url ?? '',
           isactive,
