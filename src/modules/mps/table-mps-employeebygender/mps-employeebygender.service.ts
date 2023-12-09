@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
 import { TableEmployeeByGender } from './table-mps-employeebygender.entity';
@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
 import { EmployeeGender } from '../table-mps-property/dto/upload-mps.dto';
 import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
+import { MPSEmployeeByGenderUpdate } from './dto/table-mps-employeebygender.dto';
 
 @Injectable()
 export class MPSEmployeeByGenderService {
@@ -157,6 +158,46 @@ export class MPSEmployeeByGenderService {
         .execute();
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateEmployeeByGender(
+    propertyid: number,
+    body: MPSEmployeeByGenderUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.employeeByGenderRepository
+            .createQueryBuilder('employeebygender')
+            .leftJoin('employeebygender.gender', 'gender')
+            .select('employeebygender.id', 'id')
+            .where('employeebygender.propertyid = :propertyid', { propertyid })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          console.log('hasil', record);
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table employee by gender, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.employeeByGenderRepository
+            .createQueryBuilder()
+            .update(TableEmployeeByGender)
+            .set({ total: item.total })
+            .where('id = :id', { id: record.id })
+            .execute();
+
+          return updateData;
+        }),
+      );
+
+      return query;
     } catch (error) {
       throw error;
     }

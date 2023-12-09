@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   ParseFilePipeBuilder,
+  Patch,
   Post,
   Query,
   Req,
@@ -40,6 +41,7 @@ import { UploadMPSService } from './upload-mps.service';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from 'src/modules/duende-authentication/dto/userinfo.dto';
 import { DeleteFileInterceptor } from 'src/interceptors/delete-file-mps.interceptor';
+import { GetOneProperty, UpdateAllDto } from './dto/table-mps-property.dto';
 
 @ApiBearerAuth()
 @ApiTags('Man Power Statistics')
@@ -63,17 +65,9 @@ export class MPSPropertyController {
     private readonly uploadMPSService: UploadMPSService,
   ) {}
 
-  @Get('/getAllData')
-  async getAllData(
-    @Query('companyid') companyid: number,
-    @Query('month') month: number,
-    @Query('year') year: number,
-  ) {
-    const getProperty = await this.propertyService.getPropertyByParams(
-      companyid,
-      month,
-      year,
-    );
+  @Post('/getAllData')
+  async getAllData(@Body() body: GetOneProperty) {
+    const getProperty = await this.propertyService.getPropertyByParams(body);
 
     if (!getProperty)
       throw new BadRequestException(
@@ -136,6 +130,12 @@ export class MPSPropertyController {
     };
 
     return result;
+  }
+
+  @Patch('/updateAllData')
+  async updateAllData(@Body() updateall: UpdateAllDto) {
+    const updatedData = await this.propertyService.updateAllData(updateall);
+    return { message: 'Data berhasul di Update', updatedData };
   }
 
   @Post('/download')

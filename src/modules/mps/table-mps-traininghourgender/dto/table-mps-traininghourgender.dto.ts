@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { TableTrainingHourGender } from '../table-mps-traininghourgender.entity';
+import { IsNumber, IsString } from 'class-validator';
 
 export class TableTrainingHourGenderDto extends AbstractDto {
   @ApiProperty()
@@ -30,4 +31,18 @@ export class TableTrainingHourGenderDto extends AbstractDto {
     this.totaltraininghour = tableTrainingHourGenderEntity.totaltraininghour;
     this.isdelete = tableTrainingHourGenderEntity.isdelete;
   }
+}
+
+export class MPSTrainingHourGenderUpdate {
+  @ApiProperty()
+  @IsString()
+  gender: string;
+
+  @ApiProperty()
+  @IsNumber()
+  totalemployee: number;
+
+  @ApiProperty()
+  @IsNumber()
+  totaltraininghour: number;
 }

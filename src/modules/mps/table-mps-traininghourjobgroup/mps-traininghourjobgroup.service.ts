@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as moment from 'moment';
 import { TableTrainingHourJobGroup } from './table-mps-traininghourjobgroup.entity';
 import { MasterJobGroup } from '../master-mps-jobgroup/master-mps-jobgroup.entity';
 import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
+import { MPSTrainingHourJobGroupUpdate } from './dto/table-mps-traininghourjobgroup.dto';
 
 @Injectable()
 export class MPSTraningHourJobGroupService {
@@ -168,6 +169,50 @@ export class MPSTraningHourJobGroupService {
         .execute();
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateTrainingHourJobGroup(
+    propertyid: number,
+    body: MPSTrainingHourJobGroupUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.trainingHourJobGroupRepository
+            .createQueryBuilder('traininghourjobgroup')
+            .leftJoin('traininghourjobgroup.jobgroup', 'jobgroup')
+            .select('traininghourjobgroup.id as id')
+            .where('traininghourjobgroup.propertyid = :propertyid', {
+              propertyid,
+            })
+            .andWhere('jobgroup.jobgroup = :jobgroup', {
+              jobgroup: item.jobgroup,
+            })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table training hour by job group, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.trainingHourJobGroupRepository
+            .createQueryBuilder()
+            .update(TableTrainingHourJobGroup)
+            .set({
+              totalemployee: item.totalemployee,
+              totaltraininghour: item.totaltraininghour,
+            })
+            .where('id = :id', { id: record.id })
+            .execute();
+
+          return updateData;
+        }),
+      );
+      return query;
     } catch (error) {
       throw error;
     }
