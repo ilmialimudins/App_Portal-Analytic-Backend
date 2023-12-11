@@ -69,7 +69,10 @@ export class NgramService {
 
       const data = await query
         .andWhere('ngram.qcode = 134')
-        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        )
         .orderBy('tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
@@ -77,7 +80,10 @@ export class NgramService {
 
       const itemCount = await query
         .andWhere('ngram.qcode = 134')
-        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        )
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
@@ -154,7 +160,10 @@ export class NgramService {
 
       const data = await query
         .andWhere('ngram.qcode = 90')
-        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        )
         .orderBy('tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
@@ -162,7 +171,10 @@ export class NgramService {
 
       const itemCount = await query
         .andWhere('ngram.qcode = 90')
-        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        )
         .getCount();
 
       const pageCount = Math.ceil(itemCount / take);
