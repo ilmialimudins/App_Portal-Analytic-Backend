@@ -11,14 +11,4 @@ export class AddLocationDto {
   @IsOptional()
   @IsString()
   readonly locationdesc: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

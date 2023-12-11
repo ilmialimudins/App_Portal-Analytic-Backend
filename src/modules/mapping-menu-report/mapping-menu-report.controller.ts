@@ -14,6 +14,8 @@ import { MappingMenuReportDto } from './dto/mapping-menu-report.dto';
 import { MappingMenuReportService } from './mapping-menu-report.service';
 import { AddMappingMenuReportDto } from './dto/add-mapping-menu-report.dto';
 import { UpdateMappingMenuReportDto } from './dto/update-mapping-menu-report.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -42,9 +44,11 @@ export class MappingMenuReportController {
   @ApiCreatedResponse({ type: MappingMenuReportDto })
   async createMappingMenuReport(
     @Body() mappingmenureport: AddMappingMenuReportDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.mappingMenuReportService.createMappingMenuReport(
       mappingmenureport,
+      userinfo,
     );
   }
 
@@ -53,10 +57,12 @@ export class MappingMenuReportController {
   async updateMappingMenuReport(
     @Query('mappingmenureportid') mappingmenureportid: number,
     @Body() mappingmenureport: UpdateMappingMenuReportDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.mappingMenuReportService.updateMappingMenuReport(
       mappingmenureportid,
       mappingmenureport,
+      userinfo,
     );
   }
 

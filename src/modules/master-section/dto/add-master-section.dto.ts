@@ -21,14 +21,4 @@ export class AddMasterSectionDto {
   @IsOptional()
   @IsString()
   readonly sectioncodepowerbiid: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

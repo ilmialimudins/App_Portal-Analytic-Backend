@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { MappingMenuReportDto } from './dto/mapping-menu-report.dto';
 import { AddMappingMenuReportDto } from './dto/add-mapping-menu-report.dto';
 import { UpdateMappingMenuReportDto } from './dto/update-mapping-menu-report.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class MappingMenuReportService {
@@ -55,7 +56,10 @@ export class MappingMenuReportService {
     }
   }
 
-  async createMappingMenuReport(mappingmenureport: AddMappingMenuReportDto) {
+  async createMappingMenuReport(
+    mappingmenureport: AddMappingMenuReportDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -73,7 +77,7 @@ export class MappingMenuReportService {
           menuid: mappingmenureport.menuid,
           reportid: mappingmenureport.reportid,
           sectionid: mappingmenureport.sectionid,
-          createdby: mappingmenureport.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -90,6 +94,7 @@ export class MappingMenuReportService {
   async updateMappingMenuReport(
     mappingmenureportid: number,
     mappingmenureport: UpdateMappingMenuReportDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.mappingMenuReportRepository
@@ -99,7 +104,7 @@ export class MappingMenuReportService {
           menuid: mappingmenureport.menuid,
           reportid: mappingmenureport.reportid,
           sectionid: mappingmenureport.sectionid,
-          updatedby: mappingmenureport.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('mappingmenureportid = :mappingmenureportid', {
           mappingmenureportid,

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { MasterReportDto } from './dto/master-report.dto';
 import { AddMasterReportDto } from './dto/add-master-report.dto';
 import { UpdateMasterReportDto } from './dto/update-master-report.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class MasterReportService {
@@ -67,7 +68,10 @@ export class MasterReportService {
     }
   }
 
-  async createMasterReport(masterreport: AddMasterReportDto) {
+  async createMasterReport(
+    masterreport: AddMasterReportDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -87,7 +91,7 @@ export class MasterReportService {
           reportpowerbiiid: masterreport.reportpowerbiid,
           datasetpowerbiid: masterreport.datasetpowerbiid,
           reporturl: masterreport.reporturl,
-          createdby: masterreport.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -104,6 +108,7 @@ export class MasterReportService {
   async updateMasterReport(
     reportid: number,
     masterreport: UpdateMasterReportDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.masterReportRepository
@@ -115,7 +120,7 @@ export class MasterReportService {
           reportpowerbiiid: masterreport.reportpowerbiid,
           datasetpowerbiid: masterreport.datasetpowerbiid,
           reporturl: masterreport.reporturl,
-          updatedby: masterreport.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('reportid = :reportid', { reportid })
         .execute();

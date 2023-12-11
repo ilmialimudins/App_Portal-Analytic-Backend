@@ -14,6 +14,8 @@ import { MasterWorkSpaceService } from './master-work-space.service';
 import { MasterWorkSpaceDto } from './dto/master-work-space.dto';
 import { AddMasterWorkSpaceDto } from './dto/add-master-work-space.dto';
 import { UpdateMasterWorkSpaceDto } from './dto/update-master-work-space.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -58,8 +60,14 @@ export class MasterWorkSpaceController {
 
   @Post('/createMasterWorkSpace')
   @ApiCreatedResponse({ type: MasterWorkSpaceDto })
-  async createMasterWorkSpace(@Body() masterworkspace: AddMasterWorkSpaceDto) {
-    return this.masterWorkSpaceService.createMasterWorkSpace(masterworkspace);
+  async createMasterWorkSpace(
+    @Body() masterworkspace: AddMasterWorkSpaceDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.masterWorkSpaceService.createMasterWorkSpace(
+      masterworkspace,
+      userinfo,
+    );
   }
 
   @Patch('/updateMasterWorkSpace')
@@ -67,10 +75,12 @@ export class MasterWorkSpaceController {
   async updateMasterWorkSpace(
     @Query('workspaceid') workspaceid: number,
     @Body() masterworkspace: UpdateMasterWorkSpaceDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.masterWorkSpaceService.updateMasterWorkSpace(
       workspaceid,
       masterworkspace,
+      userinfo,
     );
   }
 

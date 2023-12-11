@@ -14,6 +14,8 @@ import { MasterRoleDto } from './dto/master-role.dto';
 import { AddMasterRoleDto } from './dto/add-master-role.dto';
 import { UpdateMasterRoleDto } from './dto/update-master-role.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -70,8 +72,11 @@ export class MasterRoleController {
 
   @Post('/createMasterRole')
   @ApiCreatedResponse({ type: MasterRoleDto })
-  async createMasterRole(@Body() masterrole: AddMasterRoleDto) {
-    return this.masterRoleService.createMasterRole(masterrole);
+  async createMasterRole(
+    @Body() masterrole: AddMasterRoleDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.masterRoleService.createMasterRole(masterrole, userinfo);
   }
 
   @Patch('/updateMasterRole')
@@ -79,8 +84,13 @@ export class MasterRoleController {
   async updateMasterRole(
     @Query('roleid') roleid: number,
     @Body() masterrole: UpdateMasterRoleDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.masterRoleService.updateMasterRole(roleid, masterrole);
+    return this.masterRoleService.updateMasterRole(
+      roleid,
+      masterrole,
+      userinfo,
+    );
   }
 
   @Delete('/deleteMasterRole')

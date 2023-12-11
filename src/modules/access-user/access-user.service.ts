@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { AccessUserDto } from './dto/access-user.dto';
 import { AddAccessUserDto } from './dto/add-access-user.dto';
 import { UpdateAccessUserDto } from './dto/update-access-user.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class AccessUserService {
@@ -96,7 +97,7 @@ export class AccessUserService {
     }
   }
 
-  async createAccessUser(accessuser: AddAccessUserDto) {
+  async createAccessUser(accessuser: AddAccessUserDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -113,7 +114,7 @@ export class AccessUserService {
         .values({
           companyid: accessuser.companyid,
           userid: accessuser.userid,
-          createdby: accessuser.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -130,6 +131,7 @@ export class AccessUserService {
   async updateAccessUser(
     accessuserid: number,
     accessuser: UpdateAccessUserDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.accessUserRepository
@@ -138,7 +140,7 @@ export class AccessUserService {
         .set({
           companyid: accessuser.companyid,
           userid: accessuser.userid,
-          updatedby: accessuser.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('aksesuserid = :accessuserid', { accessuserid })
         .execute();

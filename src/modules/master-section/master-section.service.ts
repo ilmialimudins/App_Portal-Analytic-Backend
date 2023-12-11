@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { MasterSectionDto } from './dto/master-section.dto';
 import { AddMasterSectionDto } from './dto/add-master-section.dto';
 import { UpdateMasterSectionDto } from './dto/update-master-section.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class MasterSectionService {
@@ -66,7 +67,10 @@ export class MasterSectionService {
     }
   }
 
-  async createMasterSection(mastersection: AddMasterSectionDto) {
+  async createMasterSection(
+    mastersection: AddMasterSectionDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -85,7 +89,7 @@ export class MasterSectionService {
           sectionname: mastersection.sectionname,
           sectiondesc: mastersection.sectiondesc,
           sectioncodepowerbiid: mastersection.sectioncodepowerbiid,
-          createdby: mastersection.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -102,6 +106,7 @@ export class MasterSectionService {
   async updateMasterSection(
     sectionid: number,
     mastersection: UpdateMasterSectionDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.masterSectionRepository
@@ -112,7 +117,7 @@ export class MasterSectionService {
           sectionname: mastersection.sectionname,
           sectiondesc: mastersection.sectiondesc,
           sectioncodepowerbiid: mastersection.sectioncodepowerbiid,
-          updatedby: mastersection.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('sectionid = :sectionid', { sectionid })
         .execute();

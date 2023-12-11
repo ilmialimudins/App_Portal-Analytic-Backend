@@ -11,14 +11,4 @@ export class AddMasterRoleDto {
   @IsOptional()
   @IsString()
   readonly roledesc: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

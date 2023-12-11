@@ -14,6 +14,8 @@ import { RoleUserDto } from './dto/role-user.dto';
 import { AddRoleUserDto } from './dto/add-role-user.dto';
 import { UpdateRoleUserDto } from './dto/update-role-user.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -51,8 +53,11 @@ export class RoleUserController {
 
   @Post('/createRoleUser')
   @ApiCreatedResponse({ type: RoleUserDto })
-  async createRoleUser(@Body() roleuser: AddRoleUserDto) {
-    return this.roleUserService.createRoleUser(roleuser);
+  async createRoleUser(
+    @Body() roleuser: AddRoleUserDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.roleUserService.createRoleUser(roleuser, userinfo);
   }
 
   @Patch('/updateRoleUser')
@@ -60,8 +65,9 @@ export class RoleUserController {
   async updateRoleUser(
     @Query('roleuserid') roleuserid: number,
     @Body() roleuser: UpdateRoleUserDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.roleUserService.updateRoleUser(roleuserid, roleuser);
+    return this.roleUserService.updateRoleUser(roleuserid, roleuser, userinfo);
   }
 
   @Delete('/deleteRoleUser')

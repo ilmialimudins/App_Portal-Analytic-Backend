@@ -6,6 +6,7 @@ import { SurveyGroupDto } from './dto/master-survey-group.dto';
 import { AddSurveyGroupDto } from './dto/add-master-survey-group.dto';
 import { UpdateSurveyGroupDto } from './dto/update-master-survey-group.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class SurveyGroupService {
@@ -131,7 +132,10 @@ export class SurveyGroupService {
     }
   }
 
-  async createSurveyGroup(surveygroup: AddSurveyGroupDto) {
+  async createSurveyGroup(
+    surveygroup: AddSurveyGroupDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -148,7 +152,7 @@ export class SurveyGroupService {
         .values({
           surveygroupcode: surveygroup.surveygroupcode,
           surveygroupdesc: surveygroup.surveygroupdesc,
-          createdby: surveygroup.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -165,6 +169,7 @@ export class SurveyGroupService {
   async updateSurveyGroup(
     surveygroupid: number,
     surveygroup: UpdateSurveyGroupDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.surveyGroupRepository
@@ -173,7 +178,7 @@ export class SurveyGroupService {
         .set({
           surveygroupcode: surveygroup.surveygroupcode,
           surveygroupdesc: surveygroup.surveygroupdesc,
-          updatedby: surveygroup.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('surveygroupid = :surveygroupid', { surveygroupid })
         .execute();

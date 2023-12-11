@@ -14,6 +14,8 @@ import { LocationService } from './master-location.service';
 import { LocationDto } from './dto/master-location.dto';
 import { AddLocationDto } from './dto/add-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -68,8 +70,11 @@ export class LocationController {
 
   @Post('/createLocation')
   @ApiCreatedResponse({ type: LocationDto })
-  async createLocation(@Body() location: AddLocationDto) {
-    return this.locationService.createLocation(location);
+  async createLocation(
+    @Body() location: AddLocationDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.locationService.createLocation(location, userinfo);
   }
 
   @Patch('/updateLocation')
@@ -77,8 +82,9 @@ export class LocationController {
   async updateLocation(
     @Query('locationid') locationid: number,
     @Body() location: UpdateLocationDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.locationService.updateLocation(locationid, location);
+    return this.locationService.updateLocation(locationid, location, userinfo);
   }
 
   @Delete('/deleteLocation')

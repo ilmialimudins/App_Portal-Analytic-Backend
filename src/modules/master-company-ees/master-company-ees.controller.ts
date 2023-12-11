@@ -19,6 +19,8 @@ import { CompanyDto } from './dto/master-company-ees.dto';
 import { AddCompanyDto } from './dto/add-master-company-ees.dto';
 import { UpdateCompanyDto } from './dto/update-master-company-ees.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -87,8 +89,11 @@ export class CompanyController {
 
   @Post('/createCompany')
   @ApiCreatedResponse({ type: CompanyDto })
-  async createCompany(@Body() company: AddCompanyDto) {
-    return this.companyService.createCompany(company);
+  async createCompany(
+    @Body() company: AddCompanyDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.companyService.createCompany(company, userinfo);
   }
 
   @Patch('updateCompany')
@@ -96,8 +101,9 @@ export class CompanyController {
   async updateCompany(
     @Query('companyid') companyid: number,
     @Body() company: UpdateCompanyDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.companyService.updateCompany(companyid, company);
+    return this.companyService.updateCompany(companyid, company, userinfo);
   }
 
   @Delete('/activeCompany')

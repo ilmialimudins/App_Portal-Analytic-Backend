@@ -14,6 +14,8 @@ import { MasterSectionService } from './master-section.service';
 import { MasterSectionDto } from './dto/master-section.dto';
 import { AddMasterSectionDto } from './dto/add-master-section.dto';
 import { UpdateMasterSectionDto } from './dto/update-master-section.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -44,8 +46,14 @@ export class MasterSectionController {
 
   @Post('/createMasterSection')
   @ApiCreatedResponse({ type: MasterSectionDto })
-  async createMasterSection(@Body() mastersection: AddMasterSectionDto) {
-    return this.masterSectionService.createMasterSection(mastersection);
+  async createMasterSection(
+    @Body() mastersection: AddMasterSectionDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.masterSectionService.createMasterSection(
+      mastersection,
+      userinfo,
+    );
   }
 
   @Patch('/updateMasterSection')
@@ -53,10 +61,12 @@ export class MasterSectionController {
   async updateMasterSection(
     @Query('sectionid') sectionid: number,
     @Body() mastersection: UpdateMasterSectionDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.masterSectionService.updateMasterSection(
       sectionid,
       mastersection,
+      userinfo,
     );
   }
 

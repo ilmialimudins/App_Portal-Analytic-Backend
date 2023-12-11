@@ -15,6 +15,8 @@ import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Response as ExpressResponse } from 'express';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -72,6 +74,7 @@ export class ReplaceWordcloudController {
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async createReplaceWordcloud(
     @Body() replacewordcloud: AddReplaceWordcloudDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     const checkOne =
       await this.replaceWordcloudService.checkOneReplaceWordcloud(
@@ -84,6 +87,7 @@ export class ReplaceWordcloudController {
 
     const result = await this.replaceWordcloudService.createReplaceWordcloud(
       replacewordcloud,
+      userinfo,
     );
 
     return result;
@@ -93,6 +97,7 @@ export class ReplaceWordcloudController {
   @ApiOkResponse({ type: ReplaceWordcloudDto })
   async createManyReplacewordcloud(
     @Body() replacewordcloud: AddReplaceWordcloudDto[],
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     const duplicate =
       await this.replaceWordcloudService.checkManyDuplicateReplacewordcloud(
@@ -105,6 +110,7 @@ export class ReplaceWordcloudController {
 
     return await this.replaceWordcloudService.createManyReplacewordcloud(
       replacewordcloud,
+      userinfo,
     );
   }
 
@@ -113,6 +119,7 @@ export class ReplaceWordcloudController {
   async updateReplaceWordcloud(
     @Query('uuid') uuid: string,
     @Body() replacewordcloud: AddReplaceWordcloudDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     const checkOne =
       await this.replaceWordcloudService.checkOneReplaceWordcloud(
@@ -126,6 +133,7 @@ export class ReplaceWordcloudController {
     const result = this.replaceWordcloudService.updateReplaceWordcloud(
       uuid,
       replacewordcloud,
+      userinfo,
     );
 
     return result;

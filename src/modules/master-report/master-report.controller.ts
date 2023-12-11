@@ -14,6 +14,8 @@ import { MasterReportService } from './master-report.service';
 import { MasterReportDto } from './dto/master-report.dto';
 import { AddMasterReportDto } from './dto/add-master-report.dto';
 import { UpdateMasterReportDto } from './dto/update-master-report.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -42,8 +44,11 @@ export class MasterReportController {
 
   @Post('/createMasterReport')
   @ApiCreatedResponse({ type: MasterReportDto })
-  async createMasterReport(@Body() masterreport: AddMasterReportDto) {
-    return this.masterReportService.createMasterReport(masterreport);
+  async createMasterReport(
+    @Body() masterreport: AddMasterReportDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.masterReportService.createMasterReport(masterreport, userinfo);
   }
 
   @Patch('/updateMasterReport')
@@ -51,8 +56,13 @@ export class MasterReportController {
   async updateMasterReport(
     @Query('reportid') reportid: number,
     @Body() masterreport: UpdateMasterReportDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.masterReportService.updateMasterReport(reportid, masterreport);
+    return this.masterReportService.updateMasterReport(
+      reportid,
+      masterreport,
+      userinfo,
+    );
   }
 
   @Delete('/deleteMasterReport')
