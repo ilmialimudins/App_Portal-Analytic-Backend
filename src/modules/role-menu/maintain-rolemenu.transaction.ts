@@ -1,9 +1,9 @@
 import { BaseTransaction } from 'src/common/abstract.transaction';
 import { DataRoleMenuActiveDTO } from './dto/get-rolemenu-active.dto';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { RoleMenu } from './role-menu.entity';
 import { TransactionMaintainRoleMenuDTO } from './dto/update-role-menu.dto';
-import { Repository } from 'typeorm';
+
 import * as moment from 'moment';
 
 export class MaintainRoleMenuTransaction extends BaseTransaction<

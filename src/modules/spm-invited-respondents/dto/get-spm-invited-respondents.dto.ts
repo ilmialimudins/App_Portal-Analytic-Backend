@@ -4,6 +4,7 @@ import {
   IsArray,
   IsInt,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateIf,
   ValidateNested,
@@ -144,24 +145,24 @@ export class GetManyInvitedRespondentsQueryDTO extends GetInvitedRespondentsQuer
 }
 
 export class GetModifyListQueryDTO {
-  @ApiProperty()
-  @ValidateIf((e) => e === '')
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   tahun_survey?: string = '';
 
-  @ApiProperty()
-  @ValidateIf((e) => e === '')
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   search?: string = '';
 
-  @ApiProperty()
-  @ValidateIf((e) => e === undefined)
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   limit?: number | 10;
 
-  @ApiProperty()
-  @ValidateIf((e) => e === undefined)
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   page?: number | 0;
@@ -405,23 +406,6 @@ export class GetModifyDetailResponse {
   })
   @ValidateNested()
   invited_respondents: DemoInvited[];
-
-  @ApiProperty({
-    example: `
-    [
-      {
-        "demographycode": "DG001",
-        "demographydesc": "Company"
-      },
-      {
-        "demographycode": "DG002",
-        "demographydesc": "Company 2"
-      }
-    ]
-  `,
-  })
-  @ValidateNested()
-  demography: GetModifyDemographyDTO[];
 
   @ApiProperty()
   @IsNumber()

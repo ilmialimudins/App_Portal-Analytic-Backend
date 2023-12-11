@@ -10,9 +10,15 @@ import {
   Res,
   BadRequestException,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
-import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SpmInvitedRespondentsService } from './spm-invited-respondents.service';
 import {
   GetOneInvitedRespondentsQueryDTO,
@@ -38,8 +44,11 @@ import {
   DelSectionModifyDTO,
   DelValueDemoModifyDTO,
 } from './dto/delete-spm-invited-respondents.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
 @ApiTags('Invited Respondents')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('invited-respondents')
 export class SpmInvitedRespondentsController {
   constructor(

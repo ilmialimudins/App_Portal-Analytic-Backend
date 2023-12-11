@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { TableProperty } from '../table-mps-property.entity';
+
 import {
   ArrayMinSize,
   IsArray,
   IsDefined,
   IsNotEmptyObject,
+  ValidateIf,
   IsNumber,
   IsObject,
   IsOptional,
@@ -69,10 +71,12 @@ export class GetOneProperty {
 
   @ApiProperty()
   @IsNumber()
+  @ValidateIf((o) => !o.year)
   year: number;
 
   @ApiProperty()
   @IsNumber()
+  @ValidateIf((o) => !o.month)
   month: number;
 }
 
