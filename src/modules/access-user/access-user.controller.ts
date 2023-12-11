@@ -14,6 +14,8 @@ import { AccessUserDto } from './dto/access-user.dto';
 import { AddAccessUserDto } from './dto/add-access-user.dto';
 import { UpdateAccessUserDto } from './dto/update-access-user.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -50,8 +52,11 @@ export class AccessUserController {
 
   @Post('/createAccessUser')
   @ApiCreatedResponse({ type: AccessUserDto })
-  async createAccessUser(@Body() accessuser: AddAccessUserDto) {
-    return this.accessUserService.createAccessUser(accessuser);
+  async createAccessUser(
+    @Body() accessuser: AddAccessUserDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.accessUserService.createAccessUser(accessuser, userinfo);
   }
 
   @Patch('/updateAccessUser')
@@ -59,8 +64,13 @@ export class AccessUserController {
   async updateAccessUser(
     @Query('accessuserid') accessuserid: number,
     @Body() accessuser: UpdateAccessUserDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.accessUserService.updateAccessUser(accessuserid, accessuser);
+    return this.accessUserService.updateAccessUser(
+      accessuserid,
+      accessuser,
+      userinfo,
+    );
   }
 
   @Delete('/deleteAccessUser')

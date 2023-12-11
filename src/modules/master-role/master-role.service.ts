@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { MasterRoleDto } from './dto/master-role.dto';
 import { AddMasterRoleDto } from './dto/add-master-role.dto';
 import { UpdateMasterRoleDto } from './dto/update-master-role.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class MasterRoleService {
@@ -109,7 +110,7 @@ export class MasterRoleService {
     }
   }
 
-  async createMasterRole(masterrole: AddMasterRoleDto) {
+  async createMasterRole(masterrole: AddMasterRoleDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -126,7 +127,7 @@ export class MasterRoleService {
         .values({
           rolename: masterrole.rolename,
           roledesc: masterrole.roledesc,
-          createdby: masterrole.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -140,7 +141,11 @@ export class MasterRoleService {
     }
   }
 
-  async updateMasterRole(roleid: number, masterrole: UpdateMasterRoleDto) {
+  async updateMasterRole(
+    roleid: number,
+    masterrole: UpdateMasterRoleDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const query = await this.masterRoleRepository
         .createQueryBuilder()
@@ -148,7 +153,7 @@ export class MasterRoleService {
         .set({
           rolename: masterrole.rolename,
           roledesc: masterrole.roledesc,
-          updatedby: masterrole.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('roleid = :roleid', { roleid })
         .execute();

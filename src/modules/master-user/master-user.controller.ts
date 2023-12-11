@@ -16,6 +16,8 @@ import { UpdateMasterUserDto } from './dto/update-master-user.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { RoleUserService } from '../role-user/role-user.service';
 import { AccessUserService } from '../access-user/access-user.service';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -82,8 +84,11 @@ export class MasterUserController {
 
   @Post('/createMasterUser')
   @ApiCreatedResponse({ type: MasterUserDto })
-  async createMasterUser(@Body() masteruser: AddMasterUserDto) {
-    return this.masteruserService.createMasterUser(masteruser);
+  async createMasterUser(
+    @Body() masteruser: AddMasterUserDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.masteruserService.createMasterUser(masteruser, userinfo);
   }
 
   @Patch('/updateMasterUser')
@@ -91,8 +96,13 @@ export class MasterUserController {
   async updateMasterUser(
     @Query('userid') userid: number,
     @Body() masteruser: UpdateMasterUserDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.masteruserService.updateMasterUser(userid, masteruser);
+    return this.masteruserService.updateMasterUser(
+      userid,
+      masteruser,
+      userinfo,
+    );
   }
 
   @Delete('/activeMasterUser')

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { RoleUserDto } from './dto/role-user.dto';
 import { AddRoleUserDto } from './dto/add-role-user.dto';
 import { UpdateRoleUserDto } from './dto/update-role-user.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class RoleUserService {
@@ -103,7 +104,7 @@ export class RoleUserService {
     }
   }
 
-  async createRoleUser(roleuser: AddRoleUserDto) {
+  async createRoleUser(roleuser: AddRoleUserDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -120,7 +121,7 @@ export class RoleUserService {
         .values({
           roleid: roleuser.roleid,
           userid: roleuser.userid,
-          createdby: roleuser.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -134,7 +135,11 @@ export class RoleUserService {
     }
   }
 
-  async updateRoleUser(roleuserid: number, roleuser: UpdateRoleUserDto) {
+  async updateRoleUser(
+    roleuserid: number,
+    roleuser: UpdateRoleUserDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const query = await this.roleUserRepository
         .createQueryBuilder()
@@ -142,7 +147,7 @@ export class RoleUserService {
         .set({
           roleid: roleuser.roleid,
           userid: roleuser.userid,
-          updatedby: roleuser.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('roleuserid = :roleuserid', { roleuserid })
         .execute();

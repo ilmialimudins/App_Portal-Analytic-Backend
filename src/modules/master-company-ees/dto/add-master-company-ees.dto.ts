@@ -76,14 +76,4 @@ export class AddCompanyDto {
   @IsOptional()
   @IsString()
   readonly remark: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

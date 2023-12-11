@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CompanyDto } from './dto/master-company-ees.dto';
 import { AddCompanyDto } from './dto/add-master-company-ees.dto';
 import { UpdateCompanyDto } from './dto/update-master-company-ees.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class CompanyService {
@@ -171,7 +172,7 @@ export class CompanyService {
     }
   }
 
-  async createCompany(company: AddCompanyDto) {
+  async createCompany(company: AddCompanyDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -201,7 +202,7 @@ export class CompanyService {
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
           remark: company.remark,
-          createdby: company.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'Active',
           createdtime: createNow,
           createddate: createdDate,
@@ -215,7 +216,11 @@ export class CompanyService {
     }
   }
 
-  async updateCompany(companyid: number, company: UpdateCompanyDto) {
+  async updateCompany(
+    companyid: number,
+    company: UpdateCompanyDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const query = await this.companyRepository
         .createQueryBuilder()
@@ -236,7 +241,7 @@ export class CompanyService {
           aliascompany2: company.aliascompany2,
           aliascompany3: company.aliascompany3,
           remark: company.remark,
-          updatedby: company.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('companyid = :companyid', { companyid })
         .execute();

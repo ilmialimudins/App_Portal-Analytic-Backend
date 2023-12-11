@@ -11,6 +11,7 @@ import { MasterUserDto } from './dto/master-user.dto';
 import { AddMasterUserDto } from './dto/add-master-user.dto';
 import { UpdateMasterUserDto } from './dto/update-master-user.dto';
 import { RoleUserService } from '../role-user/role-user.service';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class MasterUserService {
@@ -167,7 +168,7 @@ export class MasterUserService {
     }
   }
 
-  async createMasterUser(masteruser: AddMasterUserDto) {
+  async createMasterUser(masteruser: AddMasterUserDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -189,7 +190,7 @@ export class MasterUserService {
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
-          createdby: masteruser.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'Active',
           createdtime: createNow,
           createddate: createdDate,
@@ -203,7 +204,11 @@ export class MasterUserService {
     }
   }
 
-  async updateMasterUser(userid: number, masteruser: UpdateMasterUserDto) {
+  async updateMasterUser(
+    userid: number,
+    masteruser: UpdateMasterUserDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const query = await this.masterUserRepository
         .createQueryBuilder()
@@ -216,7 +221,7 @@ export class MasterUserService {
           companycode: masteruser.companycode,
           companyname: masteruser.companyname,
           email: masteruser.email,
-          updatedby: masteruser.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('userid = :userid', { userid })
         .execute();

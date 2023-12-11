@@ -205,16 +205,6 @@ export class AddValidateSurveyResultDto {
   @IsOptional()
   @IsString()
   readonly age_when_entering_company: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }
 
 export class DownloadValidateSurveyResultDto {

@@ -6,6 +6,7 @@ import { BusinessLineDto } from './dto/master-business-line.dto';
 import { AddBusinessLineDto } from './dto/add-master-business-line.dto';
 import { UpdateBusinessLineDto } from './dto/update-master-business-line.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class BusinessLineService {
@@ -134,7 +135,10 @@ export class BusinessLineService {
     }
   }
 
-  async createBusinessLine(businessline: AddBusinessLineDto) {
+  async createBusinessLine(
+    businessline: AddBusinessLineDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -151,7 +155,7 @@ export class BusinessLineService {
         .values({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
-          createdby: businessline.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -168,6 +172,7 @@ export class BusinessLineService {
   async updateBusinessLine(
     businesslineid: number,
     businessline: UpdateBusinessLineDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.businessLineRepository
@@ -176,7 +181,7 @@ export class BusinessLineService {
         .set({
           businesslinecode: businessline.businesslinecode,
           businesslinedesc: businessline.businesslinedesc,
-          updatedby: businessline.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('businesslineid =:businesslineid', { businesslineid })
         .execute();

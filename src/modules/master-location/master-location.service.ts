@@ -6,6 +6,7 @@ import { Location } from './master-location.entity';
 import { AddLocationDto } from './dto/add-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class LocationService {
@@ -125,7 +126,7 @@ export class LocationService {
     }
   }
 
-  async createLocation(location: AddLocationDto) {
+  async createLocation(location: AddLocationDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -142,7 +143,7 @@ export class LocationService {
         .values({
           locationcode: location.locationcode,
           locationdesc: location.locationdesc,
-          createdby: location.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -156,7 +157,11 @@ export class LocationService {
     }
   }
 
-  async updateLocation(locationid: number, location: UpdateLocationDto) {
+  async updateLocation(
+    locationid: number,
+    location: UpdateLocationDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const query = await this.locationRepository
         .createQueryBuilder()
@@ -164,7 +169,7 @@ export class LocationService {
         .set({
           locationcode: location.locationcode,
           locationdesc: location.locationdesc,
-          updatedby: location.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('locationid = :locationid', { locationid })
         .execute();

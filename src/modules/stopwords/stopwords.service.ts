@@ -9,6 +9,7 @@ import * as excel from 'exceljs';
 import { addTable } from 'src/common/utils/addExcelTable';
 import { v4 as uuidv4 } from 'uuid';
 import { removeArrObj } from 'src/common/utils/checkDuplicate';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class StopwordsService {
@@ -122,7 +123,7 @@ export class StopwordsService {
     }
   }
 
-  async createStopwords(stopwords: AddStopwordsDto) {
+  async createStopwords(stopwords: AddStopwordsDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -141,7 +142,7 @@ export class StopwordsService {
           companyid: 475,
           stopwords: stopwords.stopwords,
           tahun_survey: year,
-          createdby: stopwords.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -155,14 +156,18 @@ export class StopwordsService {
     }
   }
 
-  async updateStopwords(uuid: string, stopwords: UpdateStopwordsDto) {
+  async updateStopwords(
+    uuid: string,
+    stopwords: UpdateStopwordsDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const query = await this.stopwordsRepository
         .createQueryBuilder()
         .update(Stopwords)
         .set({
           stopwords: stopwords.stopwords,
-          updatedby: stopwords.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('uuid = :uuid', { uuid })
         .andWhere('stopwords != :stopwords', { stopwords: stopwords.stopwords })
@@ -189,7 +194,10 @@ export class StopwordsService {
     }
   }
 
-  async createManyStopwords(stopwords: AddStopwordsDto[]) {
+  async createManyStopwords(
+    stopwords: AddStopwordsDto[],
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -205,7 +213,7 @@ export class StopwordsService {
           companyid: 475,
           stopwords: item.stopwords,
           tahun_survey: year,
-          createdby: item.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,

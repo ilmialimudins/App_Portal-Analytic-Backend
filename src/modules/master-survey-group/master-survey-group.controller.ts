@@ -14,6 +14,8 @@ import { SurveyGroupService } from './master-survey-group.service';
 import { SurveyGroupDto } from './dto/master-survey-group.dto';
 import { AddSurveyGroupDto } from './dto/add-master-survey-group.dto';
 import { UpdateSurveyGroupDto } from './dto/update-master-survey-group.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -70,8 +72,11 @@ export class SurveyGroupController {
 
   @Post('/createSurveyGroup')
   @ApiCreatedResponse({ type: SurveyGroupDto })
-  async createSurveyGroup(@Body() surveygroup: AddSurveyGroupDto) {
-    return this.surveyGroupService.createSurveyGroup(surveygroup);
+  async createSurveyGroup(
+    @Body() surveygroup: AddSurveyGroupDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.surveyGroupService.createSurveyGroup(surveygroup, userinfo);
   }
 
   @Patch('/updateSurveyGroup')
@@ -79,10 +84,12 @@ export class SurveyGroupController {
   async updateSurveyGroup(
     @Query('surveygroupid') surveygroupid: number,
     @Body() surveygroup: UpdateSurveyGroupDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.surveyGroupService.updateSurveyGroup(
       surveygroupid,
       surveygroup,
+      userinfo,
     );
   }
 

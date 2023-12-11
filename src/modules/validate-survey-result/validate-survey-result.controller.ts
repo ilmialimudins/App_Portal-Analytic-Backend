@@ -19,6 +19,8 @@ import {
   AddValidateSurveyResultDto,
   DownloadValidateSurveyResultDto,
 } from './dto/add-validate-survey-result.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -51,9 +53,11 @@ export class ValidateSurveyResultController {
   @ApiCreatedResponse({ type: ValidateSurveyResultDto })
   async createManyValidateSurveyResult(
     @Body() validatesurveyresult: AddValidateSurveyResultDto[],
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.validateSurveyResultService.createManyValidateSurveyResult(
       validatesurveyresult,
+      userinfo,
     );
   }
 
@@ -64,6 +68,7 @@ export class ValidateSurveyResultController {
     @Query('surveyid') surveyid: number,
     @Query('company') company: string,
     @Body() validatesurveyresult: UpdateValidateSurveyResultDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     await this.validateSurveyResultService.updateDateVersion(surveyid, company);
 
@@ -71,6 +76,7 @@ export class ValidateSurveyResultController {
       await this.validateSurveyResultService.updateValidateSurveyResult(
         id,
         validatesurveyresult,
+        userinfo,
       );
 
     return updateResult;

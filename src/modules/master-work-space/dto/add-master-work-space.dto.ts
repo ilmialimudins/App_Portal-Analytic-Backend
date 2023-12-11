@@ -16,14 +16,4 @@ export class AddMasterWorkSpaceDto {
   @IsOptional()
   @IsString()
   readonly workspacepowerbiid: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

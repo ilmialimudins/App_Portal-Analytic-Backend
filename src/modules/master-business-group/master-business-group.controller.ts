@@ -14,6 +14,8 @@ import { BusinessGroupService } from './master-business-group.service';
 import { BusinessGroupDto } from './dto/master-business-group.dto';
 import { AddBusinessGroupDto } from './dto/add-master-business-group.dto';
 import { UpdateBusinessGroupDto } from './dto/update-master-business-group.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -76,8 +78,14 @@ export class BusinessGroupController {
 
   @Post('/createBusinessGroup')
   @ApiCreatedResponse({ type: BusinessGroupDto })
-  async createBusinessGroup(@Body() businessgroup: AddBusinessGroupDto) {
-    return this.businessGroupService.createBusinessGroup(businessgroup);
+  async createBusinessGroup(
+    @Body() businessgroup: AddBusinessGroupDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.businessGroupService.createBusinessGroup(
+      businessgroup,
+      userinfo,
+    );
   }
 
   @Patch('/updateBusinessGroup')
@@ -85,10 +93,12 @@ export class BusinessGroupController {
   async updateBusinessGroup(
     @Query('businessgroupid') businessgroupid: number,
     @Body() businessgroup: UpdateBusinessGroupDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.businessGroupService.updateBusinessGroup(
       businessgroupid,
       businessgroup,
+      userinfo,
     );
   }
 

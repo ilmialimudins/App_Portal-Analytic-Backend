@@ -3,6 +3,8 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { SurveyValidationService } from './survey-validation.service';
 import { SurveyValidationDto } from './dto/survey-validation.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -77,7 +79,10 @@ export class SurveyValidationController {
 
   @Patch('/updateSurveyValidation')
   @ApiCreatedResponse({ type: SurveyValidationDto })
-  async updateValidation(@Query('id') id: number) {
-    return this.surveyValidationService.updateValidation(id);
+  async updateValidation(
+    @Query('id') id: number,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.surveyValidationService.updateValidation(id, userinfo);
   }
 }

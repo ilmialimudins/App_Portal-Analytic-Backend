@@ -9,6 +9,7 @@ import * as excel from 'exceljs';
 import { addTable } from 'src/common/utils/addExcelTable';
 import { v4 as uuidv4 } from 'uuid';
 import { removeArrObj } from 'src/common/utils/checkDuplicate';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class ReplaceWordcloudService {
@@ -132,7 +133,10 @@ export class ReplaceWordcloudService {
     }
   }
 
-  async createReplaceWordcloud(replacewordcloud: AddReplaceWordcloudDto) {
+  async createReplaceWordcloud(
+    replacewordcloud: AddReplaceWordcloudDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -152,7 +156,7 @@ export class ReplaceWordcloudService {
           tahun_survey: year,
           original_text: replacewordcloud.original_text,
           replace_text: replacewordcloud.replace_text,
-          createdby: replacewordcloud.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -169,6 +173,7 @@ export class ReplaceWordcloudService {
   async updateReplaceWordcloud(
     uuid: string,
     replaceWordcloud: UpdateReplaceWordcloudDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.replaceWordcloudRepository
@@ -177,7 +182,7 @@ export class ReplaceWordcloudService {
         .set({
           original_text: replaceWordcloud.original_text,
           replace_text: replaceWordcloud.replace_text,
-          updatedby: replaceWordcloud.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('uuid = :uuid', { uuid })
         .andWhere('original_text != :original_text', {
@@ -206,7 +211,10 @@ export class ReplaceWordcloudService {
     }
   }
 
-  async createManyReplacewordcloud(replaceWordcloud: AddReplaceWordcloudDto[]) {
+  async createManyReplacewordcloud(
+    replaceWordcloud: AddReplaceWordcloudDto[],
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -223,7 +231,7 @@ export class ReplaceWordcloudService {
           tahun_survey: year,
           original_text: item.original_text,
           replace_text: item.replace_text,
-          createdby: item.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,

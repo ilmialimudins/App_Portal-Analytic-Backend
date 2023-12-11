@@ -40,8 +40,11 @@ export class RoleMenuController {
 
   @Post('/createRoleMenu')
   @ApiCreatedResponse({ type: RoleMenuDto })
-  async createRoleMenu(@Body() rolemenu: AddRoleMenuDto) {
-    return this.roleMenuService.createRoleMenu(rolemenu);
+  async createRoleMenu(
+    @Body() rolemenu: AddRoleMenuDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.roleMenuService.createRoleMenu(rolemenu, userinfo);
   }
 
   @Post('/maintain-role-menu')

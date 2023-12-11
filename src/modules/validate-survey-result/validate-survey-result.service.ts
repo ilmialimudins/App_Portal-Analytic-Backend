@@ -12,6 +12,7 @@ import {
   AddValidateSurveyResultDto,
   DownloadValidateSurveyResultDto,
 } from './dto/add-validate-survey-result.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class ValidateSurveyResultService {
@@ -136,6 +137,7 @@ export class ValidateSurveyResultService {
 
   async createManyValidateSurveyResult(
     validatesurveyresult: AddValidateSurveyResultDto[],
+    userinfo: UserInfoDTO,
   ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
@@ -189,7 +191,7 @@ export class ValidateSurveyResultService {
           completeanswer: item.completeanswer,
           age_this_year: item.age_this_year,
           age_when_entering_company: item.age_when_entering_company,
-          createdby: item.createdby,
+          createdby: userinfo.fullname,
           row_status: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -212,6 +214,7 @@ export class ValidateSurveyResultService {
   async updateValidateSurveyResult(
     id: number,
     validatesurveyresult: UpdateValidateSurveyResultDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.valdiateSurveyResultRepository
@@ -237,7 +240,7 @@ export class ValidateSurveyResultService {
           tahunlahir: validatesurveyresult.tahunlahir,
           tahunmasuk_astra: validatesurveyresult.tahunmasuk_astra,
           tahunmasuk_perusahaan: validatesurveyresult.tahunmasuk_perusahaan,
-          updatedby: validatesurveyresult.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('id = :id', { id })
         .execute();

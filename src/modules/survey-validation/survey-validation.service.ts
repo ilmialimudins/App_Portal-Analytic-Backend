@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SurveyValidation } from './survey-validation.entity';
 import { Repository } from 'typeorm';
 import { SurveyValidationDto } from './dto/survey-validation.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class SurveyValidationService {
@@ -247,7 +248,7 @@ export class SurveyValidationService {
     }
   }
 
-  async updateValidation(id: number) {
+  async updateValidation(id: number, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -256,6 +257,7 @@ export class SurveyValidationService {
         .update(SurveyValidation)
         .set({
           validation: '1',
+          updatedby: userinfo.fullname,
           validateddate: createNow,
         })
         .where('id = :id', { id })

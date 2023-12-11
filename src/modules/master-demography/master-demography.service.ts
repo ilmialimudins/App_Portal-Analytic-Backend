@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { DemographyDto } from './dto/master-demography.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class DemographyService {
@@ -125,7 +126,7 @@ export class DemographyService {
     }
   }
 
-  async createDemography(demography: AddDemographyDto) {
+  async createDemography(demography: AddDemographyDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -142,7 +143,7 @@ export class DemographyService {
         .values({
           demographyalias: demography.demographyalias,
           desc: 'Non-Default',
-          createdby: demography.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -159,6 +160,7 @@ export class DemographyService {
   async updateDemography(
     demographyid: number,
     demography: UpdateDemographyDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.demographyRepository
@@ -166,7 +168,7 @@ export class DemographyService {
         .update(Demography)
         .set({
           demographyalias: demography.demographyalias,
-          updatedby: demography.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('demographyid =:demographyid', { demographyid })
         .execute();

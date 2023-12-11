@@ -6,6 +6,7 @@ import { BusinessGroupDto } from './dto/master-business-group.dto';
 import { AddBusinessGroupDto } from './dto/add-master-business-group.dto';
 import { UpdateBusinessGroupDto } from './dto/update-master-business-group.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class BusinessGroupService {
@@ -132,7 +133,10 @@ export class BusinessGroupService {
     }
   }
 
-  async createBusinessGroup(businessgroup: AddBusinessGroupDto) {
+  async createBusinessGroup(
+    businessgroup: AddBusinessGroupDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -149,7 +153,7 @@ export class BusinessGroupService {
         .values({
           businessgroupcode: businessgroup.businessgroupcode,
           businessgroupdesc: businessgroup.businessgroupdesc,
-          createdby: businessgroup.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -166,6 +170,7 @@ export class BusinessGroupService {
   async updateBusinessGroup(
     businessgroupid: number,
     businessgroup: UpdateBusinessGroupDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.businessGroupRepository
@@ -174,7 +179,7 @@ export class BusinessGroupService {
         .set({
           businessgroupcode: businessgroup.businessgroupcode,
           businessgroupdesc: businessgroup.businessgroupdesc,
-          updatedby: businessgroup.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('businessgroupid = :businessgroupid', { businessgroupid })
         .execute();

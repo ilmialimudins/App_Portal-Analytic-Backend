@@ -14,6 +14,8 @@ import { DemographyDto } from './dto/master-demography.dto';
 import { AddDemographyDto } from './dto/add-master-demography.dto';
 import { UpdateDemographyDto } from './dto/update-master-demography.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -72,8 +74,11 @@ export class DemographyController {
 
   @Post('/createDemography')
   @ApiCreatedResponse({ type: DemographyDto })
-  async createDemography(@Body() demography: AddDemographyDto) {
-    return this.demographyService.createDemography(demography);
+  async createDemography(
+    @Body() demography: AddDemographyDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.demographyService.createDemography(demography, userinfo);
   }
 
   @Patch('/updateDemography')
@@ -81,8 +86,13 @@ export class DemographyController {
   async updateDemography(
     @Query('demographyid') demographyid: number,
     @Body() demography: UpdateDemographyDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.demographyService.updateDemography(demographyid, demography);
+    return this.demographyService.updateDemography(
+      demographyid,
+      demography,
+      userinfo,
+    );
   }
 
   @Delete('/deleteDemography')

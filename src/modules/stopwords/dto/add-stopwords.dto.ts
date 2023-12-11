@@ -11,14 +11,4 @@ export class AddStopwordsDto {
   @IsOptional()
   @IsString()
   readonly stopwords: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly createdby: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

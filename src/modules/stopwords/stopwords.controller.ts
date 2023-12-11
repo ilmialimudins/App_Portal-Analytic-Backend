@@ -15,6 +15,8 @@ import { StopwordsDto } from './dto/stopwords.dto';
 import { AddStopwordsDto } from './dto/add-stopwords.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Response as ExpressResponse } from 'express';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { UserInfo } from 'src/decorators/use-info.decorator';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -63,21 +65,30 @@ export class StopwordsController {
 
   @Post('/createStopwords')
   @ApiOkResponse({ type: StopwordsDto })
-  async createStopwords(@Body() stopwords: AddStopwordsDto) {
+  async createStopwords(
+    @Body() stopwords: AddStopwordsDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
     const checkOne = await this.stopwordsService.checkOneStopwords(stopwords);
 
     if (checkOne) {
       return { isDuplicate: true };
     }
 
-    const result = await this.stopwordsService.createStopwords(stopwords);
+    const result = await this.stopwordsService.createStopwords(
+      stopwords,
+      userinfo,
+    );
 
     return result;
   }
 
   @Post('/createManyStopwords')
   @ApiOkResponse({ type: StopwordsDto })
-  async createManyStopwords(@Body() stopwords: AddStopwordsDto[]) {
+  async createManyStopwords(
+    @Body() stopwords: AddStopwordsDto[],
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
     const duplicate = await this.stopwordsService.checkManyDuplicateStopwords(
       stopwords,
     );
@@ -86,7 +97,7 @@ export class StopwordsController {
       return { isDuplicate: true };
     }
 
-    return await this.stopwordsService.createManyStopwords(stopwords);
+    return await this.stopwordsService.createManyStopwords(stopwords, userinfo);
   }
 
   @Patch('/updateStopwords')
@@ -94,6 +105,7 @@ export class StopwordsController {
   async updateStopwords(
     @Query('uuid') uuid: string,
     @Body() stopwords: AddStopwordsDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     const checkOne = await this.stopwordsService.checkOneStopwords(stopwords);
 
@@ -101,7 +113,11 @@ export class StopwordsController {
       return { isDuplicate: true };
     }
 
-    const result = this.stopwordsService.updateStopwords(uuid, stopwords);
+    const result = this.stopwordsService.updateStopwords(
+      uuid,
+      stopwords,
+      userinfo,
+    );
 
     return result;
   }

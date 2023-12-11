@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { MasterWorkSpaceDto } from './dto/master-work-space.dto';
 import { AddMasterWorkSpaceDto } from './dto/add-master-work-space.dto';
 import { UpdateMasterWorkSpaceDto } from './dto/update-master-work-space.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class MasterWorkSpaceService {
@@ -76,7 +77,10 @@ export class MasterWorkSpaceService {
     }
   }
 
-  async createMasterWorkSpace(masterworkspace: AddMasterWorkSpaceDto) {
+  async createMasterWorkSpace(
+    masterworkspace: AddMasterWorkSpaceDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -94,7 +98,7 @@ export class MasterWorkSpaceService {
           workspacename: masterworkspace.workspacename,
           workspacedesc: masterworkspace.workspacedesc,
           workspacepowerbiid: masterworkspace.workspacepowerbiid,
-          createdby: masterworkspace.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
@@ -111,6 +115,7 @@ export class MasterWorkSpaceService {
   async updateMasterWorkSpace(
     workspaceid: number,
     masterworkspace: UpdateMasterWorkSpaceDto,
+    userinfo: UserInfoDTO,
   ) {
     try {
       const query = await this.masterWorkSpaceRepository
@@ -120,7 +125,7 @@ export class MasterWorkSpaceService {
           workspacename: masterworkspace.workspacename,
           workspacedesc: masterworkspace.workspacedesc,
           workspacepowerbiid: masterworkspace.workspacepowerbiid,
-          updatedby: masterworkspace.updatedby,
+          updatedby: userinfo.fullname,
         })
         .where('workspaceid = :workspaceid', { workspaceid })
         .execute();

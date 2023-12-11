@@ -14,6 +14,8 @@ import { BusinessLineDto } from './dto/master-business-line.dto';
 import { AddBusinessLineDto } from './dto/add-master-business-line.dto';
 import { UpdateBusinessLineDto } from './dto/update-master-business-line.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -76,8 +78,11 @@ export class BusinessLineController {
 
   @Post('/createBusinessLine')
   @ApiCreatedResponse({ type: BusinessLineDto })
-  async createBusinessLine(@Body() businessline: AddBusinessLineDto) {
-    return this.businessLineService.createBusinessLine(businessline);
+  async createBusinessLine(
+    @Body() businessline: AddBusinessLineDto,
+    @UserInfo() userinfo: UserInfoDTO,
+  ) {
+    return this.businessLineService.createBusinessLine(businessline, userinfo);
   }
 
   @Patch('/updateBusinessLine')
@@ -85,10 +90,12 @@ export class BusinessLineController {
   async updateBusinessLine(
     @Query('businesslineid') businesslineid: number,
     @Body() businessline: UpdateBusinessLineDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
     return this.businessLineService.updateBusinessLine(
       businesslineid,
       businessline,
+      userinfo,
     );
   }
 

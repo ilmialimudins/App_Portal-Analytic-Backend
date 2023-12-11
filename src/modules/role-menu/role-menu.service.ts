@@ -59,7 +59,7 @@ export class RoleMenuService {
     }
   }
 
-  async createRoleMenu(rolemenu: AddRoleMenuDto) {
+  async createRoleMenu(rolemenu: AddRoleMenuDto, userinfo: UserInfoDTO) {
     try {
       const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
 
@@ -76,7 +76,7 @@ export class RoleMenuService {
         .values({
           roleid: rolemenu.roleid,
           menuid: rolemenu.menuid,
-          createdby: rolemenu.createdby,
+          createdby: userinfo.fullname,
           isdelete: 'false',
           createdtime: createNow,
           createddate: createdDate,
