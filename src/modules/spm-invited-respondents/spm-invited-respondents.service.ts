@@ -7,15 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { InvitedRespondents } from './spm-invited-respondents.entity';
-import {
-  Repository,
-  EntityManager,
-  DeleteResult,
-  FindManyOptions,
-  Like,
-  Not,
-  IsNull,
-} from 'typeorm';
+import { Repository, EntityManager, DeleteResult } from 'typeorm';
 import * as excel from 'exceljs';
 import {
   GetManyInvitedRespondentsQueryDTO,
@@ -24,9 +16,7 @@ import {
   GetSurveyInvitedRespondentsQueryDTO,
   GetSurveyInvitedRespondentsResultsDTO,
   GetModifyListQueryDTO,
-  GetModifyListManyDTO,
   GetModifyResponse,
-  GetModifyDemographyDTO,
   GetModifyDetailQueryDTO,
   GetModifyDetailResponse,
   DetailDTO,
@@ -368,52 +358,49 @@ export class SpmInvitedRespondentsService {
   }: GetModifyListQueryDTO): Promise<GetModifyResponse> {
     try {
       if (!limit) limit = 10;
-      if (!page) page = 0;
-      const searchCriteria: FindManyOptions = {
-        select: {
-          id: true,
-          tahun_survey: true,
-          companyid: true,
-          surveygroupid: true,
-          company: {
-            companyeesname: true,
-          },
-          surveygroup: {
-            surveygroupdesc: true,
-          },
-        },
-        where: [
-          {
-            company: {
-              companyeesname: Like(`%${search}%`),
-            },
-            is_delete: '0',
-            tahun_survey: tahun_survey ? +tahun_survey : Not(IsNull()),
-          },
-          {
-            surveygroup: {
-              surveygroupdesc: Like(`%${search}%`),
-            },
-            is_delete: '0',
-            tahun_survey: tahun_survey ? +tahun_survey : Not(IsNull()),
-          },
-        ],
-        relations: {
-          company: true,
-          surveygroup: true,
-        },
-        take: limit,
-        skip: page,
-      };
+      if (!page) page = 1;
 
-      const counter = await this.invitedRespondentsRepo.find({
-        where: {
-          is_delete: '0',
-        },
-      });
+      const counter = await this.invitedRespondentsRepo
+        .createQueryBuilder('spm')
+        .select([
+          'DISTINCT spm.tahun_survey as tahun_survey',
+          'spm.companyid as companyid',
+          'spm.surveygroupid as surveygroupid',
+        ])
+        .getRawMany();
 
-      const list: GetModifyListManyDTO[] =
-        await this.invitedRespondentsRepo.find(searchCriteria);
+      const querylist = this.invitedRespondentsRepo
+        .createQueryBuilder('spm')
+        .select([
+          'DISTINCT spm.tahun_survey as tahun_survey',
+          'spm.companyid as companyid',
+          'spm.surveygroupid as surveygroupid',
+          'company.companyeesname as company',
+          'surveygroup.surveygroupdesc as surveygroup',
+        ])
+
+        .leftJoin('spm.company', 'company')
+        .leftJoin('spm.surveygroup', 'surveygroup')
+        .where('spm.is_delete = :is_delete', { is_delete: '0' });
+      if (search) {
+        querylist.andWhere(
+          'company.companyeesname LIKE :search OR surveygroup.surveygroupdesc LIKE :search',
+          { search: `%${search}%` },
+        );
+      }
+
+      if (tahun_survey) {
+        querylist.andWhere('spm.tahun_survey = :tahun_survey', {
+          tahun_survey: tahun_survey,
+        });
+      }
+
+      const list = await querylist
+        .orderBy('spm.tahun_survey', 'DESC')
+        .addOrderBy('spm.companyid', 'ASC')
+        .limit(limit)
+        .offset((page - 1) * limit)
+        .getRawMany();
 
       return {
         data: list,
@@ -455,77 +442,59 @@ export class SpmInvitedRespondentsService {
       if (!data)
         throw new HttpException('Data Not Found', HttpStatus.NOT_FOUND);
 
-      const demographyValue = await this.demographyRepository
-        .createQueryBuilder()
-        .select('demographycode')
-        .addSelect('demographydesc')
-        .groupBy('demographycode, demographydesc')
-        .getRawMany();
-
       const divAndDirData = await this.invitedRespondentsRepo
         .createQueryBuilder('tsi')
-        .distinctOn(['dm.demographycode'])
         .select('dm.demographydesc', 'demography')
+        .addSelect('tsi.id', 'id')
         .addSelect('tsi.valuedemography', 'valuedemography')
         .addSelect('dm.demographycode', 'demographycode')
-        .addSelect('tsi.totalinvited_company', 'totalinvited_company')
+        .addSelect('tsi.totalinvited_demography', 'totalinvited_demography')
         .innerJoin('tsi.demography', 'dm')
         .where(
           'tsi.tahun_survey = :tahun_survey AND tsi.companyid = :companyid AND tsi.surveygroupid = :surveygroupid AND tsi.is_delete = 0',
           { tahun_survey, companyid, surveygroupid },
         )
-        .groupBy(
-          'dm.demographycode, dm.demographydesc, tsi.valuedemography, tsi.totalinvited_company',
-        )
         .getRawMany();
 
-      const invitedDemo: GetModifyDemographyDTO[] = [];
-
-      divAndDirData.forEach((demo) => {
-        const index = invitedDemo.findIndex(
-          (keys) => keys.demography === demo.demography,
-        );
-
-        if (index == -1) {
-          invitedDemo.push({
-            demography: demo.demography,
-            listdemography: [
+      const constructDataDemography = divAndDirData.reduce((acc, item) => {
+        return Object.assign(acc, {
+          [item.demographycode]: {
+            demography: item.demography,
+            demographycode: item.demographycode,
+            listdemographyvalue: [
+              ...(acc[item.demographycode]?.listdemographyvalue || []),
               {
-                demographyvalue: demo.valuedemography,
-                inviteddemography: demo.totalinvited_company,
+                valuedemography: item.valuedemography,
+                totalinvited_demography: item.totalinvited_demography,
               },
             ],
-            totalinvited_demography: demo.totalinvited_company,
-          });
-        } else {
-          const existValue = invitedDemo[index]?.listdemography.findIndex(
-            (value) => value.demographyvalue == demo.valuedemography,
-          );
+          },
+        });
+      }, {});
 
-          if (existValue === -1) {
-            invitedDemo[index]?.listdemography.push({
-              demographyvalue: demo.valuedemography,
-              inviteddemography: demo.totalinvited_company,
-            });
-          } else {
-            invitedDemo[index].totalinvited_demography +=
-              demo.totalinvited_company;
-          }
-          invitedDemo[index].totalinvited_demography +=
-            demo.totalinvited_company;
-        }
-      });
+      const invitedRespondent = Object.keys(constructDataDemography).map(
+        (key: string) => ({ ...constructDataDemography[key] }),
+      );
 
-      const [detail, demography, total] = await Promise.all([
+      const [detail, total] = await Promise.all([
         data,
-        demographyValue,
-        Math.max(...invitedDemo.map((max) => max.totalinvited_demography)),
+        Math.max(
+          ...invitedRespondent.map((item) =>
+            item.listdemographyvalue.reduce((acc, item) => {
+              const current =
+                typeof item.totalinvited_demography === 'string'
+                  ? parseInt(item.totalinvited_demography)
+                  : item.totalinvited_demography;
+
+              return acc + current;
+            }, 0),
+          ),
+        ),
       ]);
 
       return {
         detail,
-        invited_respondents: invitedDemo,
-        demography,
+        invited_respondents: invitedRespondent,
         total_invited_respondents: total,
       };
     } catch (error) {

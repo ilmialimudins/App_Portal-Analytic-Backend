@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { TableProperty } from '../table-mps-property.entity';
-import { IsNumber } from 'class-validator';
+import { IsNumber, ValidateIf } from 'class-validator';
 
 export class TablePropertyDto extends AbstractDto {
   @ApiProperty()
@@ -48,9 +48,11 @@ export class GetOneProperty {
 
   @ApiProperty()
   @IsNumber()
+  @ValidateIf((o) => !o.year)
   year: number;
 
   @ApiProperty()
   @IsNumber()
+  @ValidateIf((o) => !o.month)
   month: number;
 }
