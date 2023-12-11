@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractDto } from 'src/common/dto/abstract.dto';
 import { TableOutsourcingPerGender } from '../table-mps-outsourcingpergender.entity';
+import { IsNumber, IsString } from 'class-validator';
 
 export class TableOutsourcingPerGenderDto extends AbstractDto {
   @ApiProperty()
@@ -30,4 +31,14 @@ export class TableOutsourcingPerGenderDto extends AbstractDto {
     this.total = tableOutsourcingPerGenderEntity.total;
     this.isdelete = tableOutsourcingPerGenderEntity.isdelete;
   }
+}
+
+export class MPSOutSourcingPerGenderUpdate {
+  @ApiProperty()
+  @IsString()
+  gender: string;
+
+  @ApiProperty()
+  @IsNumber()
+  total: number;
 }

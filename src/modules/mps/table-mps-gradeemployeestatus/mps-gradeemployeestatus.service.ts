@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as moment from 'moment';
@@ -8,6 +8,7 @@ import { MasterGrade } from '../master-mps-grade/master-mps-grade.entity';
 
 import { TableGradeEmployeeStatus } from './table-mps-gradeemployeestatus.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { MPSGradeEmployeeStatusUpdate } from './dto/table-mps-gradeemployeestatus.dto';
 import { GradeEmployee } from '../table-mps-property/dto/upload-mps.dto';
 import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
 
@@ -237,6 +238,55 @@ export class MPSGradeEmployeeStatusService {
         .execute();
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateGradeEmployeeStatus(
+    propertyid: number,
+    body: MPSGradeEmployeeStatusUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.mpsGradeEmployeeStatusRepo
+            .createQueryBuilder('gradeemployeestatus')
+            .leftJoin('gradeemployeestatus.grade', 'grade')
+            .leftJoin('gradeemployeestatus.gender', 'gender')
+            .leftJoin('gradeemployeestatus.employeestatus', 'employeestatus')
+            .select(['gradeemployeestatus.id as id'])
+            .where('gradeemployeestatus.propertyid = :propertyid', {
+              propertyid,
+            })
+            .andWhere('grade.grade = :grade', { grade: item.grade })
+            .andWhere('employeestatus.employeestatus = :employeestatus', {
+              employeestatus: item.employeestatus,
+            })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table grade employee status, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.mpsGradeEmployeeStatusRepo
+            .createQueryBuilder()
+            .update(TableGradeEmployeeStatus)
+            .set({
+              total: item.total,
+            })
+            .where('id = :id', {
+              id: record.id,
+            })
+            .execute();
+
+          return updateData;
+        }),
+      );
+      return query;
     } catch (error) {
       throw error;
     }

@@ -1,8 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TableOutsourcingPerGender } from './table-mps-outsourcingpergender.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
+import { MPSOutSourcingPerGenderUpdate } from './dto/table-mps-outsourcingpergender.dto';
 
 @Injectable()
 export class MPSOutsourcingPerGenderService {
@@ -72,5 +73,44 @@ export class MPSOutsourcingPerGenderService {
       dataSource: dataSource,
       columns: columns,
     };
+  }
+
+  async updateOutsourcingPerGender(
+    propertyid: number,
+    body: MPSOutSourcingPerGenderUpdate[],
+  ) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.outsourcingPerGenderRepository
+            .createQueryBuilder('outsourcingpergender')
+            .leftJoin('outsourcingpergender.newhire', 'newhire')
+            .leftJoin('outsourcingpergender.gender', 'gender')
+            .select(['outsourcingpergender.id as id'])
+            .where('outsourcingpergender.propertyid = :propertyid', {
+              propertyid,
+            })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table out sourcing per gender, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.outsourcingPerGenderRepository
+            .createQueryBuilder()
+            .update(TableOutsourcingPerGender)
+            .set({ total: item.total })
+            .where('id = :id', { id: record.id })
+            .execute();
+          return updateData;
+        }),
+      );
+      return query;
+    } catch (error) {
+      throw error;
+    }
   }
 }

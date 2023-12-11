@@ -4,6 +4,7 @@ import { Ngram } from './ngram.entity';
 import { Repository } from 'typeorm';
 import { NgramDto } from './dto/ngram.dto';
 import { UpdateNgramDto } from './dto/update-ngram.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @Injectable()
 export class NgramService {
@@ -194,40 +195,6 @@ export class NgramService {
     }
   }
 
-  async getWordFor() {
-    try {
-      const query = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.word', 'word')
-        .leftJoin('ngram.qcode', 'qcode')
-        .select(['qcode.qcode', 'ngram.wordid', 'word.word'])
-        .where('qcode.qcodeid = 134')
-        .distinct(true)
-        .orderBy('word.word', 'ASC')
-        .getRawMany();
-
-      return query;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getWordUor() {
-    try {
-      const query = await this.NgramRepository.createQueryBuilder('ngram')
-        .leftJoin('ngram.word', 'word')
-        .leftJoin('ngram.qcode', 'qcode')
-        .select(['qcode.qcode', 'ngram.wordid', 'word.word'])
-        .where('qcode.qcodeid = 90')
-        .distinct(true)
-        .orderBy('word.word', 'ASC')
-        .getRawMany();
-
-      return query;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async checkDuplicateNgram(ngram: string) {
     try {
       const query = await this.NgramRepository.createQueryBuilder('ngram')
@@ -241,35 +208,73 @@ export class NgramService {
     }
   }
 
-  async updateNgram(uuid: string, ngram: UpdateNgramDto) {
+  async updateNgram(
+    uuid: string,
+    ngram: UpdateNgramDto,
+    userinfo: UserInfoDTO,
+  ) {
     try {
-      const findNgram = await this.NgramRepository.findOne({ where: { uuid } });
+      const findNgram = await this.NgramRepository.find({
+        where: { ngram: ngram.ngram },
+      });
+      const findNgramFrequency = await this.NgramRepository.findOne({
+        where: { uuid: uuid },
+      });
+      const ngramfrequency = findNgramFrequency
+        ? findNgramFrequency.ngramfrequency
+        : 0;
+      const hasMerge = findNgram.find((n) => n.isdelete === 'merge');
 
-      if (!findNgram) {
-        return { message: 'Data yang ingin diupdate tidak ditemukan.' };
-      }
-
-      if (findNgram.ngram === ngram.ngram) {
-        return {
-          message: 'Data yang ingin diupdate sudah memiliki nilai yang sama.',
-        };
-      }
-
-      const query = await this.NgramRepository.createQueryBuilder()
+      let query = this.NgramRepository.createQueryBuilder()
         .update(Ngram)
         .set({
-          qcodeid: ngram.qcodeid,
-          wordid: ngram.wordid,
-          n: ngram.n,
           ngram: ngram.ngram,
-          ngramfrequency: ngram.ngramfrequency,
-          updatedby: ngram.updatedby,
+          updatedby: userinfo.fullname,
         })
-        .where('uuid = :uuid', { uuid })
-        .andWhere('ngram != :ngram', { ngram: ngram.ngram })
-        .execute();
+        .where('uuid = :uuid', { uuid });
 
-      return query;
+      if (!hasMerge) {
+        await Promise.all(
+          findNgram
+            .filter((findNgram) => findNgram.isdelete === 'false')
+            .map(async (findNgram) => {
+              const mergeFrequency =
+                (findNgram.ngramfrequency || 0) + ngramfrequency;
+
+              query = query.set({
+                ngram: ngram.ngram,
+                ngramfrequency: mergeFrequency,
+                isdelete: 'merge',
+                updatedby: userinfo.fullname,
+              });
+
+              await query.execute();
+
+              await this.NgramRepository.createQueryBuilder()
+                .update(Ngram)
+                .set({ ngramfrequency: mergeFrequency, isdelete: 'merge' })
+                .where('uuid = :uuid', { uuid: findNgram.uuid })
+                .execute();
+            }),
+        );
+      } else {
+        const mergeFrequency = (hasMerge.ngramfrequency || 0) + ngramfrequency;
+
+        query = query.set({
+          ngram: ngram.ngram,
+          ngramfrequency: mergeFrequency,
+          isdelete: 'merge',
+          updatedby: userinfo.fullname,
+        });
+        await query.execute();
+
+        await this.NgramRepository.createQueryBuilder()
+          .update(Ngram)
+          .set({ ngramfrequency: mergeFrequency })
+          .where('ngram = :ngram', { ngram: ngram.ngram })
+          .execute();
+      }
+      return 'Ngram Frequency Has Been Merge';
     } catch (error) {
       throw error;
     }

@@ -31,9 +31,4 @@ export class AddNgramDto {
   @IsOptional()
   @IsString()
   readonly ngramfrequency: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly updatedby: string;
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
 import { TableTenure } from '../table-mps-tenure/table-mps-tenure.entity';
@@ -7,6 +7,7 @@ import { MasterTenure } from './master-mps-tenure.entity';
 import { MasterMPSGenderService } from '../master-mps-gender/master-mps-gender.service';
 import { Tenure } from '../table-mps-property/dto/upload-mps.dto';
 import { ITransactionMetadata } from 'src/common/dto/transaction-meta';
+import { MPSTenureUpdate } from '../table-mps-tenure/dto/table-mps-tenure.dto';
 
 @Injectable()
 export class MPSTenureService {
@@ -189,6 +190,42 @@ export class MPSTenureService {
         .execute();
 
       return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateTenure(propertyid: number, body: MPSTenureUpdate[]) {
+    try {
+      const query = await Promise.all(
+        body.map(async (item) => {
+          const record = await this.tenureRepo
+            .createQueryBuilder('tenure')
+            .leftJoin('tenure.tenure', 'ms_tenure')
+            .leftJoin('tenure.gender', 'gender')
+            .select(['tenure.id as id'])
+            .where('tenure.propertyid = :propertyid', { propertyid })
+            .andWhere('ms_tenure.tenure = :tenure', { tenure: item.tenure })
+            .andWhere('gender.gender = :gender', { gender: item.gender })
+            .getRawOne();
+
+          if (!record) {
+            throw new BadRequestException(
+              'Some record is missing in table tenure, please upload from UI first',
+            );
+          }
+
+          const updateData = await this.tenureRepo
+            .createQueryBuilder()
+            .update(TableTenure)
+            .set({ total: item.total })
+            .where('id = :id', { id: record.id })
+            .execute();
+
+          return updateData;
+        }),
+      );
+      return query;
     } catch (error) {
       throw error;
     }

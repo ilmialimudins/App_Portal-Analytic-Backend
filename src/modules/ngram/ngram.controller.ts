@@ -12,6 +12,8 @@ import { NgramService } from './ngram.service';
 import { NgramDto } from './dto/ngram.dto';
 import { UpdateNgramDto } from './dto/update-ngram.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -78,18 +80,6 @@ export class NgramController {
     return this.ngramService.getNgramId(uuid);
   }
 
-  @Get('/getWordFor')
-  @ApiOkResponse({ type: NgramDto })
-  async getWordFor() {
-    return this.ngramService.getWordFor();
-  }
-
-  @Get('/getWordUor')
-  @ApiOkResponse({ type: NgramDto })
-  async getWordUor() {
-    return this.ngramService.getWordUor();
-  }
-
   @Get('/checkDuplicateNgram')
   @ApiOkResponse({ type: NgramDto })
   async checkDuplicateNgram(@Query('ngram') ngram: string) {
@@ -107,8 +97,9 @@ export class NgramController {
   async updateNgram(
     @Query('uuid') uuid: string,
     @Body() Ngram: UpdateNgramDto,
+    @UserInfo() userinfo: UserInfoDTO,
   ) {
-    const result = await this.ngramService.updateNgram(uuid, Ngram);
+    const result = await this.ngramService.updateNgram(uuid, Ngram, userinfo);
 
     return result;
   }
