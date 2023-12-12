@@ -17,8 +17,8 @@ export class NgramService {
     page: number,
     take: number,
     year: number,
-    companyid: number,
-    wordid: number,
+    company: number,
+    word: number,
   ): Promise<{
     data: NgramDto[];
     page: number;
@@ -36,8 +36,8 @@ export class NgramService {
         .leftJoin('ngram.word', 'word')
         .leftJoin('ngram.qcode', 'qcode')
         .select([
-          'id',
-          'uuid',
+          'ngram.id',
+          'ngram.uuid',
           'company.companyid',
           'qcode.qcodeid',
           'word.wordid',
@@ -48,43 +48,37 @@ export class NgramService {
           'ngram.ngramfrequency',
           'company.companyeesname',
           'ngram.tahun_survey',
-        ]);
+        ])
+        .where(
+          '(ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge)',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        );
 
-      if (year && companyid && wordid) {
+      if (year && company && word) {
         query = query
-          .where('company.companyid = :companyid', { companyid })
+          .andWhere('company.companyid = :company', { company })
           .andWhere('ngram.tahun_survey = :year', { year })
-          .andWhere('word.wordid = :wordid', { wordid });
-      } else if (year && companyid) {
+          .andWhere('word.wordid = :word', { word });
+      } else if (year && company) {
         query = query
-          .where('company.companyid = :companyid', { companyid })
+          .where('company.companyid = :company', { company })
           .andWhere('ngram.tahun_survey = :year', { year });
       } else if (year) {
-        query = query.where('ngram.tahun_survey = :year', { year });
-      } else if (companyid) {
-        query = query.where('company.companyid = :companyid', { companyid });
-      } else if (wordid) {
-        query = query.where('word.wordid = :wordid', { wordid });
+        query = query.andWhere('ngram.tahun_survey = :year', { year });
+      } else if (company) {
+        query = query.andWhere('company.companyid = :company', { company });
+      } else if (word) {
+        query = query.andWhere('word.wordid = :word', { word });
       }
 
       const data = await query
         .andWhere('ngram.qcode = 134')
-        .andWhere(
-          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        )
-        .orderBy('tahun_survey', 'DESC')
+        .orderBy('ngram.tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await query
-        .andWhere('ngram.qcode = 134')
-        .andWhere(
-          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        )
-        .getCount();
+      const itemCount = await query.andWhere('ngram.qcode = 134').getCount();
 
       const pageCount = Math.ceil(itemCount / take);
       const hasPreviousPage = page > 1;
@@ -108,8 +102,8 @@ export class NgramService {
     page: number,
     take: number,
     year: number,
-    companyid: number,
-    wordid: number,
+    company: number,
+    word: number,
   ): Promise<{
     data: NgramDto[];
     page: number;
@@ -139,43 +133,37 @@ export class NgramService {
           'ngram.ngramfrequency',
           'company.companyeesname',
           'ngram.tahun_survey',
-        ]);
+        ])
+        .where(
+          '(ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge)',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        );
 
-      if (year && companyid && wordid) {
+      if (year && company && word) {
         query = query
-          .where('company.companyid = :companyid', { companyid })
+          .andWhere('company.companyid = :company', { company })
           .andWhere('ngram.tahun_survey = :year', { year })
-          .andWhere('word.wordid = :wordid', { wordid });
-      } else if (year && companyid) {
+          .andWhere('word.wordid = :word', { word });
+      } else if (year && company) {
         query = query
-          .where('company.companyid = :companyid', { companyid })
+          .where('company.companyid = :company', { company })
           .andWhere('ngram.tahun_survey = :year', { year });
       } else if (year) {
-        query = query.where('ngram.tahun_survey = :year', { year });
-      } else if (companyid) {
-        query = query.where('company.companyid = :companyid', { companyid });
-      } else if (wordid) {
-        query = query.where('word.wordid = :wordid', { wordid });
+        query = query.andWhere('ngram.tahun_survey = :year', { year });
+      } else if (company) {
+        query = query.andWhere('company.companyid = :company', { company });
+      } else if (word) {
+        query = query.andWhere('word.wordid = :word', { word });
       }
 
       const data = await query
         .andWhere('ngram.qcode = 90')
-        .andWhere(
-          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        )
         .orderBy('tahun_survey', 'DESC')
         .offset(offset)
         .limit(take)
         .getRawMany();
 
-      const itemCount = await query
-        .andWhere('ngram.qcode = 90')
-        .andWhere(
-          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        )
-        .getCount();
+      const itemCount = await query.andWhere('ngram.qcode = 90').getCount();
 
       const pageCount = Math.ceil(itemCount / take);
       const hasPreviousPage = page > 1;
@@ -211,7 +199,10 @@ export class NgramService {
     try {
       const query = await this.NgramRepository.createQueryBuilder('ngram')
         .where('ngram.ngram = :ngram', { ngram })
-        .andWhere('ngram.isdelete = :isdelete', { isdelete: false })
+        .andWhere(
+          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
+          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
+        )
         .getOne();
 
       return query;
@@ -246,29 +237,34 @@ export class NgramService {
         .where('uuid = :uuid', { uuid });
 
       if (!hasMerge) {
-        await Promise.all(
-          findNgram
-            .filter((findNgram) => findNgram.isdelete === 'false')
-            .map(async (findNgram) => {
-              const mergeFrequency =
-                (findNgram.ngramfrequency || 0) + ngramfrequency;
+        if (findNgram.length === 0) {
+          query.execute();
+          return 'Ngram Berhasil Di Update';
+        } else {
+          await Promise.all(
+            findNgram
+              .filter((findNgram) => findNgram.isdelete === 'false')
+              .map(async (findNgram) => {
+                const mergeFrequency =
+                  (findNgram.ngramfrequency || 0) + ngramfrequency;
 
-              query = query.set({
-                ngram: ngram.ngram,
-                ngramfrequency: mergeFrequency,
-                isdelete: 'merge',
-                updatedby: userinfo.fullname,
-              });
+                query = query.set({
+                  ngram: ngram.ngram,
+                  ngramfrequency: mergeFrequency,
+                  isdelete: 'merge',
+                  updatedby: userinfo.fullname,
+                });
 
-              await query.execute();
+                await query.execute();
 
-              await this.NgramRepository.createQueryBuilder()
-                .update(Ngram)
-                .set({ ngramfrequency: mergeFrequency, isdelete: 'merge' })
-                .where('uuid = :uuid', { uuid: findNgram.uuid })
-                .execute();
-            }),
-        );
+                await this.NgramRepository.createQueryBuilder()
+                  .update(Ngram)
+                  .set({ ngramfrequency: mergeFrequency, isdelete: 'merge' })
+                  .where('uuid = :uuid', { uuid: findNgram.uuid })
+                  .execute();
+              }),
+          );
+        }
       } else {
         const mergeFrequency = (hasMerge.ngramfrequency || 0) + ngramfrequency;
 
