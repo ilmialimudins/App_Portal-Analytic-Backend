@@ -3,6 +3,7 @@ import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { OwnershipStatusDto } from './dto/master-ownership-status.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { TableProperty } from '../mps/table-mps-property/table-mps-property.entity';
 
 @Entity('ms_ownershipstatus')
 @UseDto(OwnershipStatusDto)
@@ -21,4 +22,7 @@ export class OwnershipStatus extends AbstractEntity<OwnershipStatusDto> {
 
   @OneToMany(() => Company, (company) => company.ownershipstatusid)
   company: Company[];
+
+  @OneToMany(() => TableProperty, (property) => property.ownershipstatusid)
+  property: TableProperty[];
 }

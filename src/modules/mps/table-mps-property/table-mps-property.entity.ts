@@ -24,6 +24,8 @@ import { DirectReview } from 'src/modules/master-direct-review/master-direct-rev
 import { Cla } from 'src/modules/master-cla/master-cla.entity';
 import { Company } from 'src/modules/master-company-ees/master-company-ees.entity';
 import { Location } from 'src/modules/master-location/master-location.entity';
+import { BusinessGroup } from 'src/modules/master-business-group/master-business-group.entity';
+import { OwnershipStatus } from 'src/modules/master-ownership-status/master-ownership-status.entity';
 
 @Entity('tbl_mps_property')
 @UseDto(TablePropertyDto)
@@ -66,6 +68,30 @@ export class TableProperty extends AbstractEntity<TablePropertyDto> {
     referencedColumnName: 'locationid',
   })
   location: Location;
+
+  @Column({ nullable: true })
+  businessgroupid: number;
+  @ManyToOne(
+    () => BusinessGroup,
+    (businessgroup) => businessgroup.businessgroupid,
+  )
+  @JoinColumn({
+    name: 'businessgroupid',
+    referencedColumnName: 'businessgroupid',
+  })
+  businessgroup: BusinessGroup;
+
+  @Column({ nullable: true })
+  ownershipstatusid: number;
+  @ManyToOne(
+    () => OwnershipStatus,
+    (ownershipstatus) => ownershipstatus.ownershipstatusid,
+  )
+  @JoinColumn({
+    name: 'ownershipstatusid',
+    referencedColumnName: 'ownershipstatusid',
+  })
+  ownershipstatus: OwnershipStatus;
 
   @Column({ type: 'int', name: 'month', nullable: true })
   month: number;

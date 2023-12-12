@@ -40,6 +40,16 @@ export class AddTableMPSProperty1701073802015 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'businessgroupid',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
+            name: 'ownershipstatusid',
+            type: 'bigint',
+            isNullable: true,
+          },
+          {
             name: 'month',
             type: 'int',
             isNullable: true,
