@@ -53,6 +53,9 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
 
   @Column({ type: 'bigint', name: 'demographyid' })
   demographyid: number;
+  @ManyToOne(() => Demography, (demography) => demography.demographyid)
+  @JoinColumn({ name: 'demographyid', referencedColumnName: 'demographyid' })
+  demography: Demography;
 
   @Column({ type: 'varchar', name: 'valuedemography', length: '255' })
   valuedemography: string;
@@ -71,8 +74,4 @@ export class InvitedRespondents extends AbstractEntity<SpmInvitedRespondentsDTO>
 
   @Column({ type: 'varchar', name: 'is_delete', length: '1' })
   is_delete: string;
-
-  @ManyToOne(() => Demography, (demography) => demography.demographyid)
-  @JoinColumn({ name: 'demographyid', referencedColumnName: 'demographyid' })
-  demography: Demography;
 }

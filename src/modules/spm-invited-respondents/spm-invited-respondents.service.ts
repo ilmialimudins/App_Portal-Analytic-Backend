@@ -2,6 +2,7 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -33,6 +34,12 @@ import {
   DelSectionModifyDTO,
 } from './dto/delete-spm-invited-respondents.dto';
 import { Demography } from '../master-demography/master-demography.entity';
+import {
+  ExtractExcelDataSPMDTO,
+  UploadBodyNameDTO,
+} from './dto/upload-spm-invited-respondents.dto';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { UploadSPMTransaction } from './upload-spm.transaction';
 
 @Injectable()
 export class SpmInvitedRespondentsService {
@@ -42,6 +49,9 @@ export class SpmInvitedRespondentsService {
 
     @InjectRepository(Demography)
     private demographyRepository: Repository<Demography>,
+
+    @Inject(UploadSPMTransaction)
+    private uploadSPMTransaction: UploadSPMTransaction,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -58,7 +68,9 @@ export class SpmInvitedRespondentsService {
     demographyid,
     tahun_survey,
     surveygroupid,
-  }: GetOneInvitedRespondentsQueryDTO): Promise<GetInvitedRespondentsResultDTO> {
+  }: GetOneInvitedRespondentsQueryDTO): Promise<
+    GetInvitedRespondentsResultDTO & { demographydesc?: string }
+  > {
     try {
       const query = await this.invitedRespondentsRepo
         .createQueryBuilder('tbl_spm_invitedrespondents')
@@ -137,7 +149,6 @@ export class SpmInvitedRespondentsService {
 
   public async getManyService({
     companyid,
-    surveyid,
     tahun_survey,
     surveygroupid,
   }: GetManyInvitedRespondentsQueryDTO): Promise<
@@ -145,29 +156,54 @@ export class SpmInvitedRespondentsService {
   > {
     try {
       let query = this.invitedRespondentsRepo
-        .createQueryBuilder()
-        .where('companyid = :companyid', {
+        .createQueryBuilder('spm')
+        .leftJoin('spm.demography', 'demography')
+        .leftJoin('spm.company', 'company')
+        .leftJoin('company.businessgroup', 'businessgroup')
+        .leftJoin('spm.surveygroup', 'surveygroup')
+        .select([
+          'spm.createdby as createdby',
+          'spm.updatedby as updatedby',
+          'spm.createdtime as createdtime',
+          'spm.createddate as createddate',
+          'spm.sourcecreatedmodifiedtime as sourcecreatedmodifiedtime',
+          'spm.sync_date as sync_date',
+          'spm.id as id',
+          'company.companyeesname as companyname',
+          'businessgroup.businessgroupdesc as companygroup',
+          'surveygroup.surveygroupdesc as surveygroupdesc',
+          'spm.surveyid as surveyid',
+          'spm.companyid as companyid',
+          'spm.surveygroupid as surveygroupid',
+          'spm.startsurvey as startsurvey',
+          'spm.closesurvey as closesurvey',
+          'spm.totalinvited_company as totalinvited_company',
+          'spm.demographyid as demographyid',
+          'spm.valuedemography as valuedemography',
+          'spm.totalinvited_demography as totalinvited_demography',
+          'spm.is_sync as is_sync',
+          'spm.endcreatedtime as endcreatedtime',
+          'spm.tahun_survey as tahun_survey',
+          'spm.is_delete as is_delete',
+          'spm.demography as demography',
+        ])
+        .addSelect('demography.demographydesc', 'demographydesc')
+        .where('spm.companyid = :companyid', {
           companyid,
         })
-        .andWhere('surveyid = :surveyid', {
-          surveyid,
-        })
-        .andWhere('surveygroupid = :surveygroupid', { surveygroupid });
-
-      if (tahun_survey) {
-        query = query.andWhere('tahun_survey = :tahun_survey', {
+        .andWhere('spm.surveygroupid = :surveygroupid', { surveygroupid })
+        .andWhere('spm.tahun_survey = :tahun_survey', {
           tahun_survey,
         });
-      }
 
       query = query
-        .orderBy('demographyid', 'ASC')
-        .addOrderBy('totalinvited_demography', 'DESC')
-        .addOrderBy('valuedemography', 'ASC')
-        .andWhere('is_delete = :is_delete', {
+        .orderBy('spm.demographyid', 'ASC')
+        .addOrderBy('spm.totalinvited_demography', 'DESC')
+        .addOrderBy('spm.valuedemography', 'ASC')
+        .andWhere('spm.is_delete = :is_delete', {
           is_delete: '0',
         });
-      return query.getMany();
+      return query.getRawMany();
     } catch (error) {
       throw error;
     }
@@ -175,18 +211,15 @@ export class SpmInvitedRespondentsService {
 
   public async generateExcelInvitedRespondents({
     companyid,
-    surveyid,
     tahun_survey,
     surveygroupid,
   }: GetManyInvitedRespondentsQueryDTO): Promise<excel.Workbook> {
     try {
       const data: GetInvitedRespondentsResultDTO[] = await this.getManyService({
         companyid,
-        surveyid,
         tahun_survey,
         surveygroupid,
       }).then((response) => {
-        console.log(response);
         // permisalan untuk data kosong
         return response;
       });
@@ -199,59 +232,62 @@ export class SpmInvitedRespondentsService {
 
       const workbook: excel.Workbook = new excel.Workbook();
 
-      data.map((item) => {
-        const sheet: excel.Worksheet = workbook.addWorksheet(
-          item.valuedemography.trim() === ''
-            ? 'Empty'
-            : item.valuedemography.replace(/([^\w ]|_)/g, ''),
-        );
+      const sheet: excel.Worksheet = workbook.addWorksheet('My Worksheet');
 
-        addTableInvitedTable(
-          {
-            columnStart: 'A',
-            rowHeaderNum: 1,
-            rowDataNum: 2,
-            headerTitle: [
-              'companyid',
-              'surveyid',
-              'tahun_survey',
-              'startsurvey',
-              'closesurvey',
-              'demography',
-              'totalinvited_demography',
-              'valuedemography',
-              'totalinvited_company',
-            ],
-            tableData: [
-              {
-                companyid: item.companyid,
-                surveyid: item.surveyid,
-                tahun_survey: item.tahun_survey,
-                startsurvey: new Date(item.startsurvey)
-                  .toLocaleDateString('id-ID', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })
-                  .replace(/\//g, '-'),
-                closesurvey: new Date(item.closesurvey)
-                  .toLocaleDateString('id-ID', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })
-                  .replace(/\//g, '-'),
-                demography: item.demographyid,
-                totalinvited_demography: item.totalinvited_demography,
-                valuedemography: item.valuedemography,
-                totalinvited_company: item.totalinvited_company,
-              },
-            ],
-          },
-          sheet,
-          [`"${strings.join(',')}"`],
-        );
-      });
+      sheet.protect('strongprotectpassword', {});
+      addTableInvitedTable(
+        {
+          columnStart: 'A',
+          rowHeaderNum: 1,
+          rowDataNum: 2,
+          headerTitle: [
+            'companyid',
+            'surveygroupid',
+            'surveyid',
+            'demographyid',
+            'companygroup',
+            'companyname',
+            'surveygroupdesc',
+            'tahun_survey',
+            'startsurvey',
+            'closesurvey',
+            'demography',
+            'valuedemography',
+            'totalinvited_demography',
+            'totalinvited_company',
+          ],
+          tableData: data.map((item) => ({
+            companyid: item.companyid,
+            surveygroupid: item.surveygroupid,
+            surveyid: item.surveyid,
+            demographyid: item.demographyid,
+            companygroup: item.companygroup || 'N/A',
+            companyname: item.companyname,
+            surveygroupdesc: item.surveygroupdesc,
+            tahun_survey: item.tahun_survey,
+            startsurvey: new Date(item.startsurvey)
+              .toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              })
+              .replace(/\//g, '-'),
+            closesurvey: new Date(item.closesurvey)
+              .toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              })
+              .replace(/\//g, '-'),
+            demography: item.demographydesc,
+            valuedemography: item.valuedemography,
+            totalinvited_demography: item.totalinvited_demography,
+            totalinvited_company: item.totalinvited_company,
+          })),
+        },
+        sheet,
+        [`"${strings.join(',')}"`],
+      );
 
       return workbook;
     } catch (error) {
@@ -464,6 +500,7 @@ export class SpmInvitedRespondentsService {
             listdemographyvalue: [
               ...(acc[item.demographycode]?.listdemographyvalue || []),
               {
+                id: item.id,
                 valuedemography: item.valuedemography,
                 totalinvited_demography: item.totalinvited_demography,
               },
@@ -631,5 +668,53 @@ export class SpmInvitedRespondentsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  public async extractSPMInvited(
+    data: UploadBodyNameDTO,
+    userinfo: UserInfoDTO,
+  ) {
+    const workbook = new excel.Workbook();
+    const file = await workbook.xlsx.readFile(`./temp/${data.fileName}`);
+
+    const worksheet: excel.Worksheet | undefined =
+      file.getWorksheet('My Worksheet');
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!worksheet) {
+      throw new BadRequestException(
+        'Worksheet not found, please use correct template',
+      );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tableData: any = [];
+
+    worksheet.eachRow({ includeEmpty: false }, (row) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rowData: any[] = [];
+
+      row.eachCell({ includeEmpty: false }, (cell) => {
+        rowData.push(cell.value);
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tableData.push(rowData as any);
+    });
+
+    const extractedData: ExtractExcelDataSPMDTO[] = tableData
+      .slice(1)
+      .map((item: (string | number)[]) => {
+        return tableData[0].reduce((acc, current, index) => {
+          return Object.assign(acc, { [current]: item[index] });
+        }, {});
+      });
+
+    const transaction = await this.uploadSPMTransaction
+      .setMetadata({
+        userinfo: userinfo,
+      })
+      .run(extractedData);
+
+    return transaction;
   }
 }

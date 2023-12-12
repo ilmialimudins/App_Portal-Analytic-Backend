@@ -4,10 +4,11 @@ import { SpmInvitedRespondentsService } from './spm-invited-respondents.service'
 import { InvitedRespondents } from './spm-invited-respondents.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Demography } from '../master-demography/master-demography.entity';
+import { UploadSPMTransaction } from './upload-spm.transaction';
 
 @Module({
   imports: [TypeOrmModule.forFeature([InvitedRespondents, Demography])],
   controllers: [SpmInvitedRespondentsController],
-  providers: [SpmInvitedRespondentsService],
+  providers: [SpmInvitedRespondentsService, UploadSPMTransaction],
 })
 export class SpmInvitedRespondentsModule {}

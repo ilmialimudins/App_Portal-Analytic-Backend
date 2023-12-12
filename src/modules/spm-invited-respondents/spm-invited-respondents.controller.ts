@@ -11,10 +11,16 @@ import {
   BadRequestException,
   Put,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
+  Req,
 } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiResponse,
   ApiTags,
@@ -45,6 +51,14 @@ import {
   DelValueDemoModifyDTO,
 } from './dto/delete-spm-invited-respondents.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadSPMDTO } from './dto/upload-spm-invited-respondents.dto';
+import diskStorage from 'src/common/utils/diskStorage';
+import { DeleteFileInterceptor } from 'src/interceptors/delete-file-mps.interceptor';
+import { CustomUploadFileValidator } from 'src/common/validator/customfiletype.validator';
+import { excelFileType } from 'src/constants/filetype';
+import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 
 @ApiTags('Invited Respondents')
 @ApiBearerAuth()
@@ -59,11 +73,10 @@ export class SpmInvitedRespondentsController {
   @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
   async getInvitedRespondents(
     @Query()
-    { companyid, surveyid, surveygroupid }: GetInvitedRespondentsQueryDTO,
+    { companyid, surveygroupid }: GetInvitedRespondentsQueryDTO,
   ): Promise<GetOneInvitedRespondentsQueryDTO[]> {
     return await this.spmInvitedRespondentsService.getManyService({
       companyid,
-      surveyid,
       surveygroupid,
     });
   }
@@ -212,33 +225,6 @@ export class SpmInvitedRespondentsController {
     }
   }
 
-  // @Get('/get-one')
-  // @ApiOkResponse({ type: GetInvitedRespondentsResultDTO })
-  // async getOneInvitedRepondents(
-  //   @Query()
-  //   {
-  //     companyid,
-  //     surveyid,
-  //     valuedemography,
-  //     demography,
-  //     tahun_survey,
-  //   }: GetOneInvitedRespondentsQueryDTO,
-  // ): Promise<GetInvitedRespondentsResultDTO | undefined> {
-  //   return await this.spmInvitedRespondentsService.getOneService({
-  //     companyid,
-  //     surveyid,
-  //     valuedemography,
-  //     demography,
-  //     tahun_survey,
-  //   });
-  // }
-
-  // @Get('/get-companylist')
-  // @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
-  // async getInvitedCompany(): Promise<GetInvitedRespondentsResultDTO[]> {
-  //   return await this.spmInvitedRespondentsService.getCompanyList();
-  // }
-
   @Get('/get-surveyid')
   @ApiOkResponse({ type: [GetSurveyInvitedRespondentsResultsDTO] })
   async getSurveyId(
@@ -258,7 +244,6 @@ export class SpmInvitedRespondentsController {
     @Query()
     {
       companyid,
-      surveyid,
       tahun_survey,
       surveygroupid,
     }: GetManyInvitedRespondentsQueryDTO,
@@ -276,11 +261,44 @@ export class SpmInvitedRespondentsController {
     const workbook =
       await this.spmInvitedRespondentsService.generateExcelInvitedRespondents({
         companyid,
-        surveyid,
         tahun_survey,
         surveygroupid,
       });
     await workbook.xlsx.write(res);
     res.send('File send');
+  }
+
+  @Post('/upload-spm')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Data SPM',
+    type: UploadSPMDTO,
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage(),
+    }),
+  )
+  @UseInterceptors(DeleteFileInterceptor)
+  async uploadMPSProperty(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addValidator(
+          new CustomUploadFileValidator({ fileType: excelFileType }),
+        )
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Req() request: Request,
+
+    @UserInfo() user: UserInfoDTO,
+  ) {
+    return this.spmInvitedRespondentsService.extractSPMInvited(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      request.body as any,
+      user,
+    );
   }
 }
