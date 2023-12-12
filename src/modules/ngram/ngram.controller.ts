@@ -28,8 +28,8 @@ export class NgramController {
     @Query('page') page: number,
     @Query('take') take: number,
     @Query('year') year: number,
-    @Query('company') companyid: number,
-    @Query('word') wordid: number,
+    @Query('company') company: number,
+    @Query('word') word: number,
   ): Promise<{
     data: NgramDto[];
     page: number;
@@ -39,13 +39,7 @@ export class NgramController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.ngramService.getAllNgramFOR(
-      page,
-      take,
-      year,
-      companyid,
-      wordid,
-    );
+    return this.ngramService.getAllNgramFOR(page, take, year, company, word);
   }
 
   @Get('/ngramUOR')
@@ -54,8 +48,8 @@ export class NgramController {
     @Query('page') page: number,
     @Query('take') take: number,
     @Query('year') year: number,
-    @Query('company') companyid: number,
-    @Query('word') wordid: number,
+    @Query('company') company: number,
+    @Query('word') word: number,
   ): Promise<{
     data: NgramDto[];
     page: number;
@@ -65,13 +59,7 @@ export class NgramController {
     hasPreviousPage: boolean;
     hasNextPage: boolean;
   }> {
-    return this.ngramService.getAllNgramUOR(
-      page,
-      take,
-      year,
-      companyid,
-      wordid,
-    );
+    return this.ngramService.getAllNgramUOR(page, take, year, company, word);
   }
 
   @Get('/getNgramId')
