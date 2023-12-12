@@ -168,7 +168,7 @@ export class MPSTurnOverTerminationTypeService {
       return {
         title: tmt.terminationtype,
         editable: true,
-        childern: masterGender.map((gender) => {
+        children: masterGender.map((gender) => {
           return {
             title: gender.gender,
             editable: true,

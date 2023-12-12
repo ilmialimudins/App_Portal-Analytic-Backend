@@ -140,7 +140,7 @@ export class MPSGradeEmployeeStatusService {
       return {
         title: status.employeestatus,
         editable: true,
-        childern: genders.map((gender) => {
+        children: genders.map((gender) => {
           return {
             title: gender.gender,
             editable: true,
