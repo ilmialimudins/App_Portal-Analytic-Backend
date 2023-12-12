@@ -43,6 +43,12 @@ export class TablePropertyDto extends AbstractDto {
   locationid: number;
 
   @ApiProperty()
+  businessgroupid: number;
+
+  @ApiProperty()
+  ownershipstatusid: number;
+
+  @ApiProperty()
   month: number;
 
   @ApiProperty()
@@ -58,6 +64,8 @@ export class TablePropertyDto extends AbstractDto {
     this.directreviewid = tablePropertyEntity.directreviewid;
     this.companyid = tablePropertyEntity.companyid;
     this.locationid = tablePropertyEntity.locationid;
+    this.businessgroupid = tablePropertyEntity.businessgroupid;
+    this.ownershipstatusid = tablePropertyEntity.ownershipstatusid;
     this.month = tablePropertyEntity.month;
     this.year = tablePropertyEntity.year;
     this.isdelete = tablePropertyEntity.isdelete;

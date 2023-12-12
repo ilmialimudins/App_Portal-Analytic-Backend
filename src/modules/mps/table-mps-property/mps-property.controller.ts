@@ -133,7 +133,7 @@ export class MPSPropertyController {
   @Patch('/updateAllData')
   async updateAllData(@Body() updateall: UpdateAllDto) {
     const updatedData = await this.propertyService.updateAllData(updateall);
-    return { message: 'Data berhasul di Update', updatedData };
+    return { message: 'Data berhasil di Update', updatedData };
   }
 
   @Post('/download')

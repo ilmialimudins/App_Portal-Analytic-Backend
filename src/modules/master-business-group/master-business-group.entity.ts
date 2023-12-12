@@ -3,6 +3,7 @@ import { UseDto } from 'src/decorators/use-dto.decorator';
 import { AbstractEntity } from 'src/common/abstract.entity';
 import { BusinessGroupDto } from './dto/master-business-group.dto';
 import { Company } from '../master-company-ees/master-company-ees.entity';
+import { TableProperty } from '../mps/table-mps-property/table-mps-property.entity';
 
 @Entity('ms_businessgroup')
 @UseDto(BusinessGroupDto)
@@ -24,4 +25,7 @@ export class BusinessGroup extends AbstractEntity<BusinessGroupDto> {
 
   @OneToMany(() => Company, (company) => company.businessgroupid)
   company: Company[];
+
+  @OneToMany(() => TableProperty, (property) => property.businessgroupid)
+  property: TableProperty[];
 }

@@ -99,16 +99,22 @@ export class MPSPropertyService {
         .leftJoin('company.cla', 'cla')
         .leftJoin('company.directreview', 'directreview')
         .leftJoin('company.location', 'location')
+        .leftJoin('company.businessgroup', 'businessgroup')
+        .leftJoin('company.ownershipstatus', 'ownershipstatus')
         .select([
           'property.propertyid as propertyid',
           'company.companyid as companyid',
           'cla.claid as claid',
           'directreview.directreviewid as directreviewid',
           'location.locationid as locationid',
+          'businessgroup.businessgroupid as businessgroupid',
+          'ownershipstatus.ownershipstatusid as ownershipstatusid',
           'company.companympsname as companyname',
           'cla.cladesc as cladesc',
           'directreview.directreviewdesc as directreviewdesc',
           'location.locationdesc as locationdesc',
+          'businessgroup.businessgroupdesc as businessgroupdesc',
+          'ownershipstatus.ownershipstatusdesc as ownershipstatusdesc',
           'property.month as month',
           'property.year as year',
         ])
@@ -132,6 +138,8 @@ export class MPSPropertyService {
           directreviewid: body.directreviewid,
           claid: body.claid,
           locationid: body.locationid,
+          businessgroupid: body.businessgroupid,
+          ownershipstatusid: body.ownershipstatusid,
         })
         .where('propertyid = :propertyid', { propertyid })
         .execute();
@@ -147,16 +155,12 @@ export class MPSPropertyService {
 
     const getProperty = await this.getPropertyByParams(updateall.getOne);
 
-    console.log('property', getProperty);
-
     const updateProperty = await this.updateProperty(
       getProperty.propertyid,
       updateall.params,
     );
 
     console.log(updateProperty);
-
-    console.log('update', updateall.genderage);
 
     await queryRunner.startTransaction();
 
