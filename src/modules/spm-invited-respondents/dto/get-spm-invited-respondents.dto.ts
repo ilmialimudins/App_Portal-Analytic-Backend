@@ -390,3 +390,10 @@ export class GetModifyDetailResponse {
   @IsNumber()
   total_invited_respondents: number;
 }
+
+export class GetSurveyGroupListDTO {
+  @ApiProperty()
+  @IsInt()
+  @Type(() => Number)
+  companyid: number;
+}

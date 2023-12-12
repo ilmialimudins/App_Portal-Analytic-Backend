@@ -38,6 +38,7 @@ import {
   GetModifyDetailQueryDTO,
   GetModifyDetailResponse,
   ListDemographyValueDTO,
+  GetSurveyGroupListDTO,
 } from './dto/get-spm-invited-respondents.dto';
 import {
   PostAddModifyValueBodyDTO,
@@ -223,6 +224,13 @@ export class SpmInvitedRespondentsController {
     } catch (error) {
       throw error;
     }
+  }
+
+  @Get('/get-surveygroupid')
+  async getSurveyGroupId(@Query() query: GetSurveyGroupListDTO) {
+    return await this.spmInvitedRespondentsService.getSurveyGroupId(
+      query.companyid,
+    );
   }
 
   @Get('/get-surveyid')
