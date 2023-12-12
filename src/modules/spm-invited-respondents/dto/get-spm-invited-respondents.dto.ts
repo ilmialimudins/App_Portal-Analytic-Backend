@@ -94,6 +94,18 @@ export class GetInvitedRespondentsResultDTO {
 
   @ApiProperty()
   is_delete: string;
+
+  @ApiPropertyOptional()
+  demographydesc?: string;
+
+  @ApiPropertyOptional()
+  companygroup?: string;
+
+  @ApiPropertyOptional()
+  companyname?: string;
+
+  @ApiPropertyOptional()
+  surveygroupdesc?: string;
 }
 
 export class GetSurveyInvitedRespondentsQueryDTO {
@@ -124,11 +136,6 @@ export class GetInvitedRespondentsQueryDTO {
   @ApiProperty()
   @IsInt()
   @Type(() => Number)
-  surveyid: number;
-
-  @ApiProperty()
-  @IsInt()
-  @Type(() => Number)
   companyid: number;
 
   @ApiProperty()
@@ -138,7 +145,7 @@ export class GetInvitedRespondentsQueryDTO {
 }
 
 export class GetManyInvitedRespondentsQueryDTO extends GetInvitedRespondentsQueryDTO {
-  @ApiPropertyOptional()
+  @ApiProperty()
   @IsInt()
   @Type(() => Number)
   tahun_survey?: number;
@@ -328,11 +335,29 @@ export class DetailDTO {
 export class DemoInvited {
   @ApiProperty()
   @IsString()
-  demography: string;
+  valuedemography: string;
 
   @ApiProperty()
   @IsNumber()
   totalinvited_demography: number;
+
+  @ApiProperty()
+  @IsNumber()
+  id: number;
+}
+
+export class DetailInvitedRespondentsDTO {
+  @ApiProperty()
+  @IsString()
+  demography: string;
+
+  @ApiProperty()
+  @IsString()
+  demographycode: string;
+
+  @ApiProperty({ type: [DemoInvited] })
+  @Type(() => DemoInvited)
+  listdemography: DemoInvited[];
 }
 export class GetModifyDetailResponse {
   @ApiProperty({
@@ -355,57 +380,11 @@ export class GetModifyDetailResponse {
   detail: DetailDTO;
 
   @ApiProperty({
-    example: `
-    [
-      {
-        "demography": "Company",
-        "listdemography": [
-            {
-                "demographyvalue": "Company",
-                "inviteddemography": 270
-            }
-        ],
-        "totalinvited_demography": 270
-      },
-      {
-        "demography": "Company 2",
-        "listdemography": [
-            {
-                "demographyvalue": "Company",
-                "inviteddemography": 270
-            },
-            {
-                "demographyvalue": "Company 2",
-                "inviteddemography": 270
-            }
-        ],
-        "totalinvited_demography": 540
-      },
-      {
-        "demography": "Jabatan",
-        "listdemography": [
-            {
-                "demographyvalue": "Jabatan",
-                "inviteddemography": 270
-            }
-        ],
-        "totalinvited_demography": 270
-      },
-      {
-        "demography": "Golongan",
-        "listdemography": [
-            {
-                "demographyvalue": "Golongan",
-                "inviteddemography": 270
-            }
-        ],
-        "totalinvited_demography": 270
-      }
-    ]
-  `,
+    type: [DetailInvitedRespondentsDTO],
   })
+  @Type(() => DetailInvitedRespondentsDTO)
   @ValidateNested()
-  invited_respondents: DemoInvited[];
+  invited_respondents: DetailInvitedRespondentsDTO[];
 
   @ApiProperty()
   @IsNumber()

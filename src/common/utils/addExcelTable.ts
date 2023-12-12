@@ -99,16 +99,19 @@ export const addTableInvitedTable = <T extends object>(
       },
     };
     col.border = border;
+    col.protection = {
+      locked: true,
+    };
   });
 
   tableData.forEach((row, index) => {
     const rowNums = rowDataNum + index;
     const arrayHeaders = Object.keys(row);
+
     arrayHeaders.forEach((x, i) => {
       const cell = sheet.getCell(
         `${alphabet.charAt(indexColumnStart + i)}${rowNums}`,
       );
-
       sheet.getCell(`F${i + 2}`).dataValidation = {
         type: 'list',
         allowBlank: false,
@@ -117,14 +120,17 @@ export const addTableInvitedTable = <T extends object>(
         errorStyle: 'error',
         error: 'Hanya dapat diisi dengan data yang telah tersedia',
       };
-      cell.value = isNaN(row[x]) ? row[x] : +row[x];
+      cell.value = isNaN(row[x]) ? row[x] : row[x];
       cell.style = {
         font: {
           size: 10,
         },
       };
       cell.protection = {
-        locked: isNaN(row[x]) ? true : false,
+        locked:
+          x === 'totalinvited_demography' || x === 'totalinvited_company'
+            ? false
+            : true,
       };
       cell.border = border;
     });
