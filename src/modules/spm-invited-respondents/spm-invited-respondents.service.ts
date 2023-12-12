@@ -147,6 +147,19 @@ export class SpmInvitedRespondentsService {
     }
   }
 
+  public async getSurveyGroupId(companyid: number) {
+    return this.invitedRespondentsRepo
+      .createQueryBuilder('spm')
+      .leftJoin('spm.surveygroup', 'surveygroup')
+      .select([
+        'DISTINCT surveygroup.surveygroupid as surveygroupid',
+        'surveygroup.surveygroupdesc as surveygroupdesc',
+        'surveygroup.surveygroupcode as surveygroupcode',
+      ])
+      .where('spm.companyid = :companyid', { companyid })
+      .getRawMany();
+  }
+
   public async getManyService({
     companyid,
     tahun_survey,
