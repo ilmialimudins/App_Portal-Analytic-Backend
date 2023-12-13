@@ -44,6 +44,20 @@ export class MasterSectionController {
     return this.masterSectionService.getLastMasterSectionCode();
   }
 
+  @Get('/checkDuplicateSectionPowerBI')
+  @ApiCreatedResponse({ type: MasterSectionDto })
+  async checkDuplicateSectionPowerBI(@Query('section') section: string) {
+    const result = await this.masterSectionService.checkDuplicateSectionPowerBI(
+      section,
+    );
+
+    if (result) {
+      return { isDuplicate: true };
+    } else {
+      return { isDuplicate: false };
+    }
+  }
+
   @Post('/createMasterSection')
   @ApiCreatedResponse({ type: MasterSectionDto })
   async createMasterSection(
