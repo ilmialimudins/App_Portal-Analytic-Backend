@@ -227,7 +227,7 @@ export class ReplaceWordcloudService {
       const values = replaceWordcloud.map((item) => {
         return {
           uuid: uuidv4(),
-          companyid: 475,
+          companyid: 1,
           tahun_survey: year,
           original_text: item.original_text,
           replace_text: item.replace_text,

@@ -167,7 +167,10 @@ export const addTableValidate = <T extends object>(
       const cell = sheet.getCell(
         `${numberToExcelColumn(colIndex + 1)}${rowNums}`,
       );
-      cell.value = isNaN(row[headerKey]) ? row[headerKey] : +row[headerKey];
+      const cellValue = isNaN(row[headerKey])
+        ? row[headerKey]
+        : +row[headerKey];
+      cell.value = cellValue === 0 ? null : cellValue;
       cell.style = {
         font: {
           size: 10,
