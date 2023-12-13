@@ -34,9 +34,11 @@ export class DemographyService {
         .createQueryBuilder('demography')
         .select([
           'demographyid',
+          'demographycode',
           'demographydesc',
           'demographyalias',
           'urutanfilter',
+          'desc',
         ]);
 
       if (demography) {
@@ -141,7 +143,10 @@ export class DemographyService {
         .insert()
         .into(Demography)
         .values({
+          demographycode: demography.demographycode,
+          demographydesc: demography.demographydesc,
           demographyalias: demography.demographyalias,
+          urutanfilter: demography.urutanfilter,
           desc: 'Non-Default',
           createdby: userinfo.fullname,
           isdelete: 'false',

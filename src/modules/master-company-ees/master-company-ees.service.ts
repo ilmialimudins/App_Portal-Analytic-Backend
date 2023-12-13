@@ -6,12 +6,16 @@ import { CompanyDto } from './dto/master-company-ees.dto';
 import { AddCompanyDto } from './dto/add-master-company-ees.dto';
 import { UpdateCompanyDto } from './dto/update-master-company-ees.dto';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { AccessUser } from '../access-user/access-user.entity';
 
 @Injectable()
 export class CompanyService {
   constructor(
     @InjectRepository(Company)
     private companyRepository: Repository<Company>,
+
+    @InjectRepository(AccessUser)
+    private accessUserRepository: Repository<AccessUser>,
   ) {}
 
   async getAllCompany(
@@ -94,13 +98,17 @@ export class CompanyService {
     }
   }
 
-  async getAllCompanyActive() {
+  async getAllCompanyActive(userinfo: UserInfoDTO) {
     try {
-      const query = await this.companyRepository
-        .createQueryBuilder('company')
+      const query = await this.accessUserRepository
+        .createQueryBuilder('accessuser')
+        .leftJoin('accessuser.company', 'company')
+        .leftJoin('accessuser.masteruser', 'masteruser')
+        .select(['company.companyeesname'])
         .where('company.isdelete = :isdelete', { isdelete: 'Active' })
+        .andWhere('masteruser.email = :email', { email: userinfo.email })
         .orderBy('company.companyeesname', 'ASC')
-        .getMany();
+        .getRawMany();
 
       return query;
     } catch (error) {

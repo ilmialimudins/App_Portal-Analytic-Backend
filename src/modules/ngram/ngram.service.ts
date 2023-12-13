@@ -49,10 +49,9 @@ export class NgramService {
           'company.companyeesname',
           'ngram.tahun_survey',
         ])
-        .where(
-          '(ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge)',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        );
+        .where('ngram.isdelete IN (:...isdeleteValues)', {
+          isdeleteValues: ['false', 'merge'],
+        });
 
       if (year && company && word) {
         query = query
@@ -134,10 +133,9 @@ export class NgramService {
           'company.companyeesname',
           'ngram.tahun_survey',
         ])
-        .where(
-          '(ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge)',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        );
+        .where('ngram.isdelete IN (:...isdeleteValues)', {
+          isdeleteValues: ['false', 'merge'],
+        });
 
       if (year && company && word) {
         query = query
@@ -198,11 +196,10 @@ export class NgramService {
   async checkDuplicateNgram(ngram: string) {
     try {
       const query = await this.NgramRepository.createQueryBuilder('ngram')
-        .where('ngram.ngram = :ngram', { ngram })
-        .andWhere(
-          'ngram.isdelete = :isdeleteFalse OR ngram.isdelete = :isdeleteMerge',
-          { isdeleteFalse: 'false', isdeleteMerge: 'merge' },
-        )
+        .where('ngram.isdelete IN (:...isdeleteValues)', {
+          isdeleteValues: ['false', 'merge'],
+        })
+        .andWhere('ngram.ngram = :ngram', { ngram })
         .getOne();
 
       return query;
