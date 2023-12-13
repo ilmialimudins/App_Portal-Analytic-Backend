@@ -139,7 +139,7 @@ export class StopwordsService {
         .into(Stopwords)
         .values({
           uuid: uuidv4(),
-          companyid: 475,
+          companyid: 1,
           stopwords: stopwords.stopwords,
           tahun_survey: year,
           createdby: userinfo.fullname,

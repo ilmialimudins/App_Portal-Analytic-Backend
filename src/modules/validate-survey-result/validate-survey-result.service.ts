@@ -325,10 +325,8 @@ export class ValidateSurveyResultService {
     try {
       const query = await this.valdiateSurveyResultRepository
         .createQueryBuilder('validatesurveyresult')
-        .leftJoin('validatesurveyresult.surveyvalidation', 'surveyvalidation')
         .select([
           'validatesurveyresult.id',
-          'surveyvalidation.validation',
           'validatesurveyresult.respondentid',
           'validatesurveyresult.surveyid',
           'validatesurveyresult.businessline',
@@ -380,7 +378,6 @@ export class ValidateSurveyResultService {
       const worksheet = workbook.addWorksheet('Validate Survey Result Data');
 
       const headerTitle = [
-        'Validation',
         'Respondent Id',
         'Surveyid',
         'Business Line',
@@ -416,8 +413,8 @@ export class ValidateSurveyResultService {
         'Age This Year',
         'Age When Entering Company',
       ];
+
       const tableData = query.map((item) => ({
-        Validation: item.surveyvalidation.validation,
         'Respondent Id': item.respondentid,
         Surveyid: item.surveyid,
         'Business Line': item.businessline,
