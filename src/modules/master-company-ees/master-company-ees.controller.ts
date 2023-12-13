@@ -49,8 +49,8 @@ export class CompanyController {
 
   @Get('/getAllCompanyActive')
   @ApiOkResponse({ type: CompanyDto })
-  async getAllCompanyActive() {
-    return this.companyService.getAllCompanyActive();
+  async getAllCompanyActive(@UserInfo() userinfo: UserInfoDTO) {
+    return this.companyService.getAllCompanyActive(userinfo);
   }
 
   @Get('/getCompanyId')

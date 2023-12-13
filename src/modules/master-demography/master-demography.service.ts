@@ -141,7 +141,10 @@ export class DemographyService {
         .insert()
         .into(Demography)
         .values({
+          demographycode: demography.demographycode,
+          demographydesc: demography.demographydesc,
           demographyalias: demography.demographyalias,
+          urutanfilter: demography.urutanfilter,
           desc: 'Non-Default',
           createdby: userinfo.fullname,
           isdelete: 'false',
