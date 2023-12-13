@@ -34,9 +34,11 @@ export class DemographyService {
         .createQueryBuilder('demography')
         .select([
           'demographyid',
+          'demographycode',
           'demographydesc',
           'demographyalias',
           'urutanfilter',
+          'desc',
         ]);
 
       if (demography) {
