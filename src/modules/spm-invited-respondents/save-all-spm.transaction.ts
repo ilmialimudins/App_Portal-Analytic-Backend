@@ -26,6 +26,8 @@ export class SaveAllSMPTransaction extends BaseTransaction<
         invitedRespondents.totalinvited_demography = totalinvited_demography;
         invitedRespondents.valuedemography = valuedemography;
         invitedRespondents.sourcecreatedmodifiedtime = new Date();
+        invitedRespondents.totalinvited_company =
+          invitedRespondents.totalinvited_company || 0;
         invitedRespondents.updatedby =
           this.metadata.userinfo?.username || 'System-Inject';
 
