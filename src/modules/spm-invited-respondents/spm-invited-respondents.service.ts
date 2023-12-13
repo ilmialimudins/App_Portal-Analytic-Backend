@@ -40,6 +40,8 @@ import {
 } from './dto/upload-spm-invited-respondents.dto';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { UploadSPMTransaction } from './upload-spm.transaction';
+import { SaveAllSpmDTO, SaveAllTransactionDTO } from './dto/update-all-spm.dto';
+import { SaveAllSMPTransaction } from './save-all-spm.transaction';
 
 @Injectable()
 export class SpmInvitedRespondentsService {
@@ -52,6 +54,9 @@ export class SpmInvitedRespondentsService {
 
     @Inject(UploadSPMTransaction)
     private uploadSPMTransaction: UploadSPMTransaction,
+
+    @Inject(SaveAllSMPTransaction)
+    private saveAllSmpTransaction: SaveAllSMPTransaction,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -496,6 +501,7 @@ export class SpmInvitedRespondentsService {
         .select('dm.demographydesc', 'demography')
         .addSelect('tsi.id', 'id')
         .addSelect('tsi.valuedemography', 'valuedemography')
+        .addSelect('tsi.demographyid', 'demographyid')
         .addSelect('dm.demographycode', 'demographycode')
         .addSelect('tsi.totalinvited_demography', 'totalinvited_demography')
         .innerJoin('tsi.demography', 'dm')
@@ -510,6 +516,7 @@ export class SpmInvitedRespondentsService {
           [item.demographycode]: {
             demography: item.demography,
             demographycode: item.demographycode,
+            demographyid: item.demographyid,
             listdemographyvalue: [
               ...(acc[item.demographycode]?.listdemographyvalue || []),
               {
@@ -573,7 +580,24 @@ export class SpmInvitedRespondentsService {
     }
   }
 
-  async addDemographyValueModify(body: PostAddModifyValueBodyDTO) {
+  public async saveAllDemography(body: SaveAllSpmDTO, user: UserInfoDTO) {
+    const transactiondata: SaveAllTransactionDTO[] = body.invited_respondents
+      .map((inv) =>
+        inv.listdemographyvalue.map((dem) => ({
+          id: dem.id,
+          totalinvited_demography: dem.totalinvited_demography,
+          valuedemography: dem.valuedemography,
+          totalinvited_company: body.total_invited_respondents,
+        })),
+      )
+      .flat(2);
+
+    return await this.saveAllSmpTransaction
+      .setMetadata({ userinfo: user })
+      .run(transactiondata);
+  }
+
+  public async addDemographyValueModify(body: PostAddModifyValueBodyDTO) {
     try {
       const findId = await this.demographyRepository.findOne({
         where: {
@@ -612,7 +636,7 @@ export class SpmInvitedRespondentsService {
     }
   }
 
-  async removeValueDemo({
+  public async removeValueDemo({
     companyid,
     surveygroupid,
     tahun_survey,
@@ -645,7 +669,7 @@ export class SpmInvitedRespondentsService {
     }
   }
 
-  async removeSectionDemo({
+  public async removeSectionDemo({
     companyid,
     surveygroupid,
     tahun_survey,
