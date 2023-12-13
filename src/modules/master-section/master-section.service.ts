@@ -67,6 +67,20 @@ export class MasterSectionService {
     }
   }
 
+  async checkDuplicateSectionPowerBI(section: string) {
+    try {
+      const query = await this.masterSectionRepository
+        .createQueryBuilder('section')
+        .where('section.sectioncodepowerbiid = :section', { section })
+        .andWhere('section.isdelete = :isdelete', { isdelete: false })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterSection(
     mastersection: AddMasterSectionDto,
     userinfo: UserInfoDTO,

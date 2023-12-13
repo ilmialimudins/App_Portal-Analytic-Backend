@@ -68,6 +68,20 @@ export class MasterReportService {
     }
   }
 
+  async checkDuplicateReportPowerBI(report: string) {
+    try {
+      const query = await this.masterReportRepository
+        .createQueryBuilder('report')
+        .where('report.reportpowerbiid = :report', { report })
+        .andWhere('report.isdelete = :isdelete', { isdelete: false })
+        .getOne();
+
+      return query;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createMasterReport(
     masterreport: AddMasterReportDto,
     userinfo: UserInfoDTO,

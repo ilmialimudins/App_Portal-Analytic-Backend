@@ -38,12 +38,13 @@ export class MasterWorkSpaceController {
     return this.masterWorkSpaceService.getMasterWorkspaceId(workspaceid);
   }
 
-  @Get('/checkDuplicateWorkspace')
+  @Get('/checkDuplicateWorkspacePowerBI')
   @ApiCreatedResponse({ type: MasterWorkSpaceDto })
-  async checkDuplicateWorkspace(@Query('workspace') workspace: string) {
-    const result = await this.masterWorkSpaceService.checkDuplicateWorkspace(
-      workspace,
-    );
+  async checkDuplicateWorkspacePowerBI(@Query('workspace') workspace: string) {
+    const result =
+      await this.masterWorkSpaceService.checkDuplicateWorkspacePowerBI(
+        workspace,
+      );
 
     if (result) {
       return { isDuplicate: true };

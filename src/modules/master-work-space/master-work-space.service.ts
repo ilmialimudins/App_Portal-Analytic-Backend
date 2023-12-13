@@ -49,12 +49,12 @@ export class MasterWorkSpaceService {
     }
   }
 
-  async checkDuplicateWorkspace(workspace: string) {
+  async checkDuplicateWorkspacePowerBI(workspace: string) {
     try {
       const query = await this.masterWorkSpaceRepository
         .createQueryBuilder('masterworkspace')
-        .where('masterworkspace.workspacename = :workspace', { workspace })
-        .where('masterworkspace.isdelete = :isdelete', { isdelete: false })
+        .where('masterworkspace.workspacepowerbiid = :workspace', { workspace })
+        .andWhere('masterworkspace.isdelete = :isdelete', { isdelete: false })
         .getOne();
 
       return query;

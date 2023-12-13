@@ -42,6 +42,20 @@ export class MasterReportController {
     return this.masterReportService.getLastMasterReportCode();
   }
 
+  @Get('/checkDuplicateReportPowerBI')
+  @ApiCreatedResponse({ type: MasterReportDto })
+  async checkDuplicateReportPowerBI(@Query('report') report: string) {
+    const result = await this.masterReportService.checkDuplicateReportPowerBI(
+      report,
+    );
+
+    if (result) {
+      return { isDuplicate: true };
+    } else {
+      return { isDuplicate: false };
+    }
+  }
+
   @Post('/createMasterReport')
   @ApiCreatedResponse({ type: MasterReportDto })
   async createMasterReport(
