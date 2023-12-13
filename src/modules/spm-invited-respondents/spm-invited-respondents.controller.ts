@@ -13,6 +13,8 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   Req,
+  BadRequestException,
+  Delete,
 } from '@nestjs/common';
 import { Response as ExpressResponse } from 'express';
 import {
@@ -46,6 +48,7 @@ import { excelFileType } from 'src/constants/filetype';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { SaveAllSpmDTO } from './dto/update-all-spm.dto';
+import { DelInvitedRespondentsQueryDTO } from './dto/delete-spm-invited-respondents.dto';
 
 @ApiTags('Invited Respondents')
 @ApiBearerAuth()
@@ -217,37 +220,37 @@ export class SpmInvitedRespondentsController {
   //   return await this.spmInvitedRespondentsService.createRespondent(body);
   // }
 
-  // @Delete('/')
-  // async deleteRespondents(
-  //   @Query()
-  //   {
-  //     companyid,
-  //     surveyid,
-  //     valuedemography,
-  //     demographyid,
-  //     tahun_survey,
-  //     surveygroupid,
-  //   }: DelInvitedRespondentsQueryDTO,
-  // ) {
-  //   const result = await this.spmInvitedRespondentsService.removeRespondents({
-  //     companyid,
-  //     surveyid,
-  //     valuedemography,
-  //     demographyid,
-  //     tahun_survey,
-  //     surveygroupid,
-  //   });
+  @Delete('/')
+  async deleteRespondents(
+    @Query()
+    {
+      companyid,
+      surveyid,
+      valuedemography,
+      demographyid,
+      tahun_survey,
+      surveygroupid,
+    }: DelInvitedRespondentsQueryDTO,
+  ) {
+    const result = await this.spmInvitedRespondentsService.removeRespondents({
+      companyid,
+      surveyid,
+      valuedemography,
+      demographyid,
+      tahun_survey,
+      surveygroupid,
+    });
 
-  //   const { raw, affected } = result;
+    const { raw, affected } = result;
 
-  //   if (!affected) {
-  //     throw new BadRequestException(
-  //       'Gagal menghapus atau data tidak ditemukan',
-  //     );
-  //   }
+    if (!affected) {
+      throw new BadRequestException(
+        'Gagal menghapus atau data tidak ditemukan',
+      );
+    }
 
-  //   return { message: 'Success', data: raw };
-  // }
+    return { message: 'Success', data: raw };
+  }
 
   // @Post('add-demographyvalue')
   // @ApiOkResponse({ type: ListDemographyValueDTO })
