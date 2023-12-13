@@ -355,9 +355,16 @@ export class DetailInvitedRespondentsDTO {
   @IsString()
   demographycode: string;
 
+  @ApiProperty()
+  @IsInt()
+  @Type(() => Number)
+  demographyid: number;
+
   @ApiProperty({ type: [DemoInvited] })
   @Type(() => DemoInvited)
-  listdemography: DemoInvited[];
+  @IsArray()
+  @ValidateNested()
+  listdemographyvalue: DemoInvited[];
 }
 export class GetModifyDetailResponse {
   @ApiProperty({

@@ -1,14 +1,12 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpException,
   HttpStatus,
   Post,
   Query,
   Res,
-  BadRequestException,
   Put,
   UseGuards,
   UseInterceptors,
@@ -27,30 +25,17 @@ import {
 } from '@nestjs/swagger';
 import { SpmInvitedRespondentsService } from './spm-invited-respondents.service';
 import {
-  GetOneInvitedRespondentsQueryDTO,
-  GetInvitedRespondentsResultDTO,
   GetSurveyInvitedRespondentsQueryDTO,
   GetSurveyInvitedRespondentsResultsDTO,
-  GetInvitedRespondentsQueryDTO,
   GetManyInvitedRespondentsQueryDTO,
   GetModifyListQueryDTO,
   GetModifyResponse,
   GetModifyDetailQueryDTO,
   GetModifyDetailResponse,
-  ListDemographyValueDTO,
   GetSurveyGroupListDTO,
 } from './dto/get-spm-invited-respondents.dto';
-import {
-  PostAddModifyValueBodyDTO,
-  PostInvitedRespondentsBodyDTO,
-  PostInvitedRespondentsResultsDTO,
-  PutTotalInvitedBodyDTO,
-} from './dto/post-spm-invited-respondents.dto';
-import {
-  DelInvitedRespondentsQueryDTO,
-  DelSectionModifyDTO,
-  DelValueDemoModifyDTO,
-} from './dto/delete-spm-invited-respondents.dto';
+import { PutTotalInvitedBodyDTO } from './dto/post-spm-invited-respondents.dto';
+
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadSPMDTO } from './dto/upload-spm-invited-respondents.dto';
@@ -60,6 +45,7 @@ import { CustomUploadFileValidator } from 'src/common/validator/customfiletype.v
 import { excelFileType } from 'src/constants/filetype';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { SaveAllSpmDTO } from './dto/update-all-spm.dto';
 
 @ApiTags('Invited Respondents')
 @ApiBearerAuth()
@@ -69,57 +55,6 @@ export class SpmInvitedRespondentsController {
   constructor(
     private readonly spmInvitedRespondentsService: SpmInvitedRespondentsService,
   ) {}
-
-  @Get('/')
-  @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
-  async getInvitedRespondents(
-    @Query()
-    { companyid, surveygroupid }: GetInvitedRespondentsQueryDTO,
-  ): Promise<GetOneInvitedRespondentsQueryDTO[]> {
-    return await this.spmInvitedRespondentsService.getManyService({
-      companyid,
-      surveygroupid,
-    });
-  }
-
-  @Post('/')
-  async creteRespondents(
-    @Body() body: PostInvitedRespondentsBodyDTO,
-  ): Promise<PostInvitedRespondentsResultsDTO | undefined> {
-    return await this.spmInvitedRespondentsService.createRespondent(body);
-  }
-
-  @Delete('/')
-  async deleteRespondents(
-    @Query()
-    {
-      companyid,
-      surveyid,
-      valuedemography,
-      demographyid,
-      tahun_survey,
-      surveygroupid,
-    }: DelInvitedRespondentsQueryDTO,
-  ) {
-    const result = await this.spmInvitedRespondentsService.removeRespondents({
-      companyid,
-      surveyid,
-      valuedemography,
-      demographyid,
-      tahun_survey,
-      surveygroupid,
-    });
-
-    const { raw, affected } = result;
-
-    if (!affected) {
-      throw new BadRequestException(
-        'Gagal menghapus atau data tidak ditemukan',
-      );
-    }
-
-    return { message: 'Success', data: raw };
-  }
 
   @Get('modify-list')
   @ApiResponse({ type: GetModifyResponse })
@@ -155,6 +90,14 @@ export class SpmInvitedRespondentsController {
     }
   }
 
+  @Post('save-all-invited')
+  public async saveAllInvited(
+    @Body() body: SaveAllSpmDTO,
+    @UserInfo() user: UserInfoDTO,
+  ) {
+    return this.spmInvitedRespondentsService.saveAllDemography(body, user);
+  }
+
   @Put('modify-total-invited')
   async changeTotalInvited(
     @Query()
@@ -166,61 +109,6 @@ export class SpmInvitedRespondentsController {
         { tahun_survey, companyid, surveygroupid },
         body.total,
       );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Post('add-demographyvalue')
-  @ApiOkResponse({ type: ListDemographyValueDTO })
-  async addValueDemography(
-    @Body() body: PostAddModifyValueBodyDTO,
-  ): Promise<ListDemographyValueDTO> {
-    try {
-      return await this.spmInvitedRespondentsService.addDemographyValueModify(
-        body,
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Delete('delete-modify-demography')
-  async deleteSectionValue(
-    @Query()
-    {
-      companyid,
-      tahun_survey,
-      surveygroupid,
-      valuedemography,
-      demography,
-    }: DelValueDemoModifyDTO,
-  ) {
-    try {
-      return await this.spmInvitedRespondentsService.removeValueDemo({
-        companyid,
-        tahun_survey,
-        surveygroupid,
-        valuedemography,
-        demography,
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Delete('delete-modify-section')
-  async deleteSectionModify(
-    @Query()
-    { companyid, tahun_survey, surveygroupid, demography }: DelSectionModifyDTO,
-  ) {
-    try {
-      return await this.spmInvitedRespondentsService.removeSectionDemo({
-        companyid,
-        tahun_survey,
-        surveygroupid,
-        demography,
-      });
     } catch (error) {
       throw error;
     }
@@ -309,4 +197,109 @@ export class SpmInvitedRespondentsController {
       user,
     );
   }
+
+  // @Get('/')
+  // @ApiOkResponse({ type: [GetInvitedRespondentsResultDTO] })
+  // async getInvitedRespondents(
+  //   @Query()
+  //   { companyid, surveygroupid }: GetInvitedRespondentsQueryDTO,
+  // ): Promise<GetOneInvitedRespondentsQueryDTO[]> {
+  //   return await this.spmInvitedRespondentsService.getManyService({
+  //     companyid,
+  //     surveygroupid,
+  //   });
+  // }
+
+  // @Post('/')
+  // async creteRespondents(
+  //   @Body() body: PostInvitedRespondentsBodyDTO,
+  // ): Promise<PostInvitedRespondentsResultsDTO | undefined> {
+  //   return await this.spmInvitedRespondentsService.createRespondent(body);
+  // }
+
+  // @Delete('/')
+  // async deleteRespondents(
+  //   @Query()
+  //   {
+  //     companyid,
+  //     surveyid,
+  //     valuedemography,
+  //     demographyid,
+  //     tahun_survey,
+  //     surveygroupid,
+  //   }: DelInvitedRespondentsQueryDTO,
+  // ) {
+  //   const result = await this.spmInvitedRespondentsService.removeRespondents({
+  //     companyid,
+  //     surveyid,
+  //     valuedemography,
+  //     demographyid,
+  //     tahun_survey,
+  //     surveygroupid,
+  //   });
+
+  //   const { raw, affected } = result;
+
+  //   if (!affected) {
+  //     throw new BadRequestException(
+  //       'Gagal menghapus atau data tidak ditemukan',
+  //     );
+  //   }
+
+  //   return { message: 'Success', data: raw };
+  // }
+
+  // @Post('add-demographyvalue')
+  // @ApiOkResponse({ type: ListDemographyValueDTO })
+  // async addValueDemography(
+  //   @Body() body: PostAddModifyValueBodyDTO,
+  // ): Promise<ListDemographyValueDTO> {
+  //   try {
+  //     return await this.spmInvitedRespondentsService.addDemographyValueModify(
+  //       body,
+  //     );
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+  // @Delete('delete-modify-demography')
+  // async deleteSectionValue(
+  //   @Query()
+  //   {
+  //     companyid,
+  //     tahun_survey,
+  //     surveygroupid,
+  //     valuedemography,
+  //     demography,
+  //   }: DelValueDemoModifyDTO,
+  // ) {
+  //   try {
+  //     return await this.spmInvitedRespondentsService.removeValueDemo({
+  //       companyid,
+  //       tahun_survey,
+  //       surveygroupid,
+  //       valuedemography,
+  //       demography,
+  //     });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  // @Delete('delete-modify-section')
+  // async deleteSectionModify(
+  //   @Query()
+  //   { companyid, tahun_survey, surveygroupid, demography }: DelSectionModifyDTO,
+  // ) {
+  //   try {
+  //     return await this.spmInvitedRespondentsService.removeSectionDemo({
+  //       companyid,
+  //       tahun_survey,
+  //       surveygroupid,
+  //       demography,
+  //     });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }
