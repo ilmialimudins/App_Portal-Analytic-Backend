@@ -248,14 +248,27 @@ export class MasterMenuService {
           url,
         };
       });
+
       listMenuByRole = await this.concatMenuURLIsSection(listMenuByRole);
 
       const allMenu = await this.getAllMasterMenu();
 
       const constructMenuData = constructAllMenu(listMenuByRole, allMenu);
 
+      const mergeMenuData = [
+        ...Object.values(constructMenuData),
+        ...listMenuByRole,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ];
+
+      const distinctMenu: Record<string, ListMenuDTO> = {};
+
+      mergeMenuData.forEach((item) => {
+        distinctMenu[item.menuid] = item;
+      });
+
       const navbarMenu = generateNavbarMenu(
-        [...Object.values(constructMenuData), ...listMenuByRole],
+        [...Object.values(distinctMenu)],
         0,
       );
 
