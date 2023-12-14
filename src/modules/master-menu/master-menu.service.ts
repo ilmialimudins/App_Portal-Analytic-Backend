@@ -85,7 +85,7 @@ export class MasterMenuService {
           let mappingUrlReport = '';
 
           if (getReport) {
-            mappingUrlReport = `/${getReport.masterreport.masterworkspace.workspacepowerbiid}/${getReport.masterreport.reportpowerbiiid}/${getReport.masterreport.datasetpowerbiid}/${getReport.mastersection.sectioncodepowerbiid}`;
+            mappingUrlReport = `/${getReport.masterreport.masterworkspace.workspacepowerbiid}/${getReport.masterreport.reportpowerbiiid}/${getReport.masterreport.datasetpowerbiid}?section=${getReport.mastersection.sectioncodepowerbiid}`;
           }
 
           return { ...menu, url: `${menu.url}${mappingUrlReport}` };
