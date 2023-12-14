@@ -6,7 +6,7 @@ import { StopwordsDto } from './dto/stopwords.dto';
 import { AddStopwordsDto } from './dto/add-stopwords.dto';
 import { UpdateStopwordsDto } from './dto/update-stopwords.dto';
 import * as excel from 'exceljs';
-import { addTable } from 'src/common/utils/addExcelTable';
+import { addTableStopwords } from 'src/common/utils/addExcelTable';
 import { v4 as uuidv4 } from 'uuid';
 import { removeArrObj } from 'src/common/utils/checkDuplicate';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
@@ -210,7 +210,7 @@ export class StopwordsService {
       const values = stopwords.map((item) => {
         return {
           uuid: uuidv4(),
-          companyid: 475,
+          companyid: 1,
           stopwords: item.stopwords,
           tahun_survey: year,
           createdby: userinfo.fullname,
@@ -297,13 +297,14 @@ export class StopwordsService {
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet('Stopwords Data');
 
+      worksheet.protect('qwerty', {});
       const headerTitle = ['Company Name', 'Stopwords'];
       const tableData = query.map((item) => ({
         'Company Name': item.company.companyeesname,
         Stopwords: item.stopwords,
       }));
 
-      addTable(
+      addTableStopwords(
         {
           columnStart: 'A',
           rowHeaderNum: 1,
