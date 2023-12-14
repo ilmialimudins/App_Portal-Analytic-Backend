@@ -138,6 +138,7 @@ export class RoleMenuService {
           'mastermenu.parentid as parentid',
           'mastermenu.issection as issection',
           'mastermenu.sequence as sequence',
+          'mastermenu.menucode as menucode',
           'mastermenu.url as url',
         ])
         .leftJoin('rolemenu.masterrole', 'masterrole')
