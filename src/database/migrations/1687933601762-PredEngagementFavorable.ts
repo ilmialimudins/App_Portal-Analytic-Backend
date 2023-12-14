@@ -89,7 +89,11 @@ export class PredEngagementFavorable1687933601762
             type: 'bigint',
             isNullable: true,
           },
-
+          {
+            name: 'avg_respondentanswer_factor',
+            type: 'float',
+            isNullable: true,
+          },
           {
             name: 'count_unfavorable',
             type: 'bigint',
