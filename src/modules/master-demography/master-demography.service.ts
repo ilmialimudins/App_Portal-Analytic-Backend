@@ -38,7 +38,7 @@ export class DemographyService {
           'demographydesc',
           'demographyalias',
           'urutanfilter',
-          'desc',
+          '[desc]',
         ]);
 
       if (demography) {
