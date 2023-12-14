@@ -6,7 +6,7 @@ import { ReplaceWordcloudDto } from './dto/replace-wordcloud.dto';
 import { AddReplaceWordcloudDto } from './dto/add-replace-wordcloud.dto';
 import { UpdateReplaceWordcloudDto } from './dto/update-replace-wordcloud.dto';
 import * as excel from 'exceljs';
-import { addTable } from 'src/common/utils/addExcelTable';
+import { addTableReplaceWordCloud } from 'src/common/utils/addExcelTable';
 import { v4 as uuidv4 } from 'uuid';
 import { removeArrObj } from 'src/common/utils/checkDuplicate';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
@@ -317,6 +317,7 @@ export class ReplaceWordcloudService {
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet('Replace Wordcloud Data');
 
+      worksheet.protect('qwerty', {});
       const headerTitle = ['Company Name', 'Original Text', 'Replacement Text'];
       const tableData = query.map((item) => ({
         'Company Name': item.company.companyeesname,
@@ -324,7 +325,7 @@ export class ReplaceWordcloudService {
         'Replacement Text': item.replace_text,
       }));
 
-      addTable(
+      addTableReplaceWordCloud(
         {
           columnStart: 'A',
           rowHeaderNum: 1,

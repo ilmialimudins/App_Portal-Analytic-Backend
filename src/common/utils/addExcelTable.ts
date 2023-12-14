@@ -73,6 +73,112 @@ export const addTable = <T extends object>(
   });
 };
 
+export const addTableStopwords = <T extends object>(
+  objTable: ObjectTable<T>,
+  sheet: excel.Worksheet,
+) => {
+  const { columnStart, rowHeaderNum, rowDataNum, headerTitle, tableData } =
+    objTable;
+
+  const indexColumnStart = alphabet.indexOf(columnStart);
+  headerTitle.forEach((item, index) => {
+    const col = sheet.getCell(
+      `${alphabet.charAt(indexColumnStart + index)}${rowHeaderNum}`,
+    );
+    const column = sheet.getColumn(
+      `${alphabet.charAt(indexColumnStart + index)}`,
+    );
+    column.width = item.length + 3;
+    col.value = item;
+    col.style = {
+      ...middleStyle,
+      font: {
+        size: 11,
+        bold: false,
+      },
+    };
+    col.border = border;
+    col.protection = {
+      locked: true,
+    };
+  });
+
+  tableData.forEach((row, index) => {
+    const rowNums = rowDataNum + index;
+    const arrayHeaders = Object.keys(row);
+    arrayHeaders.forEach((x, i) => {
+      const cell = sheet.getCell(
+        `${alphabet.charAt(indexColumnStart + i)}${rowNums}`,
+      );
+      const cellValue = isNaN(row[x]) ? row[x] : +row[x];
+      cell.value = cellValue === 0 || cellValue === null ? '' : cellValue;
+
+      cell.style = {
+        font: {
+          size: 10,
+        },
+      };
+      cell.protection = {
+        locked: x === 'Stopwords' ? false : true,
+      };
+      cell.border = border;
+    });
+  });
+};
+
+export const addTableReplaceWordCloud = <T extends object>(
+  objTable: ObjectTable<T>,
+  sheet: excel.Worksheet,
+) => {
+  const { columnStart, rowHeaderNum, rowDataNum, headerTitle, tableData } =
+    objTable;
+
+  const indexColumnStart = alphabet.indexOf(columnStart);
+  headerTitle.forEach((item, index) => {
+    const col = sheet.getCell(
+      `${alphabet.charAt(indexColumnStart + index)}${rowHeaderNum}`,
+    );
+    const column = sheet.getColumn(
+      `${alphabet.charAt(indexColumnStart + index)}`,
+    );
+    column.width = item.length + 3;
+    col.value = item;
+    col.style = {
+      ...middleStyle,
+      font: {
+        size: 11,
+        bold: false,
+      },
+    };
+    col.border = border;
+    col.protection = {
+      locked: true,
+    };
+  });
+
+  tableData.forEach((row, index) => {
+    const rowNums = rowDataNum + index;
+    const arrayHeaders = Object.keys(row);
+    arrayHeaders.forEach((x, i) => {
+      const cell = sheet.getCell(
+        `${alphabet.charAt(indexColumnStart + i)}${rowNums}`,
+      );
+      const cellValue = isNaN(row[x]) ? row[x] : +row[x];
+      cell.value = cellValue === 0 || cellValue === null ? '' : cellValue;
+      cell.style = {
+        font: {
+          size: 10,
+        },
+      };
+      cell.protection = {
+        locked:
+          x === 'Original Text' || x === 'Replacement Text' ? false : true,
+      };
+      cell.border = border;
+    });
+  });
+};
+
 export const addTableInvitedTable = <T extends object>(
   objTable: ObjectTable<T>,
   sheet: excel.Worksheet,
@@ -141,6 +247,28 @@ export const addTableValidate = <T extends object>(
   objTable: ObjectTable<T>,
   sheet: excel.Worksheet,
 ) => {
+  const columnsToUnlock = [
+    'Location',
+    'Job Title',
+    'Branch',
+    'Plant',
+    'Job Sites',
+    'Directorate',
+    'Division',
+    'Department',
+    'Grade',
+    'Birth Year',
+    'Entry Year (Astra)',
+    'Entry Year (Company)',
+    'Employee Status',
+    'Function',
+    'Region',
+    'Area',
+    'Sales Office',
+    'Kebun',
+    'Gender',
+  ];
+
   const { rowHeaderNum, rowDataNum, headerTitle, tableData } = objTable;
 
   headerTitle.forEach((item, index) => {
@@ -158,6 +286,9 @@ export const addTableValidate = <T extends object>(
       },
     };
     col.border = border;
+    col.protection = {
+      locked: true,
+    };
   });
 
   tableData.forEach((row, rowIndex) => {
@@ -177,7 +308,7 @@ export const addTableValidate = <T extends object>(
         },
       };
       cell.protection = {
-        locked: isNaN(row[headerKey]) ? true : false,
+        locked: !columnsToUnlock.includes(headerKey),
       };
       cell.border = border;
     });

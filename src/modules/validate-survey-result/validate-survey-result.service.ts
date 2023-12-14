@@ -377,6 +377,7 @@ export class ValidateSurveyResultService {
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet('Validate Survey Result Data');
 
+      worksheet.protect('qwerty', {});
       const headerTitle = [
         'Respondent Id',
         'Surveyid',
