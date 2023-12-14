@@ -49,6 +49,7 @@ Routes is following REST standard (Richardson level 3)
 </details>
   `,
     )
+    .setExternalDoc('Postman Collection', '/documentation-json')
     .addBearerAuth();
 
   if (process.env.API_VERSION) {
@@ -57,6 +58,8 @@ Routes is following REST standard (Richardson level 3)
 
   if (process.env.NODE_ENV === 'development') {
     documentBuilder.addServer('/hcanalyticbedev');
+  } else if (process.env.NODE_ENV === 'stagging') {
+    documentBuilder.addServer('/hcanalyticbeutt');
   }
 
   const document = SwaggerModule.createDocument(app, documentBuilder.build());
