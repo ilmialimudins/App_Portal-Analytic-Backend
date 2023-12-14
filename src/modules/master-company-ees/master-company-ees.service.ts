@@ -104,7 +104,11 @@ export class CompanyService {
         .createQueryBuilder('accessuser')
         .leftJoin('accessuser.company', 'company')
         .leftJoin('accessuser.masteruser', 'masteruser')
-        .select(['company.companyeesname'])
+        .select([
+          'company.companyid',
+          'company.companycode',
+          'company.companyeesname',
+        ])
         .where('company.isdelete = :isdelete', { isdelete: 'Active' })
         .andWhere('masteruser.email = :email', { email: userinfo.email })
         .orderBy('company.companyeesname', 'ASC')
