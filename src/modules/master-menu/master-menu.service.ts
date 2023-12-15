@@ -88,10 +88,13 @@ export class MasterMenuService {
 
           if (getReport) {
             mappingUrlReport = `/${
-              getReport.masterreport.masterworkspace.workspacepowerbiid ?? 'N/A'
-            }/${getReport.masterreport.reportpowerbiiid ?? 'N/A'}/${
-              getReport.masterreport.datasetpowerbiid ?? 'N/A'
-            }?section=${getReport.mastersection.sectioncodepowerbiid ?? 'N/A'}`;
+              getReport.masterreport.masterworkspace?.workspacepowerbiid ??
+              'N/A'
+            }/${getReport.masterreport?.reportpowerbiiid ?? 'N/A'}/${
+              getReport.masterreport?.datasetpowerbiid ?? 'N/A'
+            }?section=${
+              getReport.mastersection?.sectioncodepowerbiid ?? 'N/A'
+            }`;
           }
 
           return { ...menu, url: `${menu.url}${mappingUrlReport}` };
