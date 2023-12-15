@@ -57,6 +57,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://irportaldev.azurewebsites.net',
       'https://irportalstg.azurewebsites.net',
+      'https://hcanalyticsutt.astra.co.id',
     ],
     methods: ['POST', 'PUT', 'DELETE', 'GET', 'PATCH'],
   });
