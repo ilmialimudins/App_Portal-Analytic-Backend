@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Inject, Injectable } from '@nestjs/common/decorators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MasterMenu } from './master-menu.entity';
@@ -83,9 +84,14 @@ export class MasterMenuService {
               menu.menuid,
             );
           let mappingUrlReport = '';
+          console.log(getReport);
 
           if (getReport) {
-            mappingUrlReport = `/${getReport.masterreport.masterworkspace.workspacepowerbiid}/${getReport.masterreport.reportpowerbiiid}/${getReport.masterreport.datasetpowerbiid}?section=${getReport.mastersection.sectioncodepowerbiid}`;
+            mappingUrlReport = `/${
+              getReport.masterreport.masterworkspace.workspacepowerbiid ?? 'N/A'
+            }/${getReport.masterreport.reportpowerbiiid ?? 'N/A'}/${
+              getReport.masterreport.datasetpowerbiid ?? 'N/A'
+            }?section=${getReport.mastersection.sectioncodepowerbiid ?? 'N/A'}`;
           }
 
           return { ...menu, url: `${menu.url}${mappingUrlReport}` };
