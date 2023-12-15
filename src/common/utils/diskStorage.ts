@@ -1,8 +1,10 @@
 import * as multer from 'multer';
 
-export default function diskStorage(): multer.StorageEngine {
+export default function diskStorage(
+  destination = './temp',
+): multer.StorageEngine {
   return multer.diskStorage({
-    destination: './temp',
+    destination: destination,
     filename: (req, file, cb) => {
       const fileName = file.originalname.split('.')[0];
       const fileExt = file.originalname.split('.')[1];

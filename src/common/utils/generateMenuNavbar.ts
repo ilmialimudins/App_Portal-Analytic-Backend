@@ -4,7 +4,6 @@ import {
   ListMenuDTO,
 } from 'src/modules/master-menu/dto/maintain-mastermenu.dto';
 import { DataMenuDTO } from 'src/modules/master-menu/dto/navbar-menu.dto';
-import { MasterMenu } from 'src/modules/master-menu/master-menu.entity';
 
 const generateNavbarMenu = (listmenu: ListMenuDTO[], parent: number) => {
   const filteredRole = listmenu.filter((menu) => menu.parentid == parent);
