@@ -3,13 +3,24 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Query,
+  Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ValidateSurveyResultService } from './validate-survey-result.service';
 import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
 import { UpdateValidateSurveyResultDto } from './dto/update-validate-survey-result.dto';
@@ -21,6 +32,12 @@ import {
 } from './dto/add-validate-survey-result.dto';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { UserInfo } from 'src/decorators/use-info.decorator';
+import { UploadSurveyDTO } from './dto/upload-validate-survey-result.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import diskStorage from 'src/common/utils/diskStorage';
+import { CustomUploadFileValidator } from 'src/common/validator/customfiletype.validator';
+import { excelFileType } from 'src/constants/filetype';
+import { UpdateDateVersion } from './update-dateversion.transaction';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -29,6 +46,7 @@ import { UserInfo } from 'src/decorators/use-info.decorator';
 export class ValidateSurveyResultController {
   constructor(
     private validateSurveyResultService: ValidateSurveyResultService,
+    private updateDateVersion: UpdateDateVersion,
   ) {}
 
   @Get('/')
@@ -65,12 +83,12 @@ export class ValidateSurveyResultController {
   @ApiCreatedResponse({ type: ValidateSurveyResultDto })
   async updateValidateSurveyResult(
     @Query('id') id: number,
-    @Query('surveyid') surveyid: number,
+    @Query('surveyid') surveyid: string,
     @Query('company') company: string,
     @Body() validatesurveyresult: UpdateValidateSurveyResultDto,
     @UserInfo() userinfo: UserInfoDTO,
   ) {
-    await this.validateSurveyResultService.updateDateVersion(surveyid, company);
+    await this.updateDateVersion.run([{ surveyid, company }]);
 
     const updateResult =
       await this.validateSurveyResultService.updateValidateSurveyResult(
@@ -86,10 +104,10 @@ export class ValidateSurveyResultController {
   @ApiCreatedResponse({ type: ValidateSurveyResultDto })
   async deleteAndModifySurveyResult(
     @Query('id') id: number,
-    @Query('surveyid') surveyid: number,
+    @Query('surveyid') surveyid: string,
     @Query('company') company: string,
   ) {
-    await this.validateSurveyResultService.updateDateVersion(surveyid, company);
+    await this.updateDateVersion.run([{ surveyid, company }]);
 
     const deletedResult =
       await this.validateSurveyResultService.deleteValidateSurveyResult(id);
@@ -101,10 +119,10 @@ export class ValidateSurveyResultController {
   @ApiCreatedResponse({ type: ValidateSurveyResultDto })
   async deleteRespondentIncomplete(
     @Query('respondentid') respondentid: number,
-    @Query('surveyid') surveyid: number,
+    @Query('surveyid') surveyid: string,
     @Query('company') company: string,
   ) {
-    await this.validateSurveyResultService.updateDateVersion(surveyid, company);
+    await this.updateDateVersion.run([{ surveyid, company }]);
 
     const deletedResult =
       this.validateSurveyResultService.deleteRespondentIncomplete(respondentid);
@@ -134,5 +152,38 @@ export class ValidateSurveyResultController {
 
     await workbook.xlsx.write(res);
     res.end();
+  }
+
+  @Post('/UploadValidateSurveyResult')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Data Validate Survey Result',
+    type: UploadSurveyDTO,
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage(`./temp/cleansing-survey/`),
+    }),
+  )
+  async uploadValidateSurveyResult(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addValidator(
+          new CustomUploadFileValidator({ fileType: excelFileType }),
+        )
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Req() request: Request,
+
+    @UserInfo() user: UserInfoDTO,
+  ) {
+    return this.validateSurveyResultService.extractValidateSurveyResult(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      request.body as any,
+      user,
+    );
   }
 }

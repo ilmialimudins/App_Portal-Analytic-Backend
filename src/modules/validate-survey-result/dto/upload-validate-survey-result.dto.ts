@@ -1,16 +1,23 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class AddValidateSurveyResultDto {
+export class UploadSurveyDTO {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: any;
+}
+
+export class UploadBodyNameDTO {
   @ApiPropertyOptional()
-  @IsOptional()
   @IsString()
-  readonly uuid: string;
+  fileName: string;
 
   @ApiPropertyOptional()
-  @IsOptional()
-  readonly dateversion: Date;
+  @IsString()
+  originalFileName: string;
+}
 
+export class ExtractedExcelDataSurveyDTO {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
@@ -89,17 +96,7 @@ export class AddValidateSurveyResultDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly agegroupcode: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
   readonly agegroup: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly serviceyearscode: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -153,11 +150,6 @@ export class AddValidateSurveyResultDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  readonly latest: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
   @IsNumber()
   readonly tahunlahir: number;
 
@@ -205,28 +197,4 @@ export class AddValidateSurveyResultDto {
   @IsOptional()
   @IsString()
   readonly age_when_entering_company: string;
-}
-
-export class DownloadValidateSurveyResultDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
-  readonly tahunsurvey: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly company: string;
-}
-
-export class UpdateDateVersionDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly surveyid: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  readonly company: string;
 }
