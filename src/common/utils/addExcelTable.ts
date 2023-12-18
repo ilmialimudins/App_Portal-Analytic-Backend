@@ -301,7 +301,7 @@ export const addTableValidate = <T extends object>(
       const cellValue = isNaN(row[headerKey])
         ? row[headerKey]
         : +row[headerKey];
-      cell.value = cellValue === 0 ? null : cellValue;
+      cell.value = cellValue === 0 ? 'N/A' : cellValue;
       cell.style = {
         font: {
           size: 10,

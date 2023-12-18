@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ValidateSurveyResult } from './validate-survey-result.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -13,6 +13,12 @@ import {
   DownloadValidateSurveyResultDto,
 } from './dto/add-validate-survey-result.dto';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import {
+  ExtractedExcelDataSurveyDTO,
+  UploadBodyNameDTO,
+} from './dto/upload-validate-survey-result.dto';
+import { UploadSurveyTransaction } from './upload-validate-survey-result.transaction';
+import { UpdateDateVersion } from './update-dateversion.transaction';
 
 @Injectable()
 export class ValidateSurveyResultService {
@@ -22,6 +28,12 @@ export class ValidateSurveyResultService {
 
     @InjectRepository(CheckingCompleteSurvey)
     private checkingCompleteSurveyRepository: Repository<CheckingCompleteSurvey>,
+
+    @Inject(UploadSurveyTransaction)
+    private uploadSurveyTransaction: UploadSurveyTransaction,
+
+    @Inject(UpdateDateVersion)
+    private updateDateVersion: UpdateDateVersion,
 
     private readonly manager: EntityManager,
   ) {}
@@ -151,7 +163,7 @@ export class ValidateSurveyResultService {
       const values = validatesurveyresult.map((item) => {
         return {
           uuid: uuidv4(),
-          dateversion: new Date(),
+          dateversion: createNow,
           surveyid: item.surveyid,
           respondentid: item.respondentid,
           businesslinecode: item.businesslinecode,
@@ -251,37 +263,6 @@ export class ValidateSurveyResultService {
     }
   }
 
-  async updateDateVersion(surveyid: number, company: string) {
-    const createNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
-
-    const queryRunner = this.manager.connection.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const managerValidate = this.manager.getRepository(ValidateSurveyResult);
-      const query = await managerValidate
-        .createQueryBuilder()
-        .update(ValidateSurveyResult)
-        .set({
-          dateversion: createNow,
-        })
-        .where('surveyid = :surveyid', { surveyid })
-        .andWhere('company = :company', { company })
-        .execute();
-
-      await queryRunner.commitTransaction();
-
-      return query;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
   async deleteValidateSurveyResult(id: number) {
     try {
       const query = await this.valdiateSurveyResultRepository
@@ -329,11 +310,13 @@ export class ValidateSurveyResultService {
           'validatesurveyresult.id',
           'validatesurveyresult.respondentid',
           'validatesurveyresult.surveyid',
+          'validatesurveyresult.businesslinecode',
           'validatesurveyresult.businessline',
           'validatesurveyresult.company',
           'validatesurveyresult.locationname',
           'validatesurveyresult.jobtitle',
           'validatesurveyresult.branch',
+          'validatesurveyresult.education',
           'validatesurveyresult.plant',
           'validatesurveyresult.jobsites',
           'validatesurveyresult.directorate',
@@ -381,11 +364,13 @@ export class ValidateSurveyResultService {
       const headerTitle = [
         'Respondent Id',
         'Surveyid',
+        'Business Line Code',
         'Business Line',
         'Company',
         'Location',
         'Job Title',
         'Branch',
+        'Education',
         'Plant',
         'Job Sites',
         'Directorate',
@@ -418,11 +403,13 @@ export class ValidateSurveyResultService {
       const tableData = query.map((item) => ({
         'Respondent Id': item.respondentid,
         Surveyid: item.surveyid,
+        'Business Line Code': item.businesslinecode,
         'Business Line': item.businessline,
         Company: item.company,
         Location: item.locationname,
         'Job Title': item.jobtitle,
         Branch: item.branch,
+        education: item.education,
         Plant: item.plant,
         'Job Sites': item.jobsites,
         Directorate: item.directorate,
@@ -467,5 +454,108 @@ export class ValidateSurveyResultService {
     } catch (error) {
       throw error;
     }
+  }
+
+  /* eslint-disable */
+  async extractValidateSurveyResult(
+    data: UploadBodyNameDTO,
+    userinfo: UserInfoDTO,
+  ) {
+    const workbook = new excel.Workbook();
+    const file = await workbook.xlsx.readFile(
+      `./temp/cleansing-survey/${data.fileName}`,
+    );
+
+    const worksheet: excel.Worksheet | undefined = file.getWorksheet(
+      'Validate Survey Result Data',
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!worksheet) {
+      throw new BadRequestException(
+        'Worksheet not found, please use correct template',
+      );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tableData: any = [];
+
+    worksheet.eachRow({ includeEmpty: false }, (row) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rowData: any[] = [];
+
+      row.eachCell({ includeEmpty: false }, (cell) => {
+        rowData.push(cell.value);
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tableData.push(rowData as any);
+    });
+
+    const extractedData: ExtractedExcelDataSurveyDTO[] = tableData
+      .slice(1)
+      .map((item: (string | number)[]) => {
+        return tableData[0].reduce((acc, current, index) => {
+          return Object.assign(acc, { [current]: item[index] });
+        }, {});
+      });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapExtractedData: ExtractedExcelDataSurveyDTO[] = extractedData.map(
+      (data: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const convertIfNA = (value: any): any => {
+          return value === 'N/A' ? '' : value;
+        };
+
+        return {
+          surveyid: convertIfNA(data['Surveyid'])?.toString() ?? '',
+          respondentid: convertIfNA(data['Respondent Id']),
+          businesslinecode: convertIfNA(data['Business Line Code']),
+          businessline: convertIfNA(data['Business Line']),
+          company: convertIfNA(data['Company']),
+          division: convertIfNA(data['Division']),
+          department: convertIfNA(data['Department']),
+          branch: convertIfNA(data['Branch']),
+          directorate: convertIfNA(data['Directorate']),
+          education: convertIfNA(data['Education']),
+          grade: convertIfNA(data['Grade'])?.toString() ?? '',
+          jobtitle: convertIfNA(data['Job Title']),
+          locationname: convertIfNA(data['Location']),
+          age: convertIfNA(data['Age']),
+          agegeneration: convertIfNA(data['Age Generation']),
+          agegroup: convertIfNA(data['Age Group']),
+          serviceyears: convertIfNA(data['Service Year']),
+          gender: convertIfNA(data['Gender']),
+          region: convertIfNA(data['Region']),
+          area: convertIfNA(data['Area']),
+          plant: convertIfNA(data['Plant']),
+          kebun: convertIfNA(data['Kebun']),
+          jobsites: convertIfNA(data['Job Sites']),
+          statuskaryawan: convertIfNA(data['Employee Status']),
+          functionname: convertIfNA(data['Function']),
+          salesoffice: convertIfNA(data['Sales Office']),
+          tahunlahir: convertIfNA(data['Birth Year']),
+          tahunmasuk_perusahaan: convertIfNA(data['Entry Year (Company)']),
+          tahunmasuk_astra: convertIfNA(data['Entry Year (Astra)']),
+          tahunsurvey: convertIfNA(data['Survey Year']),
+          entryyear_difference: convertIfNA(data['Entry Year Difference']),
+          fillingtime: convertIfNA(data['Filling Time']),
+          similaranswer: convertIfNA(data['Similar Answer']),
+          completeanswer: convertIfNA(data['Complete Answer']),
+          age_this_year: convertIfNA(data['Age This Year']),
+          age_when_entering_company: convertIfNA(
+            data['Age When Entering Company'],
+          ),
+        };
+      },
+    );
+
+    const transaction = await this.uploadSurveyTransaction
+      .setMetadata({
+        userinfo: userinfo,
+      })
+      .run(mapExtractedData);
+
+    return transaction;
   }
 }
