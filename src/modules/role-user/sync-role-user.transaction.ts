@@ -2,7 +2,8 @@ import { BaseTransaction } from 'src/common/abstract.transaction';
 import { SyncRoleUserDTO } from './dto/update-role-user.dto';
 import { EntityManager } from 'typeorm';
 import { RoleUser } from './role-user.entity';
-
+import { Injectable } from '@nestjs/common';
+@Injectable()
 export class SyncRoleUserTransaction extends BaseTransaction<
   SyncRoleUserDTO,
   { message: string; status: string }
