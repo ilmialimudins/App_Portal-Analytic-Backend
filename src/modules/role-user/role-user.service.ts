@@ -1,17 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleUser } from './role-user.entity';
 import { Repository } from 'typeorm';
 import { RoleUserDto } from './dto/role-user.dto';
 import { AddRoleUserDto } from './dto/add-role-user.dto';
-import { UpdateRoleUserDto } from './dto/update-role-user.dto';
+import { SyncRoleUserDTO } from './dto/update-role-user.dto';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
+import { SyncRoleUserTransaction } from './sync-role-user.transaction';
 
 @Injectable()
 export class RoleUserService {
   constructor(
     @InjectRepository(RoleUser)
     private roleUserRepository: Repository<RoleUser>,
+
+    @Inject(SyncRoleUserTransaction)
+    private syncRoleUserTransaction: SyncRoleUserTransaction,
   ) {}
 
   async getAllRoleUser(
@@ -135,27 +139,10 @@ export class RoleUserService {
     }
   }
 
-  async updateRoleUser(
-    roleuserid: number,
-    roleuser: UpdateRoleUserDto,
-    userinfo: UserInfoDTO,
-  ) {
-    try {
-      const query = await this.roleUserRepository
-        .createQueryBuilder()
-        .update(RoleUser)
-        .set({
-          roleid: roleuser.roleid,
-          userid: roleuser.userid,
-          updatedby: userinfo.fullname,
-        })
-        .where('roleuserid = :roleuserid', { roleuserid })
-        .execute();
-
-      return query;
-    } catch (error) {
-      throw error;
-    }
+  async updateRoleUser(userroles: SyncRoleUserDTO, userinfo: UserInfoDTO) {
+    return this.syncRoleUserTransaction
+      .setMetadata({ userinfo })
+      .run(userroles);
   }
 
   async deleteRoleUser(roleuserid: number) {

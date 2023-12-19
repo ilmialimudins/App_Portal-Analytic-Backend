@@ -12,7 +12,7 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { RoleUserService } from './role-user.service';
 import { RoleUserDto } from './dto/role-user.dto';
 import { AddRoleUserDto } from './dto/add-role-user.dto';
-import { UpdateRoleUserDto } from './dto/update-role-user.dto';
+import { SyncRoleUserDTO } from './dto/update-role-user.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
@@ -63,11 +63,10 @@ export class RoleUserController {
   @Patch('/updateRoleUser')
   @ApiCreatedResponse({ type: RoleUserDto })
   async updateRoleUser(
-    @Query('roleuserid') roleuserid: number,
-    @Body() roleuser: UpdateRoleUserDto,
+    @Body() roleuser: SyncRoleUserDTO,
     @UserInfo() userinfo: UserInfoDTO,
   ) {
-    return this.roleUserService.updateRoleUser(roleuserid, roleuser, userinfo);
+    return this.roleUserService.updateRoleUser(roleuser, userinfo);
   }
 
   @Delete('/deleteRoleUser')
