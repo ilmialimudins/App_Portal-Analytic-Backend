@@ -6,8 +6,8 @@ import { RoleUserController } from './role-user.controller';
 import { SyncRoleUserTransaction } from './sync-role-user.transaction';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RoleUser]), SyncRoleUserTransaction],
-  providers: [RoleUserService],
+  imports: [TypeOrmModule.forFeature([RoleUser])],
+  providers: [RoleUserService, SyncRoleUserTransaction],
   controllers: [RoleUserController],
   exports: [RoleUserService],
 })
