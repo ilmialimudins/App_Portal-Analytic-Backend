@@ -41,18 +41,6 @@ export class MasterMenuController {
     );
   }
 
-  @Get('/checkDuplicateMenu')
-  @ApiCreatedResponse({ type: MasterMenuDto })
-  async checkDuplicateMenu(@Query('menuname') menuname: string) {
-    const result = await this.masterMenuService.checkDuplicateMenu(menuname);
-
-    if (result) {
-      return { isDuplicate: true };
-    } else {
-      return { isDuplicate: false };
-    }
-  }
-
   @Get('/getMasterMenuParent')
   @ApiCreatedResponse({ type: MasterMenuDto })
   async getMasterMenuParent() {
@@ -63,12 +51,6 @@ export class MasterMenuController {
   @ApiOkResponse({})
   async getMenuDetail(@Query('menuid') menuid: number) {
     return this.masterMenuService.getMasterMenuId(menuid);
-  }
-
-  @Get('getLastMasterMenuCode')
-  @ApiOkResponse({ type: MasterMenuDto })
-  async getLastMasterMenuCode() {
-    return this.masterMenuService.getLastMasterMenuCode();
   }
 
   @Get('/navbar-menu')

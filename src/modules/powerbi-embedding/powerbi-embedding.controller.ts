@@ -30,9 +30,4 @@ export class PowerbiEmbeddingController {
       userInfo,
     );
   }
-
-  @Get('/general/pbi-metadata')
-  async getMetaDataPbiPerMenu(@Query('menucode') menucode: string) {
-    return this.mappingMenuReportServices.getMenuReportByMenuCode(menucode);
-  }
 }

@@ -26,10 +26,7 @@ import { ValidateSurveyResultDto } from './dto/validate-survey-result.dto';
 import { UpdateValidateSurveyResultDto } from './dto/update-validate-survey-result.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Response as ExpressResponse } from 'express';
-import {
-  AddValidateSurveyResultDto,
-  DownloadValidateSurveyResultDto,
-} from './dto/add-validate-survey-result.dto';
+import { DownloadValidateSurveyResultDto } from './dto/add-validate-survey-result.dto';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UploadSurveyDTO } from './dto/upload-validate-survey-result.dto';
@@ -64,18 +61,6 @@ export class ValidateSurveyResultController {
   }> {
     return this.validateSurveyResultService.getAllValidateSurveyResult(
       searchParams,
-    );
-  }
-
-  @Post('/createManyValidateSurveyResult')
-  @ApiCreatedResponse({ type: ValidateSurveyResultDto })
-  async createManyValidateSurveyResult(
-    @Body() validatesurveyresult: AddValidateSurveyResultDto[],
-    @UserInfo() userinfo: UserInfoDTO,
-  ) {
-    return this.validateSurveyResultService.createManyValidateSurveyResult(
-      validatesurveyresult,
-      userinfo,
     );
   }
 
