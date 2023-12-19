@@ -7,7 +7,6 @@ import {
   Post,
   Query,
   Res,
-  Put,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -36,7 +35,6 @@ import {
   GetModifyDetailResponse,
   GetSurveyGroupListDTO,
 } from './dto/get-spm-invited-respondents.dto';
-import { PutTotalInvitedBodyDTO } from './dto/post-spm-invited-respondents.dto';
 
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -99,22 +97,6 @@ export class SpmInvitedRespondentsController {
     @UserInfo() user: UserInfoDTO,
   ) {
     return this.spmInvitedRespondentsService.saveAllDemography(body, user);
-  }
-
-  @Put('modify-total-invited')
-  async changeTotalInvited(
-    @Query()
-    { tahun_survey, companyid, surveygroupid }: GetModifyDetailQueryDTO,
-    @Body() body: PutTotalInvitedBodyDTO,
-  ) {
-    try {
-      return await this.spmInvitedRespondentsService.changeTotalInvited(
-        { tahun_survey, companyid, surveygroupid },
-        body.total,
-      );
-    } catch (error) {
-      throw error;
-    }
   }
 
   @Get('/get-surveygroupid')
