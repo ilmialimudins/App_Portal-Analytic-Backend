@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common/decorators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MasterMenu } from './master-menu.entity';
 import { Repository } from 'typeorm';
-import { MasterMenuDto } from './dto/master-menu.dto';
+
 import { AddMasterMenuDto } from './dto/add-master-menu.dto';
 import { UpdateMasterMenuDto } from './dto/update-master-menu.dto';
 import { MasterUserService } from '../master-user/master-user.service';
@@ -121,14 +121,30 @@ export class MasterMenuService {
     }
   }
 
-  async getMasterMenuId(menuid: number): Promise<MasterMenuDto | undefined> {
+  async getMasterMenuId(menuid: number) {
     try {
       const query = await this.masterMenuRepository
         .createQueryBuilder('mastermenu')
         .where('mastermenu.menuid = :menuid', { menuid })
         .getOne();
 
-      return query?.toDto();
+      const data = {
+        ...query?.toDto(),
+        reportid: 0,
+        reportname: '',
+        sectionid: 0,
+        sectionname: '',
+      };
+      if (query?.issection) {
+        const getReport =
+          await this.mappingMenuReportService.getOneMenuReportByMenuID(menuid);
+        data.reportid = getReport?.masterreport.reportid ?? 0;
+        data.reportname = getReport?.masterreport?.reportname ?? '';
+        data.sectionid = getReport?.mastersection?.sectionid ?? 0;
+        data.sectionname = getReport?.mastersection?.sectionname ?? '';
+      }
+
+      return data;
     } catch (error) {
       throw error;
     }
