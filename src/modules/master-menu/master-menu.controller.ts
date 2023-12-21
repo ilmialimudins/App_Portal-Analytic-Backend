@@ -24,6 +24,12 @@ import { UserInfo } from 'src/decorators/use-info.decorator';
 import { UserInfoDTO } from '../duende-authentication/dto/userinfo.dto';
 import { generateMasterMenu } from 'src/common/utils/generateMenuNavbar';
 import { ListMasterMenuDTO } from './dto/maintain-mastermenu.dto';
+import {
+  AvailableMenusBodyDTO,
+  AvailableMenusResponseBody,
+} from './dto/available-menu.dto';
+import { AvailableMenus } from 'src/decorators/menu-available.decorator';
+import { MenuGuard } from 'src/guards/menu/menu.guard';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -99,5 +105,16 @@ export class MasterMenuController {
   @ApiCreatedResponse({ type: MasterMenuDto })
   async deleteMasterMenu(@Query('menuid') menuid: number) {
     return this.masterMenuService.deleteMasterMenu(menuid);
+  }
+
+  @Post('/check-available-menu')
+  @AvailableMenus(['MENU_001', 'MENU_002'])
+  @UseGuards(MenuGuard)
+  @ApiCreatedResponse({ type: AvailableMenusResponseBody })
+  async checkAvailableMenu(
+    @Body() data: AvailableMenusBodyDTO,
+    @UserInfo() userInfo: UserInfoDTO,
+  ) {
+    return this.masterMenuService.checkMenuUrl(data.url, userInfo);
   }
 }
