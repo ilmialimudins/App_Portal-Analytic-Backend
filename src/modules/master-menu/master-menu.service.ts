@@ -8,7 +8,11 @@ import { AddMasterMenuDto } from './dto/add-master-menu.dto';
 import { UpdateMasterMenuDto } from './dto/update-master-menu.dto';
 import { MasterUserService } from '../master-user/master-user.service';
 import { NavbarMenuDTO } from './dto/navbar-menu.dto';
-import { BadRequestException, forwardRef } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import {
   constructAllMenu,
   generateNavbarMenu,
@@ -306,5 +310,73 @@ export class MasterMenuService {
       if (error) console.log(error);
       throw error;
     }
+  }
+
+  async checkMenuUrl(url: string, userinfo: UserInfoDTO) {
+    const availMenuID = await this.getMenuAvailable(url);
+
+    const masterUser = await this.masterUserService.getMasterUserEmail(
+      userinfo.email,
+    );
+
+    if (!masterUser) {
+      throw new BadRequestException('No user found in this system');
+    }
+
+    const masterRole = await this.roleUserService.getUserRoles(
+      masterUser.userid,
+    );
+
+    const roleMenuExist = await this.roleMenuService.getRoleByMenu(
+      availMenuID,
+      masterRole.map((item) => item.roleid),
+    );
+
+    if (roleMenuExist.length > 0) {
+      return { isAvailable: true };
+    } else {
+      return { isAvailable: false };
+    }
+  }
+
+  async getMenuAvailable(url: string) {
+    if (url.includes('/dashboard/powerbi')) {
+      const urlSplit = url.split('/').slice(0, 4).join('/');
+
+      const listMenu = (
+        await this.masterMenuRepository.find({
+          where: { url: urlSplit },
+        })
+      ).map((item) => ({
+        menuid: item.menuid,
+        menucode: item.menucode,
+        menuname: item.menuname,
+        parentid: item.parentid,
+        sequence: item.sequence,
+        url: item.url,
+        issection: item.issection,
+      }));
+
+      const listConcatMenu = await this.concatMenuURLIsSection(listMenu);
+
+      const findIndexMatchedURL = listConcatMenu.findIndex(
+        (item) => item.url === url,
+      );
+
+      if (findIndexMatchedURL === -1) {
+        throw new NotFoundException('No menu found in master data menu');
+      }
+
+      return listConcatMenu[findIndexMatchedURL].menuid;
+    }
+    const masterMenuList = await this.masterMenuRepository.findOne({
+      where: { url },
+    });
+
+    if (!masterMenuList) {
+      throw new NotFoundException('No menu found in master data menu');
+    }
+
+    return masterMenuList.menuid;
   }
 }

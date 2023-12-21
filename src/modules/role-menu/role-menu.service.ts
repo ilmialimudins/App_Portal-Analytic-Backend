@@ -209,4 +209,10 @@ export class RoleMenuService {
 
     return data;
   }
+
+  public async checkRoleUserExist(menuid: number, roleids: number[]) {
+    return this.roleMenuRepository.find({
+      where: { menuid: menuid, roleid: In(roleids) },
+    });
+  }
 }
